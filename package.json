@@ -1,0 +1,21 @@
+{
+  "name": "factory",
+  "main": "./factory.coffee",
+  "version": "0.1.0",
+  "scripts": {
+    "test": "mocha test/*.spec.coffee"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@git.alexgorbatchev.com:alexgorbatchev/factory.git"
+  },
+  "dependencies": {
+    "lodash": ">=1.2.1"
+  },
+  "devDependencies": {
+    "iced-coffee-script": "~1.6.2d",
+    "coffee-script": "git+ssh://git@git.alexgorbatchev.com/alexgorbatchev/iced-coffee-script-proxy.git",
+    "chai": "~1.6.0",
+    "mocha": "~1.10.0"
+  }
+}
