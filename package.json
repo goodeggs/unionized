@@ -1,7 +1,7 @@
 {
   "name": "factory",
   "main": "./factory.coffee",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "scripts": {
     "test": "mocha test/*.spec.coffee"
   },
@@ -14,8 +14,9 @@
   },
   "devDependencies": {
     "iced-coffee-script": "~1.6.2d",
-    "coffee-script": "git+ssh://git@git.alexgorbatchev.com/alexgorbatchev/iced-coffee-script-proxy.git",
+    "coffee-script": "~1.6.3",
     "chai": "~1.6.0",
-    "mocha": "~1.10.0"
+    "mocha": "~1.10.0",
+    "fibrous": "~0.3.1"
   }
 }

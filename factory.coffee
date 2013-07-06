@@ -19,20 +19,18 @@ module.exports = Factory =
     attrs ?= {}
     attrs = _.clone attrs
 
-    await factory.apply attrs, [ defer() ]
+    factory.call attrs, ->
+      result = if model
+        Factory.createInstanceOf model, attrs
+      else
+        _.merge {}, attrs
 
-    result = if model
-      Factory.createInstanceOf model, attrs
-    else
-      _.merge {}, attrs
-
-    Factory.store result, callback
+      Factory.store result, callback
 
   createInstanceOf : (model, attrs) -> new model attrs
 
   store : (model, callback) ->
     if _.isFunction model.save
-      await model.save defer err, model
-      throw err if err?
-
-    callback model
+      model.save callback
+    else
+      callback null, model
