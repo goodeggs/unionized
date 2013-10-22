@@ -1,19 +1,20 @@
 {
-  "name": "factory",
-  "main": "./factory.coffee",
-  "version": "0.2.0",
+  "name": "sweatshop",
+  "main": "./sweatshop.coffee",
+  "version": "1.0.0",
   "scripts": {
-    "test": "mocha test/*.spec.coffee"
+    "test": "./node_modules/.bin/mocha test/*.spec.coffee",
+    "pretest": "./node_modules/.bin/coffee --bare --compile sweatshop.coffee"
   },
   "repository": {
     "type": "git",
-    "url": "git@git.alexgorbatchev.com:alexgorbatchev/factory.git"
+    "url": "git@github.com:alexgorbatchev/sweatshop.git"
   },
+  "keywords": ["factory", "objects"],
   "dependencies": {
     "lodash": ">=1.2.1"
   },
   "devDependencies": {
-    "iced-coffee-script": "~1.6.2d",
     "coffee-script": "~1.6.3",
     "chai": "~1.6.0",
     "mocha": "~1.10.0",
