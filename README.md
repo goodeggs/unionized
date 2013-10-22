@@ -58,3 +58,7 @@ Sweatshop.create 'message', {page: {identifier, url}} #=> {page, author, identif
 page = new Page attrs
 Sweatshop.create 'message', {page} #=> {page, author, identifier, body, createdAt}
 ```
+
+# License
+
+MIT
