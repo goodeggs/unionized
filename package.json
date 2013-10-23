@@ -1,7 +1,7 @@
 {
   "name": "sweatshop",
   "main": "./sweatshop.coffee",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "scripts": {
     "test": "./node_modules/.bin/mocha test/*.spec.coffee",
     "pretest": "./node_modules/.bin/coffee --bare --compile sweatshop.coffee"
