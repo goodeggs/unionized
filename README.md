@@ -4,7 +4,7 @@ Very basic factories helper to generate plain objects and scenarios for tests.
 
 # Usage Example
 
-```javascript
+```coffeescript
 # Basic models
 Sweatshop.define 'user', User, (done) ->
   @username  ?= Faker.Helpers.replaceSymbolWithNumber("facebook-##########")
