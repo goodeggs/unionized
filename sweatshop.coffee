@@ -8,21 +8,28 @@ parseArgs = (args) ->
   {attrs, callback}
 
 class Factory
-  constructor: (@model, @factoryFn) ->
-  build: (args...) ->
+  constructor: (@model = Object, @factoryFn) ->
+
+  json: (args...) ->
     {attrs, callback} = parseArgs args
     attrs = _.clone attrs ? {}
 
-    @factoryFn.call attrs, =>
-      result = if @model
-        Sweatshop.createInstanceOf @model, attrs
-      else
-        _.merge {}, attrs
-      _.defer callback, null, result if callback?
+    @factoryFn.call attrs, (err) =>
+      return _.defer callback, err if err?
+      result = _.merge {}, attrs
+      _.defer callback, null, result
+
+  build: (args...) ->
+    {attrs, callback} = parseArgs args
+    @json attrs, (err, result) =>
+      return _.defer callback, err if err?
+      result = Sweatshop.createInstanceOf @model, result
+      _.defer callback, null, result
 
   create: (args...) ->
     {attrs, callback} = parseArgs args
     @build attrs, (err, result) ->
+      return _.defer callback, err if err?
       Sweatshop.store result, callback
 
 module.exports = Sweatshop =
@@ -47,11 +54,11 @@ module.exports = Sweatshop =
   build: (name, args...) ->
     Sweatshop.get(name).build args...
 
-  createInstanceOf: (model, attrs) -> new model attrs
+  createInstanceOf: (model, attrs) ->
+    new model attrs
 
   store: (model, callback) ->
-    console.log arguments
     if _.isFunction model.save
       model.save callback
     else
-      callback null, model
+      _.defer callback, null, model

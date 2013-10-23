@@ -6,9 +6,12 @@ Sweatshop = require '../sweatshop.js'
 expect = chai.expect
 
 class Model
-  constructor: (attrs) -> _.merge @, attrs
-  save: (callback) -> callback null, @
-
+  constructor: (attrs) ->
+    @saved = false
+    _.merge @, attrs
+  save: (callback) ->
+    @saved = true
+    callback null, @
 
 describe 'sweatshop', ->
   {plainFactory, modelFactory, parentModelFactory} = {}
@@ -46,24 +49,32 @@ describe 'sweatshop', ->
       it 'creates a model instance', fibrous ->
         result = modelFactory.sync.create()
         expect(result).to.be.instanceof Model
-        expect(result).to.be.eql new Model plain: foo: 10, biz: fizz: 10
+        expect(result).to.be.eql new Model saved: true, plain: foo: 10, biz: fizz: 10
 
       it 'adds a new property', fibrous ->
         result = modelFactory.sync.create {foo: 20}
-        expect(result).to.be.eql new Model plain: {foo: 10, biz: fizz: 10}, foo: 20
+        expect(result).to.be.eql new Model saved: true, plain: {foo: 10, biz: fizz: 10}, foo: 20
 
       it 'uses passed plain object', fibrous ->
         result = modelFactory.sync.create {plain: foo: 20}
-        expect(result).to.be.eql new Model plain: foo: 20
+        expect(result).to.be.eql new Model saved: true, plain: foo: 20
+
+      it 'does not save if we just build', fibrous ->
+        result = modelFactory.sync.build()
+        expect(result.saved).to.not.be.true
+
+      it 'does not create a model instance if we just call json', fibrous ->
+        result = modelFactory.sync.json()
+        expect(result).not.to.be.instanceof Model
 
     describe 'for a nested model', ->
       it 'created nested model', fibrous ->
         result = parentModelFactory.sync.create()
-        expect(result).to.be.eql new Model model: new Model plain: foo: 10, biz: fizz: 10
+        expect(result).to.be.eql new Model saved: true, model: new Model {saved: true, plain: foo: 10, biz: fizz: 10}
 
       it 'changes nested model property', fibrous ->
         result = parentModelFactory.sync.create {model: plain: foo: 20}
-        expect(result).to.be.eql new Model model: new Model plain: foo: 20
+        expect(result).to.be.eql new Model saved: true, model: new Model {saved: true, plain: foo: 20}
 
   describe 'global factories', ->
     describe 'for unknown factory', ->

@@ -23,22 +23,37 @@ parseArgs = function(args) {
 
 Factory = (function() {
   function Factory(model, factoryFn) {
-    this.model = model;
+    this.model = model != null ? model : Object;
     this.factoryFn = factoryFn;
   }
+
+  Factory.prototype.json = function() {
+    var args, attrs, callback, _ref,
+      _this = this;
+    args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+    _ref = parseArgs(args), attrs = _ref.attrs, callback = _ref.callback;
+    attrs = _.clone(attrs != null ? attrs : {});
+    return this.factoryFn.call(attrs, function(err) {
+      var result;
+      if (err != null) {
+        return _.defer(callback, err);
+      }
+      result = _.merge({}, attrs);
+      return _.defer(callback, null, result);
+    });
+  };
 
   Factory.prototype.build = function() {
     var args, attrs, callback, _ref,
       _this = this;
     args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
     _ref = parseArgs(args), attrs = _ref.attrs, callback = _ref.callback;
-    attrs = _.clone(attrs != null ? attrs : {});
-    return this.factoryFn.call(attrs, function() {
-      var result;
-      result = _this.model ? Sweatshop.createInstanceOf(_this.model, attrs) : _.merge({}, attrs);
-      if (callback != null) {
-        return _.defer(callback, null, result);
+    return this.json(attrs, function(err, result) {
+      if (err != null) {
+        return _.defer(callback, err);
       }
+      result = Sweatshop.createInstanceOf(_this.model, result);
+      return _.defer(callback, null, result);
     });
   };
 
@@ -47,6 +62,9 @@ Factory = (function() {
     args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
     _ref = parseArgs(args), attrs = _ref.attrs, callback = _ref.callback;
     return this.build(attrs, function(err, result) {
+      if (err != null) {
+        return _.defer(callback, err);
+      }
       return Sweatshop.store(result, callback);
     });
   };
@@ -94,11 +112,10 @@ module.exports = Sweatshop = {
     return new model(attrs);
   },
   store: function(model, callback) {
-    console.log(arguments);
     if (_.isFunction(model.save)) {
       return model.save(callback);
     } else {
-      return callback(null, model);
+      return _.defer(callback, null, model);
     }
   }
 };
