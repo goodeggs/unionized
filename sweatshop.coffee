@@ -7,7 +7,7 @@ parseArgs = (args) ->
     when 2 then [attrs, callback] = args
   {attrs, callback}
 
-class Factory
+module.exports = class Sweatshop
   constructor: (@model = Object, @factoryFn) ->
 
   json: (args...) ->
@@ -32,33 +32,32 @@ class Factory
       return _.defer callback, err if err?
       Sweatshop.store result, callback
 
-module.exports = Sweatshop =
-  define: (args...) ->
-    name = args.shift() if typeof args[0] is 'string'
+Sweatshop.define = (args...) ->
+  name = args.shift() if typeof args[0] is 'string'
 
-    switch args.length
-      when 1 then [factoryFn] = args
-      when 2 then [model, factoryFn] = args
+  switch args.length
+    when 1 then [factoryFn] = args
+    when 2 then [model, factoryFn] = args
 
-    factory = new Factory model, factoryFn
-    factories[name] = factory if name?
+  factory = new Sweatshop model, factoryFn
+  factories[name] = factory if name?
 
-    factory
+  factory
 
-  get: (name) ->
-    factories[name] or throw "Unknown factory `#{name}`"
+Sweatshop.get = (name) ->
+  factories[name] or throw "Unknown factory `#{name}`"
 
-  create: (name, args...) ->
-    Sweatshop.get(name).create args...
+Sweatshop.create = (name, args...) ->
+  Sweatshop.get(name).create args...
 
-  build: (name, args...) ->
-    Sweatshop.get(name).build args...
+Sweatshop.build = (name, args...) ->
+  Sweatshop.get(name).build args...
 
-  createInstanceOf: (model, attrs) ->
-    new model attrs
+Sweatshop.createInstanceOf = (model, attrs) ->
+  new model attrs
 
-  store: (model, callback) ->
-    if _.isFunction model.save
-      model.save callback
-    else
-      _.defer callback, null, model
+Sweatshop.store = (model, callback) ->
+  if _.isFunction model.save
+    model.save callback
+  else
+    _.defer callback, null, model
