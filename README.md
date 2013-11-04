@@ -6,37 +6,36 @@ Very basic factories helper to generate plain objects and scenarios for tests.
 
 # Usage Example
 
+Sweatshop is geared towards CoffeeScript syntax and is especially clean with the
+amazing [fibrous](https://github.com/goodeggs/fibrous). Below is the example using both:
+
+## Defining Factories
+
 ```coffeescript
 # Basic models
-userFactory = Sweatshop.define User, (done) ->
+userFactory = Sweatshop.define User, fibrous ->
   @username  ?= Faker.Helpers.replaceSymbolWithNumber("facebook-##########")
   @name      ?= "#{Faker.Name.firstName()} #{Faker.Name.lastName()}"
   @picture   ?= "http://www.gravatar.com/avatar/#{md5 Math.random().toString()}?d=identicon&f=y"
   @email     ?= Faker.Internet.email()
   @createdAt ?= new Date()
 
-  done()
-
-pageFactory = Sweatshop.define Page, (done) ->
+pageFactory = Sweatshop.define Page, fibrous ->
   @identifier   ?= Faker.Internet.slug()
   @url          ?= Faker.Internet.url()
   @createdAt    ?= new Date()
   @messageCount ?= 0
 
-  done()
-
 # Complex model
-messageFactory = Sweatshop.define Message, (done) ->
+messageFactory = Sweatshop.define Message, fibrous ->
   @page       = pageFactory.sync.create @page unless @page instanceof Page
   @author     = userFactory.sync.create @author unless @author instanceof User
   @identifier ?= Faker.Internet.slug()
-  @body       ?= Faker.Lorem.sentences 1 + rnd 3
+  @body       ?= Faker.Lorem.sentences(2)
   @createdAt  ?= new Date()
 
-  done()
-
 # Scenario example
-pageWithCommentsFactory = Sweatshop.define (done) ->
+pageWithCommentsFactory = Sweatshop.define fibrous ->
   @user1         = userFactory.sync.create()
   @user2         = userFactory.sync.create()
   @user3         = userFactory.sync.create()
@@ -48,29 +47,33 @@ pageWithCommentsFactory = Sweatshop.define (done) ->
   @message_2     = messageFactory.sync.create {@page, author: @user2, createdAt: new Date('2013-03-03 9:00')}
   @message_2_1   = messageFactory.sync.create {@page, author: @user3, parent: @message_2}
 
-  done()
+# Globally-defined factories by name
+Sweatshop.define 'widget', fibrous ->
+  @foo = 'bar'
+```
 
+## Using Factories
+
+```coffeescript
 # Basic syntax
-userFactory.create (user) ->
-  console.log user #=> {username, name, picture, email, createdAt}
+console.log userFactory.sync.create()
+#=> {username, name, picture, email, createdAt}
 
 # Creating submodels
-messageFactory.create {page: {identifier, url}}, (message) ->
-  console.log message #=> {page, author, identifier, body, createdAt}
+console.log messageFactory.sync.create page: {identifier, url}
+#=> {page, author, identifier, body, createdAt}
 
 # Using already created models
 page = new Page attrs
-messageFactory.create {page}, (message) ->
-  console.log message #=> {page, author, identifier, body, createdAt}
+console.log messageFactory.sync.create {page}
+#=> {page, author, identifier, body, createdAt}
 
 # Globally-defined factories
-Sweatshop.define 'widget', (done) ->
-  @foo = 'bar'
-  done()
-
-Sweatshop.create 'widget', (widget) ->
-  console.log widget.foo #= 'bar'
+console.log Sweatshop.create 'widget'
+#=> widget.foo 'bar'
 ```
+
+### TODO: add non-fibrous examples
 
 # License
 
