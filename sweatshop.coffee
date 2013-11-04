@@ -1,57 +1,61 @@
 _ = require 'lodash'
 
-factories = {}
-parseArgs = (args) ->
-  switch args.length
-    when 1 then [callback] = args
-    when 2 then [attrs, callback] = args
-  {attrs, callback}
+class Sweatshop
+  constructor: (args...) ->
+    @parent = args.pop() if typeof _(args).last() is 'object'
+    @factoryFn = args.pop()
+    @model = args.pop() ? Object
+    @children = []
 
-class Factory
-  constructor: (@model, @factoryFn) ->
-  build: (args...) ->
-    {attrs, callback} = parseArgs args
+  json: (attrs, callback) ->
     attrs = _.clone attrs ? {}
+    @factoryFn.call attrs, (err) =>
+      return callback err if err?
+      @parent.factoryFn.call attrs, (err) =>
+        return callback err if err?
+        result = _.merge {}, attrs
+        callback null, result
 
-    @factoryFn.call attrs, =>
-      result = if @model
-        Sweatshop.createInstanceOf @model, attrs
-      else
-        _.merge {}, attrs
-      _.defer callback, null, result if callback?
+  build: (attrs, callback) ->
+    @json attrs, (err, result) =>
+      return callback err if err?
+      model = @modelInstanceWith result
+      callback null, model
 
-  create: (args...) ->
-    {attrs, callback} = parseArgs args
-    @build attrs, (err, result) ->
-      Sweatshop.store result, callback
+  create: (attrs, callback) ->
+    @build attrs, (err, model) =>
+      return callback err if err?
+      @saveModel model, callback
 
-module.exports = Sweatshop =
   define: (args...) ->
-    name = args.shift() if typeof args[0] is 'string'
+    name =
+      if typeof args[0] is 'string'
+        args.shift()
+      else
+        @children.length
+    @children[name] = new Sweatshop args..., @
 
-    switch args.length
-      when 1 then [factoryFn] = args
-      when 2 then [model, factoryFn] = args
+  child: (name) ->
+    @children[name] or throw "Unknown factory `#{name}`"
 
-    factory = new Factory model, factoryFn
-    factories[name] = factory if name?
+  modelInstanceWith: (attrs) ->
+    new @model attrs
 
-    factory
-
-  get: (name) ->
-    factories[name] or throw "Unknown factory `#{name}`"
-
-  create: (name, args...) ->
-    Sweatshop.get(name).create args...
-
-  build: (name, args...) ->
-    Sweatshop.get(name).build args...
-
-  createInstanceOf: (model, attrs) -> new model attrs
-
-  store: (model, callback) ->
-    console.log arguments
+  saveModel: (model, callback) ->
     if _.isFunction model.save
       model.save callback
     else
-      callback null, model
+      _.defer callback, null, model
+
+for fn in ['json', 'build', 'create']
+  do (fn) ->
+    fnWithSaneArgs = Sweatshop::[fn]
+    Sweatshop::[fn] = (args...) ->
+      if typeof args[0] is 'string'
+        @child(args[0])[fn](args[1..]...)
+      else
+        callback = args.pop()
+        attrs = args.pop()
+        fnWithSaneArgs.call @, attrs, callback
+
+module.exports = new Sweatshop _.defer
