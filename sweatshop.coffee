@@ -21,8 +21,10 @@ class Sweatshop
 
     @factoryFn.call attrs, (err) =>
       return _.defer callback, err if err?
-      result = _.merge {}, attrs
-      _.defer callback, null, result
+      @parent.factoryFn.call attrs, (err) =>
+        return _.defer callback, err if err?
+        result = _.merge {}, attrs
+        _.defer callback, null, result
 
   build: (args...) ->
     {name, attrs, callback} = parseArgs args
@@ -45,7 +47,7 @@ class Sweatshop
         args.shift()
       else
         @children.length
-    @children[name] = new Sweatshop args...
+    @children[name] = new Sweatshop args..., @
 
   get: (name) ->
     @children[name] or throw "Unknown factory `#{name}`"

@@ -45,12 +45,17 @@ Sweatshop = (function() {
     }
     attrs = _.clone(attrs != null ? attrs : {});
     return this.factoryFn.call(attrs, function(err) {
-      var result;
       if (err != null) {
         return _.defer(callback, err);
       }
-      result = _.merge({}, attrs);
-      return _.defer(callback, null, result);
+      return _this.parent.factoryFn.call(attrs, function(err) {
+        var result;
+        if (err != null) {
+          return _.defer(callback, err);
+        }
+        result = _.merge({}, attrs);
+        return _.defer(callback, null, result);
+      });
     });
   };
 
@@ -96,7 +101,7 @@ Sweatshop = (function() {
       ctor.prototype = func.prototype;
       var child = new ctor, result = func.apply(child, args);
       return Object(result) === result ? result : child;
-    })(Sweatshop, args, function(){});
+    })(Sweatshop, __slice.call(args).concat([this]), function(){});
   };
 
   Sweatshop.prototype.get = function(name) {

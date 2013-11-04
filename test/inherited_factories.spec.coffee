@@ -15,8 +15,8 @@ describe 'inherited sweatshops', ->
 
     result = child.sync.create()
 
-  it 'borrows default attributes up the inheritance chain'#, ->
-    # expect(result.foo).to.equal 'herp'
+  it 'borrows default attributes up the inheritance chain', ->
+    expect(result.foo).to.equal 'herp'
 
-  it 'can overwrite default attributes'#, ->
-    # expect(result.bar).to.equal 'slurp'
+  it 'can overwrite default attributes', ->
+    expect(result.bar).to.equal 'slurp'
