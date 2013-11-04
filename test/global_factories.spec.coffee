@@ -9,8 +9,8 @@ describe 'the global object', ->
       @fiz = 'buzz'
 
   it 'can use a global sweatshop', fibrous ->
-    {fiz} = Sweatshop.sync.create('known')
-    expect(fiz).to.equal 'buzz'
+    result = Sweatshop.sync.create('known')
+    expect(result.fiz).to.equal 'buzz'
 
   it 'cannot use an undefined sweatshop', fibrous ->
     expect(-> Sweatshop.sync.create 'unknown').to.throw 'Unknown factory `unknown`'

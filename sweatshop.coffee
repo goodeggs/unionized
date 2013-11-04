@@ -1,17 +1,22 @@
 _ = require 'lodash'
 
-factories = {}
 parseArgs = (args) ->
+  name = args.shift() if typeof _(args).first() is 'string'
   switch args.length
     when 1 then [callback] = args
     when 2 then [attrs, callback] = args
-  {attrs, callback}
+  {name, attrs, callback}
 
-module.exports = class Sweatshop
-  constructor: (@model = Object, @factoryFn) ->
+class Sweatshop
+  constructor: (args...) ->
+    @parent = args.pop() if typeof _(args).last() is 'object'
+    @factoryFn = args.pop()
+    @model = args.pop() ? Object
+    @children = []
 
   json: (args...) ->
-    {attrs, callback} = parseArgs args
+    {name, attrs, callback} = parseArgs args
+    return @get(name).json(attrs, callback) if name?
     attrs = _.clone attrs ? {}
 
     @factoryFn.call attrs, (err) =>
@@ -20,44 +25,38 @@ module.exports = class Sweatshop
       _.defer callback, null, result
 
   build: (args...) ->
-    {attrs, callback} = parseArgs args
+    {name, attrs, callback} = parseArgs args
+    return @get(name).build(attrs, callback) if name?
     @json attrs, (err, result) =>
       return _.defer callback, err if err?
-      result = Sweatshop.createInstanceOf @model, result
-      _.defer callback, null, result
+      model = @modelInstanceWith result
+      _.defer callback, null, model
 
   create: (args...) ->
-    {attrs, callback} = parseArgs args
-    @build attrs, (err, result) ->
+    {name, attrs, callback} = parseArgs args
+    return @get(name).create(attrs, callback) if name?
+    @build attrs, (err, model) =>
       return _.defer callback, err if err?
-      Sweatshop.store result, callback
+      @saveModel model, callback
 
-Sweatshop.define = (args...) ->
-  name = args.shift() if typeof args[0] is 'string'
+  define: (args...) ->
+    name =
+      if typeof _(args).first() is 'string'
+        args.shift()
+      else
+        @children.length
+    @children[name] = new Sweatshop args...
 
-  switch args.length
-    when 1 then [factoryFn] = args
-    when 2 then [model, factoryFn] = args
+  get: (name) ->
+    @children[name] or throw "Unknown factory `#{name}`"
 
-  factory = new Sweatshop model, factoryFn
-  factories[name] = factory if name?
+  modelInstanceWith: (attrs) ->
+    new @model attrs
 
-  factory
+  saveModel: (model, callback) ->
+    if _.isFunction model.save
+      model.save callback
+    else
+      _.defer callback, null, model
 
-Sweatshop.get = (name) ->
-  factories[name] or throw "Unknown factory `#{name}`"
-
-Sweatshop.create = (name, args...) ->
-  Sweatshop.get(name).create args...
-
-Sweatshop.build = (name, args...) ->
-  Sweatshop.get(name).build args...
-
-Sweatshop.createInstanceOf = (model, attrs) ->
-  new model attrs
-
-Sweatshop.store = (model, callback) ->
-  if _.isFunction model.save
-    model.save callback
-  else
-    _.defer callback, null, model
+module.exports = new Sweatshop _.defer
