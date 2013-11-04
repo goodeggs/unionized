@@ -20,25 +20,25 @@ class Sweatshop
     attrs = _.clone attrs ? {}
 
     @factoryFn.call attrs, (err) =>
-      return _.defer callback, err if err?
+      return callback err if err?
       @parent.factoryFn.call attrs, (err) =>
-        return _.defer callback, err if err?
+        return callback err if err?
         result = _.merge {}, attrs
-        _.defer callback, null, result
+        callback null, result
 
   build: (args...) ->
     {name, attrs, callback} = parseArgs args
     return @get(name).build(attrs, callback) if name?
     @json attrs, (err, result) =>
-      return _.defer callback, err if err?
+      return callback err if err?
       model = @modelInstanceWith result
-      _.defer callback, null, model
+      callback null, model
 
   create: (args...) ->
     {name, attrs, callback} = parseArgs args
     return @get(name).create(attrs, callback) if name?
     @build attrs, (err, model) =>
-      return _.defer callback, err if err?
+      return callback err if err?
       @saveModel model, callback
 
   define: (args...) ->
@@ -59,6 +59,6 @@ class Sweatshop
     if _.isFunction model.save
       model.save callback
     else
-      _.defer callback, null, model
+      callback null, model
 
 module.exports = new Sweatshop _.defer

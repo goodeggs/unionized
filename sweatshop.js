@@ -46,15 +46,15 @@ Sweatshop = (function() {
     attrs = _.clone(attrs != null ? attrs : {});
     return this.factoryFn.call(attrs, function(err) {
       if (err != null) {
-        return _.defer(callback, err);
+        return callback(err);
       }
       return _this.parent.factoryFn.call(attrs, function(err) {
         var result;
         if (err != null) {
-          return _.defer(callback, err);
+          return callback(err);
         }
         result = _.merge({}, attrs);
-        return _.defer(callback, null, result);
+        return callback(null, result);
       });
     });
   };
@@ -70,10 +70,10 @@ Sweatshop = (function() {
     return this.json(attrs, function(err, result) {
       var model;
       if (err != null) {
-        return _.defer(callback, err);
+        return callback(err);
       }
       model = _this.modelInstanceWith(result);
-      return _.defer(callback, null, model);
+      return callback(null, model);
     });
   };
 
@@ -87,7 +87,7 @@ Sweatshop = (function() {
     }
     return this.build(attrs, function(err, model) {
       if (err != null) {
-        return _.defer(callback, err);
+        return callback(err);
       }
       return _this.saveModel(model, callback);
     });
@@ -118,7 +118,7 @@ Sweatshop = (function() {
     if (_.isFunction(model.save)) {
       return model.save(callback);
     } else {
-      return _.defer(callback, null, model);
+      return callback(null, model);
     }
   };
 
