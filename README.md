@@ -1,8 +1,8 @@
-<a href="https://david-dm.org/alexgorbatchev/sweatshop" title="Dependency status"><img src="https://david-dm.org/alexgorbatchev/sweatshop.png"/></a>
-
 # Sweatshop
 
 Very basic factories helper to generate plain objects and scenarios for tests.
+
+[![Dependency status](https://david-dm.org/alexgorbatchev/sweatshop.png)](https://david-dm.org/alexgorbatchev/sweatshop) [![Build Status](https://travis-ci.org/alexgorbatchev/sweatshop.png)](https://travis-ci.org/alexgorbatchev/sweatshop)
 
 # Usage Example
 
