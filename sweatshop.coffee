@@ -74,6 +74,9 @@ class Sweatshop
   name so it can be accessed later using the `#child` function.
 
   @param {string} [name] - Optional name of the child factory to use
+  @param {object} [model] - Optional model for the child factory to use
+  @param {function} factoryFn - Factory function for the child factory. Will be
+    applied before the factory function of the parent factory.
   
   @returns {Sweatshop} A new factory that descends from the current one.
   ###
