@@ -7,10 +7,12 @@ Lightweight test factories, optimized for
 [CoffeeScript](http://coffeescript.org/).
 */
 
-var Sweatshop, fn, _, _fn, _i, _len, _ref,
+var Sweatshop, dot, fn, _, _fn, _i, _len, _ref,
   __slice = [].slice;
 
 _ = require('lodash');
+
+dot = require('dot-component');
 
 Sweatshop = (function() {
   function Sweatshop() {
@@ -30,13 +32,15 @@ Sweatshop = (function() {
   @param {string} [name] - Name of the child factory to use
     (or, just use this one if a name is not supplied)
   @param {object} [factoryParams] - Parameters to send to the factory function
+  @param {object} [overrides] - Overrides to apply after the factory function
+    is done
   
   @returns {object} A plain old JavaScript object
   @async
   */
 
 
-  Sweatshop.prototype.json = function(attrs, callback) {
+  Sweatshop.prototype.json = function(attrs, overrides, callback) {
     var _this = this;
     attrs = _.clone(attrs != null ? attrs : {});
     return this.factoryFn.call(attrs, function(err) {
@@ -44,11 +48,15 @@ Sweatshop = (function() {
         return callback(err);
       }
       return _this.parent.factoryFn.call(attrs, function(err) {
-        var result;
+        var key, result, val;
         if (err != null) {
           return callback(err);
         }
         result = _.merge({}, attrs);
+        for (key in overrides) {
+          val = overrides[key];
+          dot.set(result, key, val, true);
+        }
         return callback(null, result);
       });
     });
@@ -61,15 +69,17 @@ Sweatshop = (function() {
   @param {string} [name] - Name of the child factory to use
     (or, just use this one if a name is not supplied)
   @param {object} [factoryParams] - Parameters to send to the factory function
+  @param {object} [overrides] - Overrides to apply after the factory function
+    is done
   
   @returns {object} An instance of the factory model
   @async
   */
 
 
-  Sweatshop.prototype.build = function(attrs, callback) {
+  Sweatshop.prototype.build = function(attrs, overrides, callback) {
     var _this = this;
-    return this.json(attrs, function(err, result) {
+    return this.json(attrs, overrides, function(err, result) {
       var model;
       if (err != null) {
         return callback(err);
@@ -86,6 +96,8 @@ Sweatshop = (function() {
   @param {string} [name] - Name of the child factory to use
     (or, just use this one if a name is not supplied)
   @param {object} [factoryParams] - Parameters to send to the factory function
+  @param {object} [overrides] - Overrides to apply after the factory function
+    is done
   
   @returns {object} An instance of the factory model, after `#saveModel` has
     been called on it.
@@ -93,9 +105,9 @@ Sweatshop = (function() {
   */
 
 
-  Sweatshop.prototype.create = function(attrs, callback) {
+  Sweatshop.prototype.create = function(attrs, overrides, callback) {
     var _this = this;
-    return this.build(attrs, function(err, model) {
+    return this.build(attrs, overrides, function(err, model) {
       if (err != null) {
         return callback(err);
       }
@@ -109,6 +121,9 @@ Sweatshop = (function() {
   name so it can be accessed later using the `#child` function.
   
   @param {string} [name] - Optional name of the child factory to use
+  @param {object} [model] - Optional model for the child factory to use
+  @param {function} factoryFn - Factory function for the child factory. Will be
+    applied before the factory function of the parent factory.
   
   @returns {Sweatshop} A new factory that descends from the current one.
   */
@@ -182,14 +197,15 @@ _fn = function(fn) {
   var fnWithSaneArgs;
   fnWithSaneArgs = Sweatshop.prototype[fn];
   return Sweatshop.prototype[fn] = function() {
-    var args, attrs, callback, _ref1;
+    var args, attrs, callback, overrides, _ref1;
     args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
     if (typeof args[0] === 'string') {
       return (_ref1 = this.child(args[0]))[fn].apply(_ref1, args.slice(1));
     } else {
       callback = args.pop();
-      attrs = args.pop();
-      return fnWithSaneArgs.call(this, attrs, callback);
+      attrs = args.shift();
+      overrides = args.pop() || {};
+      return fnWithSaneArgs.call(this, attrs, overrides, callback);
     }
   };
 };

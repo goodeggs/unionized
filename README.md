@@ -68,6 +68,10 @@ page = new Page attrs
 console.log messageFactory.sync.create {page}
 #=> {page, author, identifier, body, createdAt}
 
+# Overwriting nested attributes
+console.log pageWithCommentsFactory.sync.create {}, {'user1.name': 'Joe Bloggs', 'message_1_1_1.page.url': 'http://awesomesauce.com'}
+#=> {...}
+
 # Globally-defined factories
 console.log Sweatshop.create 'widget'
 #=> widget.foo 'bar'

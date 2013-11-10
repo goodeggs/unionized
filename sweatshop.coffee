@@ -7,6 +7,7 @@ Lightweight test factories, optimized for
 ###
 
 _ = require 'lodash'
+dot = require 'dot-component'
 
 class Sweatshop
   constructor: (args...) ->
@@ -21,17 +22,20 @@ class Sweatshop
   @param {string} [name] - Name of the child factory to use
     (or, just use this one if a name is not supplied)
   @param {object} [factoryParams] - Parameters to send to the factory function
+  @param {object} [overrides] - Overrides to apply after the factory function
+    is done
 
   @returns {object} A plain old JavaScript object
   @async
   ###
-  json: (attrs, callback) ->
+  json: (attrs, overrides, callback) ->
     attrs = _.clone attrs ? {}
     @factoryFn.call attrs, (err) =>
       return callback err if err?
       @parent.factoryFn.call attrs, (err) =>
         return callback err if err?
         result = _.merge {}, attrs
+        dot.set result, key, val, true for key, val of overrides
         callback null, result
 
   ###
@@ -41,12 +45,14 @@ class Sweatshop
   @param {string} [name] - Name of the child factory to use
     (or, just use this one if a name is not supplied)
   @param {object} [factoryParams] - Parameters to send to the factory function
+  @param {object} [overrides] - Overrides to apply after the factory function
+    is done
 
   @returns {object} An instance of the factory model
   @async
   ###
-  build: (attrs, callback) ->
-    @json attrs, (err, result) =>
+  build: (attrs, overrides, callback) ->
+    @json attrs, overrides, (err, result) =>
       return callback err if err?
       model = @modelInstanceWith result
       callback null, model
@@ -58,13 +64,15 @@ class Sweatshop
   @param {string} [name] - Name of the child factory to use
     (or, just use this one if a name is not supplied)
   @param {object} [factoryParams] - Parameters to send to the factory function
+  @param {object} [overrides] - Overrides to apply after the factory function
+    is done
 
   @returns {object} An instance of the factory model, after `#saveModel` has
     been called on it.
   @async
   ###
-  create: (attrs, callback) ->
-    @build attrs, (err, model) =>
+  create: (attrs, overrides, callback) ->
+    @build attrs, overrides, (err, model) =>
       return callback err if err?
       @saveModel model, callback
 
@@ -132,7 +140,8 @@ for fn in ['json', 'build', 'create']
         @child(args[0])[fn](args[1..]...)
       else
         callback = args.pop()
-        attrs = args.pop()
-        fnWithSaneArgs.call @, attrs, callback
+        attrs = args.shift()
+        overrides = args.pop() || {}
+        fnWithSaneArgs.call @, attrs, overrides, callback
 
 module.exports = new Sweatshop _.defer
