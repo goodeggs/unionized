@@ -40,10 +40,10 @@ Sweatshop = (function() {
   */
 
 
-  Sweatshop.prototype.json = function(attrs, overrides, callback) {
+  Sweatshop.prototype.json = function(attrs, overrides, mode, callback) {
     var _this = this;
     attrs = _.clone(attrs != null ? attrs : {});
-    return this.factoryFn.call(attrs, function(err) {
+    return this.factoryFn.call(attrs, mode, function(err) {
       if (err != null) {
         return callback(err);
       }
@@ -77,9 +77,9 @@ Sweatshop = (function() {
   */
 
 
-  Sweatshop.prototype.build = function(attrs, overrides, callback) {
+  Sweatshop.prototype.build = function(attrs, overrides, mode, callback) {
     var _this = this;
-    return this.json(attrs, overrides, function(err, result) {
+    return this.json(attrs, overrides, mode, function(err, result) {
       var model;
       if (err != null) {
         return callback(err);
@@ -105,9 +105,9 @@ Sweatshop = (function() {
   */
 
 
-  Sweatshop.prototype.create = function(attrs, overrides, callback) {
+  Sweatshop.prototype.create = function(attrs, overrides, mode, callback) {
     var _this = this;
-    return this.build(attrs, overrides, function(err, model) {
+    return this.build(attrs, overrides, mode, function(err, model) {
       if (err != null) {
         return callback(err);
       }
@@ -197,16 +197,14 @@ _fn = function(fn) {
   var fnWithSaneArgs;
   fnWithSaneArgs = Sweatshop.prototype[fn];
   return Sweatshop.prototype[fn] = function() {
-    var args, attrs, callback, overrides, _ref1;
+    var args, attrs, callback, instance, mode, overrides;
     args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-    if (typeof args[0] === 'string') {
-      return (_ref1 = this.child(args[0]))[fn].apply(_ref1, args.slice(1));
-    } else {
-      callback = args.pop();
-      attrs = args.shift();
-      overrides = args.pop() || {};
-      return fnWithSaneArgs.call(this, attrs, overrides, callback);
-    }
+    instance = typeof args[0] === 'string' ? this.child(args.shift()) : this;
+    callback = args.pop();
+    attrs = args.shift();
+    overrides = args.shift() || {};
+    mode = args.shift() || fn;
+    return fnWithSaneArgs.call(instance, attrs, overrides, mode, callback);
   };
 };
 for (_i = 0, _len = _ref.length; _i < _len; _i++) {

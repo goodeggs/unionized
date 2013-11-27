@@ -26,26 +26,27 @@ pageFactory = Sweatshop.define Page, fibrous ->
   @createdAt    ?= new Date()
   @messageCount ?= 0
 
-# Complex model
-messageFactory = Sweatshop.define Message, fibrous ->
-  @page       = pageFactory.sync.create @page unless @page instanceof Page
-  @author     = userFactory.sync.create @author unless @author instanceof User
+# Complex model. `mode` represents the way the factory is getting created, so we can create
+# children in the same way if we desire
+messageFactory = Sweatshop.define Message, fibrous (mode) ->
+  @page       = pageFactory.sync[mode] @page unless @page instanceof Page
+  @author     = userFactory.sync[mode] @author unless @author instanceof User
   @identifier ?= Faker.Internet.slug()
   @body       ?= Faker.Lorem.sentences(2)
   @createdAt  ?= new Date()
 
 # Scenario example
-pageWithCommentsFactory = Sweatshop.define fibrous ->
-  @user1         = userFactory.sync.create()
-  @user2         = userFactory.sync.create()
-  @user3         = userFactory.sync.create()
-  @page          = pageFactory.sync.create()
-  @message_1     = messageFactory.sync.create {@page, author: @user1, createdAt: new Date('2013-03-03 10:00')}
-  @message_1_1   = messageFactory.sync.create {@page, author: @user2, parent: @message_1}
-  @message_1_1_1 = messageFactory.sync.create {@page, author: @user3, parent: @message_1_1}
-  @message_1_2   = messageFactory.sync.create {@page, author: @user3, parent: @message_1}
-  @message_2     = messageFactory.sync.create {@page, author: @user2, createdAt: new Date('2013-03-03 9:00')}
-  @message_2_1   = messageFactory.sync.create {@page, author: @user3, parent: @message_2}
+pageWithCommentsFactory = Sweatshop.define fibrous (mode) ->
+  @user1         = userFactory.sync[mode]()
+  @user2         = userFactory.sync[mode]()
+  @user3         = userFactory.sync[mode]()
+  @page          = pageFactory.sync[mode]()
+  @message_1     = messageFactory.sync[mode] {@page, author: @user1, createdAt: new Date('2013-03-03 10:00')}
+  @message_1_1   = messageFactory.sync[mode] {@page, author: @user2, parent: @message_1}
+  @message_1_1_1 = messageFactory.sync[mode] {@page, author: @user3, parent: @message_1_1}
+  @message_1_2   = messageFactory.sync[mode] {@page, author: @user3, parent: @message_1}
+  @message_2     = messageFactory.sync[mode] {@page, author: @user2, createdAt: new Date('2013-03-03 9:00')}
+  @message_2_1   = messageFactory.sync[mode] {@page, author: @user3, parent: @message_2}
 
 # Globally-defined factories by name
 Sweatshop.define 'widget', fibrous ->

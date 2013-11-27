@@ -28,9 +28,9 @@ class Sweatshop
   @returns {object} A plain old JavaScript object
   @async
   ###
-  json: (attrs, overrides, callback) ->
+  json: (attrs, overrides, mode, callback) ->
     attrs = _.clone attrs ? {}
-    @factoryFn.call attrs, (err) =>
+    @factoryFn.call attrs, mode, (err) =>
       return callback err if err?
       @parent.factoryFn.call attrs, (err) =>
         return callback err if err?
@@ -51,8 +51,8 @@ class Sweatshop
   @returns {object} An instance of the factory model
   @async
   ###
-  build: (attrs, overrides, callback) ->
-    @json attrs, overrides, (err, result) =>
+  build: (attrs, overrides, mode, callback) ->
+    @json attrs, overrides, mode, (err, result) =>
       return callback err if err?
       model = @modelInstanceWith result
       callback null, model
@@ -71,8 +71,8 @@ class Sweatshop
     been called on it.
   @async
   ###
-  create: (attrs, overrides, callback) ->
-    @build attrs, overrides, (err, model) =>
+  create: (attrs, overrides, mode, callback) ->
+    @build attrs, overrides, mode, (err, model) =>
       return callback err if err?
       @saveModel model, callback
 
@@ -136,12 +136,11 @@ for fn in ['json', 'build', 'create']
   do (fn) ->
     fnWithSaneArgs = Sweatshop::[fn]
     Sweatshop::[fn] = (args...) ->
-      if typeof args[0] is 'string'
-        @child(args[0])[fn](args[1..]...)
-      else
-        callback = args.pop()
-        attrs = args.shift()
-        overrides = args.pop() || {}
-        fnWithSaneArgs.call @, attrs, overrides, callback
+      instance = if typeof args[0] is 'string' then @child(args.shift()) else @
+      callback = args.pop()
+      attrs = args.shift()
+      overrides = args.shift() || {}
+      mode = args.shift() || fn
+      fnWithSaneArgs.call instance, attrs, overrides, mode, callback
 
 module.exports = new Sweatshop _.defer
