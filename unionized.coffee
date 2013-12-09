@@ -10,18 +10,24 @@ _ = require 'lodash'
 dot = require 'dot-component'
 
 class FactoryDefinition
-  __definition: true,
   constructor: (@attrs = {}, @mode, @args) ->
     @_out = {}
     @setAttrs() # attrs should be set in the beginning so they can be referenced
+
   setAttrs: ->
     @set(key, value) for key, value of @attrs
+
   set: (key, value, options = {}) ->
     options.init = yes unless options.init?
     dot.set @_out, key, value, options.init
     value
+
+  unset: (key) ->
+    dot.set(@_out, key, undefined, no)
+
   get: (key) ->
     dot.get @_out, key
+
   resolve: ->
     @setAttrs() # attrs should take precedence
     @_out

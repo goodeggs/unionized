@@ -15,8 +15,6 @@ _ = require('lodash');
 dot = require('dot-component');
 
 FactoryDefinition = (function() {
-  FactoryDefinition.prototype.__definition = true;
-
   function FactoryDefinition(attrs, mode, args) {
     this.attrs = attrs != null ? attrs : {};
     this.mode = mode;
@@ -45,6 +43,10 @@ FactoryDefinition = (function() {
     }
     dot.set(this._out, key, value, options.init);
     return value;
+  };
+
+  FactoryDefinition.prototype.unset = function(key) {
+    return dot.set(this._out, key, void 0, false);
   };
 
   FactoryDefinition.prototype.get = function(key) {
