@@ -17,12 +17,12 @@ describe 'nested factories', ->
       isSaved: false
 
     simpleFactory = Unionized.define Model, fibrous ->
-      @val1 ?= 'hello'
-      @val2 ?= 'goodbye'
+      @set 'val1', 'hello'
+      @set 'val2', 'goodbye'
 
-    nestedFactory = Unionized.define fibrous (mode) ->
-      @simple1 = simpleFactory.sync[mode]()
-      @simple2 = simpleFactory.sync[mode]()
+    nestedFactory = Unionized.define fibrous ->
+      @set 'simple1', simpleFactory.sync[@mode]()
+      @set 'simple2', simpleFactory.sync[@mode]()
 
   describe '.create', ->
     {result} = {}

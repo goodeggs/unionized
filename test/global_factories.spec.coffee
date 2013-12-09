@@ -6,7 +6,7 @@ describe 'the global object', ->
 
   it 'can create a global factory', fibrous ->
     Unionized.define 'known', fibrous ->
-      @fiz = 'buzz'
+      @set 'fiz', 'buzz'
 
   it 'can use a global factory', fibrous ->
     result = Unionized.sync.create('known')

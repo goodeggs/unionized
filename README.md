@@ -14,43 +14,43 @@ amazing [fibrous](https://github.com/goodeggs/fibrous). Below is the example usi
 ```coffeescript
 # Basic models
 userFactory = Unionized.define User, fibrous ->
-  @username  ?= Faker.Helpers.replaceSymbolWithNumber("facebook-##########")
-  @name      ?= "#{Faker.Name.firstName()} #{Faker.Name.lastName()}"
-  @picture   ?= "http://www.gravatar.com/avatar/#{md5 Math.random().toString()}?d=identicon&f=y"
-  @email     ?= Faker.Internet.email()
-  @createdAt ?= new Date()
+  @set 'username',  Faker.Helpers.replaceSymbolWithNumber("facebook-##########")
+  @set 'name',      "#{Faker.Name.firstName()} #{Faker.Name.lastName()}"
+  @set 'picture',   "http://www.gravatar.com/avatar/#{md5 Math.random().toString()}?d=identicon&f=y"
+  @set 'email',     Faker.Internet.email()
+  @set 'createdAt', new Date()
 
 pageFactory = Unionized.define Page, fibrous ->
-  @identifier   ?= Faker.Internet.slug()
-  @url          ?= Faker.Internet.url()
-  @createdAt    ?= new Date()
-  @messageCount ?= 0
+  @set 'identifier',   Faker.Internet.slug()
+  @set 'url',          Faker.Internet.url()
+  @set 'createdAt',    new Date()
+  @set 'messageCount', 0
 
-# Complex model. `mode` represents the way the factory is getting created, so we can create
+# Complex model. `@mode` represents the way the factory is getting created, so we can create
 # children in the same way if we desire
-messageFactory = Unionized.define Message, fibrous (mode) ->
-  @page       = pageFactory.sync[mode] @page unless @page instanceof Page
-  @author     = userFactory.sync[mode] @author unless @author instanceof User
-  @identifier ?= Faker.Internet.slug()
-  @body       ?= Faker.Lorem.sentences(2)
-  @createdAt  ?= new Date()
+messageFactory = Unionized.define Message, fibrous ->
+  @set 'page',        pageFactory.sync[@mode] @get('page') unless @get('page') instanceof Page
+  @set 'author',      userFactory.sync[@mode] @get('author') unless @get('author') instanceof User
+  @set 'identifier',  Faker.Internet.slug()
+  @set 'body',        Faker.Lorem.sentences(2)
+  @set 'createdAt',   new Date()
 
 # Scenario example
-pageWithCommentsFactory = Unionized.define fibrous (mode) ->
-  @user1         = userFactory.sync[mode]()
-  @user2         = userFactory.sync[mode]()
-  @user3         = userFactory.sync[mode]()
-  @page          = pageFactory.sync[mode]()
-  @message_1     = messageFactory.sync[mode] {@page, author: @user1, createdAt: new Date('2013-03-03 10:00')}
-  @message_1_1   = messageFactory.sync[mode] {@page, author: @user2, parent: @message_1}
-  @message_1_1_1 = messageFactory.sync[mode] {@page, author: @user3, parent: @message_1_1}
-  @message_1_2   = messageFactory.sync[mode] {@page, author: @user3, parent: @message_1}
-  @message_2     = messageFactory.sync[mode] {@page, author: @user2, createdAt: new Date('2013-03-03 9:00')}
-  @message_2_1   = messageFactory.sync[mode] {@page, author: @user3, parent: @message_2}
+pageWithCommentsFactory = Unionized.define fibrous ->
+  @set 'user1',         userFactory.sync[@mode]()
+  @set 'user2',         userFactory.sync[@mode]()
+  @set 'user3',         userFactory.sync[@mode]()
+  @set 'page',          pageFactory.sync[@mode]()
+  @set 'message_1',     messageFactory.sync[@mode] {@get('page'), author: @get('user1'), createdAt: new Date('2013-03-03 10:00')}
+  @set 'message_1_1',   messageFactory.sync[@mode] {@get('page'), author: @get('user2'), parent: @get('message_1')}
+  @set 'message_1_1_1', messageFactory.sync[@mode] {@get('page'), author: @get('user3'), parent: @get('message_1_1')}
+  @set 'message_1_2',   messageFactory.sync[@mode] {@get('page'), author: @get('user3'), parent: @get('message_1')}
+  @set 'message_2',     messageFactory.sync[@mode] {@get('page'), author: @get('user2'), createdAt: new Date('2013-03-03 9:00')}
+  @set 'message_2_1',   messageFactory.sync[@mode] {@get('page'), author: @get('user3'), parent: @get('message_2')}
 
 # Globally-defined factories by name
 Unionized.define 'widget', fibrous ->
-  @foo = 'bar'
+  @set 'foo', 'bar'
 ```
 
 ## Using Factories

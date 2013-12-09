@@ -7,11 +7,11 @@ describe 'inherited factories', ->
 
   beforeEach fibrous ->
     parent = Unionized.define fibrous ->
-      @foo ?= 'herp'
-      @bar ?= 'derp'
+      @set 'foo', 'herp'
+      @set 'bar', 'derp'
 
     child = parent.define fibrous ->
-      @bar ?= 'slurp'
+      @set 'bar', 'slurp'
 
     result = child.sync.create()
 

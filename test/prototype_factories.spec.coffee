@@ -17,8 +17,8 @@ describe 'a factory with a prototype', ->
       isSaved: false
 
     factory = Unionized.define Model, fibrous ->
-      @foo ?= 10
-      @biz ?= fizz: 10
+      @set 'foo', 10
+      @set 'biz', fizz: 10
 
   describe '.create', ->
     {result} = {}

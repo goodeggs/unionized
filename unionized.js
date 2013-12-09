@@ -7,12 +7,58 @@ Lightweight test factories, optimized for
 [CoffeeScript](http://coffeescript.org/).
 */
 
-var Unionized, dot, fn, _, _fn, _i, _len, _ref,
+var FactoryDefinition, Unionized, dot, factoryFunctions, fn, _, _fn, _i, _len,
   __slice = [].slice;
 
 _ = require('lodash');
 
 dot = require('dot-component');
+
+FactoryDefinition = (function() {
+  FactoryDefinition.prototype.__definition = true;
+
+  function FactoryDefinition(attrs, mode, args) {
+    this.attrs = attrs != null ? attrs : {};
+    this.mode = mode;
+    this.args = args;
+    this._out = {};
+    this.setAttrs();
+  }
+
+  FactoryDefinition.prototype.setAttrs = function() {
+    var key, value, _ref, _results;
+    _ref = this.attrs;
+    _results = [];
+    for (key in _ref) {
+      value = _ref[key];
+      _results.push(this.set(key, value));
+    }
+    return _results;
+  };
+
+  FactoryDefinition.prototype.set = function(key, value, options) {
+    if (options == null) {
+      options = {};
+    }
+    if (options.init == null) {
+      options.init = true;
+    }
+    dot.set(this._out, key, value, options.init);
+    return value;
+  };
+
+  FactoryDefinition.prototype.get = function(key) {
+    return dot.get(this._out, key);
+  };
+
+  FactoryDefinition.prototype.resolve = function() {
+    this.setAttrs();
+    return this._out;
+  };
+
+  return FactoryDefinition;
+
+})();
 
 Unionized = (function() {
   function Unionized() {
@@ -32,34 +78,27 @@ Unionized = (function() {
   @param {string} [name] - Name of the child factory to use
     (or, just use this one if a name is not supplied)
   @param {object} [factoryParams] - Parameters to send to the factory function
-  @param {object} [overrides] - Overrides to apply after the factory function
-    is done
   
   @returns {object} A plain old JavaScript object
   @async
   */
 
 
-  Unionized.prototype.json = function(attrs, overrides, mode, callback) {
-    var _this = this;
-    attrs = _.clone(attrs != null ? attrs : {});
-    return this.factoryFn.call(attrs, mode, function(err) {
+  Unionized.prototype._json = function(definition, callback) {
+    var _ref,
+      _this = this;
+    return (_ref = this.parent.factoryFn).call.apply(_ref, [definition].concat(__slice.call(definition.args), [function(err) {
+      var _ref;
       if (err != null) {
         return callback(err);
       }
-      return _this.parent.factoryFn.call(attrs, function(err) {
-        var key, result, val;
+      return (_ref = _this.factoryFn).call.apply(_ref, [definition].concat(__slice.call(definition.args), [function(err) {
         if (err != null) {
           return callback(err);
         }
-        result = _.merge({}, attrs);
-        for (key in overrides) {
-          val = overrides[key];
-          dot.set(result, key, val, true);
-        }
-        return callback(null, result);
-      });
-    });
+        return callback(null, definition.resolve());
+      }]));
+    }]));
   };
 
   /*
@@ -69,17 +108,15 @@ Unionized = (function() {
   @param {string} [name] - Name of the child factory to use
     (or, just use this one if a name is not supplied)
   @param {object} [factoryParams] - Parameters to send to the factory function
-  @param {object} [overrides] - Overrides to apply after the factory function
-    is done
   
   @returns {object} An instance of the factory model
   @async
   */
 
 
-  Unionized.prototype.build = function(attrs, overrides, mode, callback) {
+  Unionized.prototype._build = function(definition, callback) {
     var _this = this;
-    return this.json(attrs, overrides, mode, function(err, result) {
+    return this._json(definition, function(err, result) {
       var model;
       if (err != null) {
         return callback(err);
@@ -96,8 +133,6 @@ Unionized = (function() {
   @param {string} [name] - Name of the child factory to use
     (or, just use this one if a name is not supplied)
   @param {object} [factoryParams] - Parameters to send to the factory function
-  @param {object} [overrides] - Overrides to apply after the factory function
-    is done
   
   @returns {object} An instance of the factory model, after `#saveModel` has
     been called on it.
@@ -105,9 +140,9 @@ Unionized = (function() {
   */
 
 
-  Unionized.prototype.create = function(attrs, overrides, mode, callback) {
+  Unionized.prototype._create = function(definition, callback) {
     var _this = this;
-    return this.build(attrs, overrides, mode, function(err, model) {
+    return this._build(definition, function(err, model) {
       if (err != null) {
         return callback(err);
       }
@@ -192,23 +227,23 @@ Unionized = (function() {
 
 })();
 
-_ref = ['json', 'build', 'create'];
+factoryFunctions = ['json', 'build', 'create'];
+
 _fn = function(fn) {
   var fnWithSaneArgs;
-  fnWithSaneArgs = Unionized.prototype[fn];
+  fnWithSaneArgs = Unionized.prototype["_" + fn];
   return Unionized.prototype[fn] = function() {
-    var args, attrs, callback, instance, mode, overrides;
+    var args, attrs, callback, definition, instance;
     args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
     instance = typeof args[0] === 'string' ? this.child(args.shift()) : this;
     callback = args.pop();
     attrs = args.shift();
-    overrides = args.shift() || {};
-    mode = args.shift() || fn;
-    return fnWithSaneArgs.call(instance, attrs, overrides, mode, callback);
+    definition = new FactoryDefinition(attrs, fn, args);
+    return fnWithSaneArgs.call(instance, definition, callback);
   };
 };
-for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-  fn = _ref[_i];
+for (_i = 0, _len = factoryFunctions.length; _i < _len; _i++) {
+  fn = factoryFunctions[_i];
   _fn(fn);
 }
 

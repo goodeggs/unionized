@@ -9,6 +9,23 @@ Lightweight test factories, optimized for
 _ = require 'lodash'
 dot = require 'dot-component'
 
+class FactoryDefinition
+  __definition: true,
+  constructor: (@attrs = {}, @mode, @args) ->
+    @_out = {}
+    @setAttrs() # attrs should be set in the beginning so they can be referenced
+  setAttrs: ->
+    @set(key, value) for key, value of @attrs
+  set: (key, value, options = {}) ->
+    options.init = yes unless options.init?
+    dot.set @_out, key, value, options.init
+    value
+  get: (key) ->
+    dot.get @_out, key
+  resolve: ->
+    @setAttrs() # attrs should take precedence
+    @_out
+
 class Unionized
   constructor: (args...) ->
     @parent = args.pop() if typeof _(args).last() is 'object'
@@ -22,21 +39,16 @@ class Unionized
   @param {string} [name] - Name of the child factory to use
     (or, just use this one if a name is not supplied)
   @param {object} [factoryParams] - Parameters to send to the factory function
-  @param {object} [overrides] - Overrides to apply after the factory function
-    is done
 
   @returns {object} A plain old JavaScript object
   @async
   ###
-  json: (attrs, overrides, mode, callback) ->
-    attrs = _.clone attrs ? {}
-    @factoryFn.call attrs, mode, (err) =>
+  _json: (definition, callback) ->
+    @parent.factoryFn.call definition, definition.args..., (err) =>
       return callback err if err?
-      @parent.factoryFn.call attrs, (err) =>
+      @factoryFn.call definition, definition.args..., (err) =>
         return callback err if err?
-        result = _.merge {}, attrs
-        dot.set result, key, val, true for key, val of overrides
-        callback null, result
+        callback null, definition.resolve()
 
   ###
   Creates an instance of the model with the parameters defined when you created
@@ -45,14 +57,12 @@ class Unionized
   @param {string} [name] - Name of the child factory to use
     (or, just use this one if a name is not supplied)
   @param {object} [factoryParams] - Parameters to send to the factory function
-  @param {object} [overrides] - Overrides to apply after the factory function
-    is done
 
   @returns {object} An instance of the factory model
   @async
   ###
-  build: (attrs, overrides, mode, callback) ->
-    @json attrs, overrides, mode, (err, result) =>
+  _build: (definition, callback) ->
+    @_json definition, (err, result) =>
       return callback err if err?
       model = @modelInstanceWith result
       callback null, model
@@ -64,15 +74,13 @@ class Unionized
   @param {string} [name] - Name of the child factory to use
     (or, just use this one if a name is not supplied)
   @param {object} [factoryParams] - Parameters to send to the factory function
-  @param {object} [overrides] - Overrides to apply after the factory function
-    is done
 
   @returns {object} An instance of the factory model, after `#saveModel` has
     been called on it.
   @async
   ###
-  create: (attrs, overrides, mode, callback) ->
-    @build attrs, overrides, mode, (err, model) =>
+  _create: (definition, callback) ->
+    @_build definition, (err, model) =>
       return callback err if err?
       @saveModel model, callback
 
@@ -132,15 +140,15 @@ class Unionized
     else
       _.defer callback, null, model
 
-for fn in ['json', 'build', 'create']
+factoryFunctions = ['json', 'build', 'create']
+for fn in factoryFunctions
   do (fn) ->
-    fnWithSaneArgs = Unionized::[fn]
+    fnWithSaneArgs = Unionized::["_#{fn}"]
     Unionized::[fn] = (args...) ->
       instance = if typeof args[0] is 'string' then @child(args.shift()) else @
       callback = args.pop()
       attrs = args.shift()
-      overrides = args.shift() || {}
-      mode = args.shift() || fn
-      fnWithSaneArgs.call instance, attrs, overrides, mode, callback
+      definition = new FactoryDefinition(attrs, fn, args)
+      fnWithSaneArgs.call instance, definition, callback
 
 module.exports = new Unionized _.defer

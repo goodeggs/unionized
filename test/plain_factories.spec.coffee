@@ -7,8 +7,8 @@ describe 'a factory for plain objects', ->
 
   beforeEach ->
     factory = Unionized.define fibrous ->
-      @foo ?= 10
-      @biz ?=
+      @set 'foo', 10
+      @set 'biz',
         fizz: 10
         faz: 10
 
@@ -28,17 +28,17 @@ describe 'a factory for plain objects', ->
     expect(result.biz).to.deep.equal fizz: 10, faz: 10
 
   it 'adds a new property', fibrous ->
-    result = factory.sync.create {baz: 20}
+    result = factory.sync.create baz: 20
     expect(result.baz).to.equal 20
     expect(result.foo).to.equal 10
     expect(result.biz).to.deep.equal fizz: 10, faz: 10
 
   it 'changes a property', fibrous ->
-    result = factory.sync.create {foo: 20}
+    result = factory.sync.create foo: 20
     expect(result.foo).to.equal 20
     expect(result.biz).to.deep.equal fizz: 10, faz: 10
 
   it 'changes a nested property', fibrous ->
-    result = factory.sync.create {}, {'biz.faz': 20}
+    result = factory.sync.create 'biz.faz': 20
     expect(result.foo).to.equal 10
     expect(result.biz).to.deep.equal fizz: 10, faz: 20
