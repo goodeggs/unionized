@@ -1,12 +1,12 @@
 expect    = require('chai').expect
 fibrous   = require 'fibrous'
-Sweatshop = require '..'
+Unionized = require '..'
 
-describe 'inherited sweatshops', ->
+describe 'inherited factories', ->
   {parent, child, result} = {}
 
   beforeEach fibrous ->
-    parent = Sweatshop.define fibrous ->
+    parent = Unionized.define fibrous ->
       @foo ?= 'herp'
       @bar ?= 'derp'
 

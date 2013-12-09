@@ -1,9 +1,9 @@
 expect    = require('chai').expect
 _         = require 'lodash'
 fibrous   = require 'fibrous'
-Sweatshop = require '..'
+Unionized = require '..'
 
-describe 'a sweatshop with a prototype', ->
+describe 'a factory with a prototype', ->
   {Model, factory} = {}
 
   beforeEach ->
@@ -16,7 +16,7 @@ describe 'a sweatshop with a prototype', ->
       isAModel: yes
       isSaved: false
 
-    factory = Sweatshop.define Model, fibrous ->
+    factory = Unionized.define Model, fibrous ->
       @foo ?= 10
       @biz ?= fizz: 10
 

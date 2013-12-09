@@ -1,26 +1,26 @@
-# Sweatshop
+# Unionized
 
 Very basic factories helper to generate plain objects and scenarios for tests.
 
-[![Dependency status](https://david-dm.org/alexgorbatchev/sweatshop.png)](https://david-dm.org/alexgorbatchev/sweatshop) [![Build Status](https://travis-ci.org/alexgorbatchev/sweatshop.png)](https://travis-ci.org/alexgorbatchev/sweatshop)
+[![Dependency status](https://david-dm.org/demands/unionized.png)](https://david-dm.org/demands/unionized) [![Build Status](https://travis-ci.org/demands/unionized.png)](https://travis-ci.org/demands/unionized)
 
 # Usage Example
 
-Sweatshop is geared towards CoffeeScript syntax and is especially clean with the
+Unionized is geared towards CoffeeScript syntax and is especially clean with the
 amazing [fibrous](https://github.com/goodeggs/fibrous). Below is the example using both:
 
 ## Defining Factories
 
 ```coffeescript
 # Basic models
-userFactory = Sweatshop.define User, fibrous ->
+userFactory = Unionized.define User, fibrous ->
   @username  ?= Faker.Helpers.replaceSymbolWithNumber("facebook-##########")
   @name      ?= "#{Faker.Name.firstName()} #{Faker.Name.lastName()}"
   @picture   ?= "http://www.gravatar.com/avatar/#{md5 Math.random().toString()}?d=identicon&f=y"
   @email     ?= Faker.Internet.email()
   @createdAt ?= new Date()
 
-pageFactory = Sweatshop.define Page, fibrous ->
+pageFactory = Unionized.define Page, fibrous ->
   @identifier   ?= Faker.Internet.slug()
   @url          ?= Faker.Internet.url()
   @createdAt    ?= new Date()
@@ -28,7 +28,7 @@ pageFactory = Sweatshop.define Page, fibrous ->
 
 # Complex model. `mode` represents the way the factory is getting created, so we can create
 # children in the same way if we desire
-messageFactory = Sweatshop.define Message, fibrous (mode) ->
+messageFactory = Unionized.define Message, fibrous (mode) ->
   @page       = pageFactory.sync[mode] @page unless @page instanceof Page
   @author     = userFactory.sync[mode] @author unless @author instanceof User
   @identifier ?= Faker.Internet.slug()
@@ -36,7 +36,7 @@ messageFactory = Sweatshop.define Message, fibrous (mode) ->
   @createdAt  ?= new Date()
 
 # Scenario example
-pageWithCommentsFactory = Sweatshop.define fibrous (mode) ->
+pageWithCommentsFactory = Unionized.define fibrous (mode) ->
   @user1         = userFactory.sync[mode]()
   @user2         = userFactory.sync[mode]()
   @user3         = userFactory.sync[mode]()
@@ -49,7 +49,7 @@ pageWithCommentsFactory = Sweatshop.define fibrous (mode) ->
   @message_2_1   = messageFactory.sync[mode] {@page, author: @user3, parent: @message_2}
 
 # Globally-defined factories by name
-Sweatshop.define 'widget', fibrous ->
+Unionized.define 'widget', fibrous ->
   @foo = 'bar'
 ```
 
@@ -74,7 +74,7 @@ console.log pageWithCommentsFactory.sync.create {}, {'user1.name': 'Joe Bloggs',
 #=> {...}
 
 # Globally-defined factories
-console.log Sweatshop.create 'widget'
+console.log Unionized.create 'widget'
 #=> widget.foo 'bar'
 ```
 

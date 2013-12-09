@@ -1,16 +1,16 @@
 expect    = require('chai').expect
 fibrous   = require 'fibrous'
-Sweatshop = require '..'
+Unionized = require '..'
 
 describe 'the global object', ->
 
-  it 'can create a global sweatshop', fibrous ->
-    Sweatshop.define 'known', fibrous ->
+  it 'can create a global factory', fibrous ->
+    Unionized.define 'known', fibrous ->
       @fiz = 'buzz'
 
-  it 'can use a global sweatshop', fibrous ->
-    result = Sweatshop.sync.create('known')
+  it 'can use a global factory', fibrous ->
+    result = Unionized.sync.create('known')
     expect(result.fiz).to.equal 'buzz'
 
-  it 'cannot use an undefined sweatshop', fibrous ->
-    expect(-> Sweatshop.sync.create 'unknown').to.throw 'Unknown factory `unknown`'
+  it 'cannot use an undefined factory', fibrous ->
+    expect(-> Unionized.sync.create 'unknown').to.throw 'Unknown factory `unknown`'

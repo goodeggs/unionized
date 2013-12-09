@@ -1,14 +1,14 @@
 {
-  "name": "sweatshop",
-  "main": "./sweatshop.js",
-  "version": "1.4.0",
+  "name": "unionized",
+  "main": "./unionized.js",
+  "version": "2.0.0-alpha",
   "scripts": {
     "test": "./node_modules/.bin/mocha test/*.spec.coffee",
-    "pretest": "./node_modules/.bin/coffee --bare --compile sweatshop.coffee"
+    "pretest": "./node_modules/.bin/coffee --bare --compile unionized.coffee"
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:alexgorbatchev/sweatshop.git"
+    "url": "git@github.com:demands/unionized.git"
   },
   "keywords": [
     "factory",

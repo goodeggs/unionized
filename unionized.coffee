@@ -1,5 +1,5 @@
 ###
-@name Sweatshop
+@name Unionized
 
 @fileOverview
 Lightweight test factories, optimized for
@@ -9,7 +9,7 @@ Lightweight test factories, optimized for
 _ = require 'lodash'
 dot = require 'dot-component'
 
-class Sweatshop
+class Unionized
   constructor: (args...) ->
     @parent = args.pop() if typeof _(args).last() is 'object'
     @factoryFn = args.pop()
@@ -86,7 +86,7 @@ class Sweatshop
   @param {function} factoryFn - Factory function for the child factory. Will be
     applied before the factory function of the parent factory.
   
-  @returns {Sweatshop} A new factory that descends from the current one.
+  @returns {Unionized} A new factory that descends from the current one.
   ###
   define: (args...) ->
     name =
@@ -94,14 +94,14 @@ class Sweatshop
         args.shift()
       else
         @children.length
-    @children[name] = new Sweatshop args..., @
+    @children[name] = new Unionized args..., @
 
   ###
   Find a descendant factory by name
 
   @param {string} name - Name of the descendant factory
   
-  @returns {Sweatshop} The descendant factory with the supplied name
+  @returns {Unionized} The descendant factory with the supplied name
 
   @throws Complains if there is no descendant factory with the supplied name
   ###
@@ -134,8 +134,8 @@ class Sweatshop
 
 for fn in ['json', 'build', 'create']
   do (fn) ->
-    fnWithSaneArgs = Sweatshop::[fn]
-    Sweatshop::[fn] = (args...) ->
+    fnWithSaneArgs = Unionized::[fn]
+    Unionized::[fn] = (args...) ->
       instance = if typeof args[0] is 'string' then @child(args.shift()) else @
       callback = args.pop()
       attrs = args.shift()
@@ -143,4 +143,4 @@ for fn in ['json', 'build', 'create']
       mode = args.shift() || fn
       fnWithSaneArgs.call instance, attrs, overrides, mode, callback
 
-module.exports = new Sweatshop _.defer
+module.exports = new Unionized _.defer

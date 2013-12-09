@@ -1,12 +1,12 @@
 expect    = require('chai').expect
 fibrous   = require 'fibrous'
-Sweatshop = require '..'
+Unionized = require '..'
 
-describe 'a sweatshop for plain objects', ->
+describe 'a factory for plain objects', ->
   {factory} = {}
 
   beforeEach ->
-    factory = Sweatshop.define fibrous ->
+    factory = Unionized.define fibrous ->
       @foo ?= 10
       @biz ?=
         fizz: 10

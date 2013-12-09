@@ -1,9 +1,9 @@
 expect    = require('chai').expect
 _         = require 'lodash'
 fibrous   = require 'fibrous'
-Sweatshop = require '..'
+Unionized = require '..'
 
-describe 'nested sweatshops', ->
+describe 'nested factories', ->
   {Model, simpleFactory, nestedFactory} = {}
 
   before ->
@@ -16,11 +16,11 @@ describe 'nested sweatshops', ->
       isAModel: yes
       isSaved: false
 
-    simpleFactory = Sweatshop.define Model, fibrous ->
+    simpleFactory = Unionized.define Model, fibrous ->
       @val1 ?= 'hello'
       @val2 ?= 'goodbye'
 
-    nestedFactory = Sweatshop.define fibrous (mode) ->
+    nestedFactory = Unionized.define fibrous (mode) ->
       @simple1 = simpleFactory.sync[mode]()
       @simple2 = simpleFactory.sync[mode]()
 
