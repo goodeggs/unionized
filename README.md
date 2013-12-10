@@ -1,6 +1,8 @@
 # Unionized
 
-Very basic factories helper to generate plain objects and scenarios for tests.
+A factory framework for mock test objects in JavaScript. Will generate objects, models, and scenarios for tests.
+
+[![NPM](https://nodei.co/npm/unionized.png)](https://nodei.co/npm/unionized/)
 
 [![Dependency status](https://david-dm.org/demands/unionized.png)](https://david-dm.org/demands/unionized) [![Build Status](https://travis-ci.org/demands/unionized.png)](https://travis-ci.org/demands/unionized)
 
