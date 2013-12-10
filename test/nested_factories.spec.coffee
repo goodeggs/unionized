@@ -21,8 +21,8 @@ describe 'nested factories', ->
       @set 'val2', 'goodbye'
 
     nestedFactory = Unionized.define fibrous ->
-      @set 'simple1', simpleFactory.sync[@mode]()
-      @set 'simple2', simpleFactory.sync[@mode]()
+      @sync.embed simpleFactory, 'simple1'
+      @sync.embed simpleFactory, 'simple2'
 
   describe '.create', ->
     {result} = {}
