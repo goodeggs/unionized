@@ -177,4 +177,4 @@ for fn in factoryFunctions
       definition = new FactoryDefinition(attrs, fn, args)
       fnWithSaneArgs.call instance, definition, callback
 
-module.exports = new Unionized _.defer
+module.exports = new Unionized(_.defer).define(_.defer)
