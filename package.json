@@ -5,7 +5,8 @@
   "scripts": {
     "build": "coffee --bare --output lib/ --compile src/*.coffee",
     "pretest": "npm run build",
-    "test": "mocha test/*.spec.coffee"
+    "test": "mocha test/*.spec.coffee",
+    "ci": "mocha --require blanket --reporter mocha-lcov-reporter | ./node_modules/coveralls/bin/coveralls.js"
   },
   "repository": {
     "type": "git",
@@ -23,7 +24,10 @@
     "coffee-script": "~1.6.3",
     "mocha": "~1.10.0",
     "fibrous": "~0.3.1",
-    "chai": "~1.8.1"
+    "chai": "~1.8.1",
+    "blanket": "~1.1.6",
+    "coveralls": "~2.7.0",
+    "mocha-lcov-reporter": "0.0.1"
   },
   "description": "A factory framework for mock test objects in JavaScript. Will generate objects, models, and scenarios for tests.",
   "bugs": {
@@ -36,5 +40,10 @@
     "Max Edmands <max@goodeggs.com> (http://maxedmands.com)",
     "Alex Gorbatchev <alex@goodeggs.com>"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "config": {
+    "blanket": {
+      "pattern": "lib/unionized.js"
+    }
+  }
 }
