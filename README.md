@@ -19,7 +19,7 @@ unionized.create({
   'pickup.pickupWindow.startAt': '2pm',
   'pickup.pickupWindow.endAt': '4pm',
   'pickup.name': 'San Francisco Ferry Building'
-}, console.log);
+}, function(err, result) { console.log(result); });
 
 // prints:
 //   {
@@ -41,7 +41,7 @@ pickupFactory = unionized.define(function() {
   this.set('pickup.pickupWindow.endAt', '4pm');
   this.set('pickup.name', 'San Francisco Ferry Building');
 });
-pickupFactory.create(console.log);
+pickupFactory.create(function(err, result) { console.log(result); });
 
 // prints:
 //   {
@@ -61,7 +61,7 @@ now we can customize the objects that our factory returns us:
 pickupFactory.create({
   'pickup.pickupWindow.startAt': '1am',
   'options.caveats': 'Customers are expected to bring their own shopping bags'
-}, console.log);
+}, function(err, result) { console.log(result); });
 
 // prints:
 //   {
