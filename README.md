@@ -1,87 +1,82 @@
 # Unionized
 
-A factory framework for mock test objects in JavaScript. Will generate objects, models, and scenarios for tests.
+A user-friendly factory system for easily building up complex objects. Entirely asynchronous.
+Recommended for use in testing, but you never know where else this could be useful!
 
 [![NPM version](https://badge.fury.io/js/unionized.png)](http://badge.fury.io/js/unionized)
 [![Dependency status](https://david-dm.org/goodeggs/unionized.png)](https://david-dm.org/goodeggs/unionized)
 [![Build Status](https://travis-ci.org/goodeggs/unionized.png)](https://travis-ci.org/goodeggs/unionized)
 [![Coverage Status](https://coveralls.io/repos/goodeggs/unionized/badge.png?branch=master)](https://coveralls.io/r/goodeggs/unionized?branch=master)
 
-# Usage Example
+# Usage
 
-Unionized is geared towards CoffeeScript syntax and is especially clean using 
-[fibrous](https://github.com/goodeggs/fibrous). Below is the example using both:
+Create complex objects really easily:
 
-## Defining Factories
+```javascript
 
-```coffeescript
-# Basic models
-userFactory = Unionized.define User, fibrous ->
-  @set 'username',  Faker.Helpers.replaceSymbolWithNumber("facebook-##########")
-  @set 'name',      "#{Faker.Name.firstName()} #{Faker.Name.lastName()}"
-  @set 'picture',   "http://www.gravatar.com/avatar/#{md5 Math.random().toString()}?d=identicon&f=y"
-  @set 'email',     Faker.Internet.email()
-  @set 'createdAt', new Date()
+var unionized = require('unionized');
+unionized.create({
+  'pickup.pickupWindow.startAt': '2pm',
+  'pickup.pickupWindow.endAt': '4pm',
+  'pickup.name': 'San Francisco Ferry Building'
+}, console.log);
 
-pageFactory = Unionized.define Page, fibrous ->
-  @set 'identifier',   Faker.Internet.slug()
-  @set 'url',          Faker.Internet.url()
-  @set 'createdAt',    new Date()
-  @set 'messageCount', 0
-
-# Complex model. `@mode` represents the way the factory is getting created, so we can create
-# children in the same way if we desire
-messageFactory = Unionized.define Message, fibrous ->
-  @set 'page',        pageFactory.sync[@mode] @get('page') unless @get('page') instanceof Page
-  @set 'author',      userFactory.sync[@mode] @get('author') unless @get('author') instanceof User
-  @set 'identifier',  Faker.Internet.slug()
-  @set 'body',        Faker.Lorem.sentences(2)
-  @set 'createdAt',   new Date()
-
-# Scenario example
-pageWithCommentsFactory = Unionized.define fibrous ->
-  @set 'user1',         userFactory.sync[@mode]()
-  @set 'user2',         userFactory.sync[@mode]()
-  @set 'user3',         userFactory.sync[@mode]()
-  @set 'page',          pageFactory.sync[@mode]()
-  @set 'message_1',     messageFactory.sync[@mode] {@get('page'), author: @get('user1'), createdAt: new Date('2013-03-03 10:00')}
-  @set 'message_1_1',   messageFactory.sync[@mode] {@get('page'), author: @get('user2'), parent: @get('message_1')}
-  @set 'message_1_1_1', messageFactory.sync[@mode] {@get('page'), author: @get('user3'), parent: @get('message_1_1')}
-  @set 'message_1_2',   messageFactory.sync[@mode] {@get('page'), author: @get('user3'), parent: @get('message_1')}
-  @set 'message_2',     messageFactory.sync[@mode] {@get('page'), author: @get('user2'), createdAt: new Date('2013-03-03 9:00')}
-  @set 'message_2_1',   messageFactory.sync[@mode] {@get('page'), author: @get('user3'), parent: @get('message_2')}
-
-# Globally-defined factories by name
-Unionized.define 'widget', fibrous ->
-  @set 'foo', 'bar'
+// prints:
+//   {
+//      pickup: {
+//        pickupWindow: {
+//          startAt: '2pm',
+//          endAt: '4pm',
+//        },
+//        name: 'San Francisco Ferry Building'
+//     }
+//   }
 ```
 
-## Using Factories
+...or, better, define factories to create those objects for you:
 
-```coffeescript
-# Basic syntax
-console.log userFactory.sync.create()
-#=> {username, name, picture, email, createdAt}
+```javascript
+pickupFactory = unionized.define(function() {
+  this.set('pickup.pickupWindow.startAt', '2pm');
+  this.set('pickup.pickupWindow.endAt', '4pm');
+  this.set('pickup.name', 'San Francisco Ferry Building');
+});
+pickupFactory.create(console.log);
 
-# Creating submodels
-console.log messageFactory.sync.create page: {identifier, url}
-#=> {page, author, identifier, body, createdAt}
-
-# Using already created models
-page = new Page attrs
-console.log messageFactory.sync.create {page}
-#=> {page, author, identifier, body, createdAt}
-
-# Overwriting nested attributes
-console.log pageWithCommentsFactory.sync.create {}, {'user1.name': 'Joe Bloggs', 'message_1_1_1.page.url': 'http://awesomesauce.com'}
-#=> {...}
-
-# Globally-defined factories
-console.log Unionized.create 'widget'
-#=> widget.foo 'bar'
+// prints:
+//   {
+//      pickup: {
+//        pickupWindow: {
+//          startAt: '2pm',
+//          endAt: '4pm',
+//        },
+//        name: 'San Francisco Ferry Building'
+//     }
+//   }
 ```
 
-### TODO: add non-fibrous examples
+now we can customize the objects that our factory returns us:
+
+```javascript
+pickupFactory.create({
+  'pickup.pickupWindow.startAt': '1am',
+  'options.caveats': 'Customers are expected to bring their own shopping bags'
+}, console.log);
+
+// prints:
+//   {
+//      pickup: {
+//        pickupWindow: {
+//          startAt: '1am',
+//          endAt: '4pm',
+//        },
+//        name: 'San Francisco Ferry Building'
+//      },
+//      options: {
+//        caveats: 'Customers are expected to bring their own shopping bags'
+//      }
+//   }
+```
 
 # License
 
