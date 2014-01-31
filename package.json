@@ -5,8 +5,8 @@
   "scripts": {
     "build": "coffee --bare --output lib/ --compile src/*.coffee",
     "pretest": "npm run build",
-    "test": "mocha test/*.spec.coffee",
-    "coveralls": "mocha --require blanket --reporter mocha-lcov-reporter | ./node_modules/coveralls/bin/coveralls.js",
+    "test": "mocha --compilers coffee:coffee-script/register test/*.spec.coffee",
+    "coveralls": "mocha --compilers coffee:coffee-script/register --require blanket --reporter mocha-lcov-reporter | ./node_modules/coveralls/bin/coveralls.js",
     "ci": "npm run test && npm run coveralls"
   },
   "repository": {
@@ -22,10 +22,10 @@
     "dot-component": "~0.1.0"
   },
   "devDependencies": {
-    "coffee-script": "~1.6.3",
-    "mocha": "~1.10.0",
+    "coffee-script": "~1.7.1",
+    "mocha": "~1.17.1",
     "fibrous": "~0.3.1",
-    "chai": "~1.8.1",
+    "chai": "~1.9.0",
     "blanket": "~1.1.6",
     "coveralls": "~2.7.0",
     "mocha-lcov-reporter": "0.0.1"
