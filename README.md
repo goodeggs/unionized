@@ -4,12 +4,12 @@ A factory framework for mock test objects in JavaScript. Will generate objects, 
 
 [![NPM](https://nodei.co/npm/unionized.png)](https://nodei.co/npm/unionized/)
 
-[![Dependency status](https://david-dm.org/demands/unionized.png)](https://david-dm.org/demands/unionized) [![Build Status](https://travis-ci.org/demands/unionized.png)](https://travis-ci.org/demands/unionized)
+[![Dependency status](https://david-dm.org/goodeggs/unionized.png)](https://david-dm.org/goodeggs/unionized) [![Build Status](https://travis-ci.org/goodeggs/unionized.png)](https://travis-ci.org/goodeggs/unionized)
 
 # Usage Example
 
-Unionized is geared towards CoffeeScript syntax and is especially clean with the
-amazing [fibrous](https://github.com/goodeggs/fibrous). Below is the example using both:
+Unionized is geared towards CoffeeScript syntax and is especially clean using 
+[fibrous](https://github.com/goodeggs/fibrous). Below is the example using both:
 
 ## Defining Factories
 
