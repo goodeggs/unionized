@@ -9,18 +9,30 @@ Lightweight test factories, optimized for
 _ = require 'lodash'
 dot = require 'dot-component'
 
+dotSubPaths = (dotPath) ->
+  rebuildPath = []
+  subPaths = []
+  for component in dotPath.split '.'
+    rebuildPath.push component
+    subPaths.push rebuildPath.join '.'
+  subPaths
+
 class FactoryDefinition
   constructor: (@attrs = {}, @mode, @args) ->
     @_out = {}
+    @attrKeys = Object.keys @attrs
     @setAttrs() # attrs should be set in the beginning so they can be referenced
 
   setAttrs: ->
     init = yes
-    dot.set(@_out, key, value, init) for key, value of @attrs
+    for key, value of @attrs
+      dot.set(@_out, key, value, init) if value isnt undefined
 
   set: (key, value, options = {}) ->
+    for subpath in dotSubPaths key
+      return @attrs[subpath] if subpath in @attrKeys
     options.init = yes unless options.init?
-    dot.set(@_out, key, value, options.init) unless @attrs[key]?
+    dot.set(@_out, key, value, options.init)
     value
 
   unset: (key) ->

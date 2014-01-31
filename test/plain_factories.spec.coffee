@@ -41,3 +41,13 @@ describe 'a factory for plain objects', ->
     result = factory.sync.create 'biz.faz': 20
     expect(result.foo).to.equal 10
     expect(result.biz).to.deep.equal fizz: 10, faz: 20
+
+  it 'unsets a property', fibrous ->
+    result = factory.sync.create foo: undefined
+    expect(Object.keys result).to.not.contain 'foo'
+    expect(result.biz).to.deep.equal fizz: 10, faz: 10
+
+  it 'unsets the root of nested properties', fibrous ->
+    result = factory.sync.create biz: undefined
+    expect(result.foo).to.equal 10
+    expect(Object.keys result).to.not.contain 'biz'
