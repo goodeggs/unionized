@@ -3,12 +3,13 @@
   "main": "./lib/unionized.js",
   "version": "2.3.0",
   "scripts": {
-    "test": "./node_modules/.bin/mocha test/*.spec.coffee",
-    "pretest": "./node_modules/.bin/coffee --bare --output lib/ --compile src/*.coffee"
+    "build": "coffee --bare --output lib/ --compile src/*.coffee",
+    "pretest": "npm run build",
+    "test": "mocha test/*.spec.coffee"
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:demands/unionized.git"
+    "url": "https://github.com/goodeggs/unionized"
   },
   "keywords": [
     "factory",
@@ -23,5 +24,14 @@
     "mocha": "~1.10.0",
     "fibrous": "~0.3.1",
     "chai": "~1.8.1"
-  }
+  },
+  "description": "A factory framework for mock test objects in JavaScript. Will generate objects, models, and scenarios for tests.",
+  "bugs": {
+    "url": "https://github.com/goodeggs/unionized/issues"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "author": "Max Edmands",
+  "license": "MIT"
 }
