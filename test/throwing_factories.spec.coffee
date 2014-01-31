@@ -3,7 +3,7 @@ fibrous   = require 'fibrous'
 Unionized = require '..'
 
 describe 'a factory that throws exceptions', ->
-  {factory, nestingFactory} = {}
+  {factory, nestingFactory, childFactory} = {}
 
   beforeEach ->
     factory = Unionized.define fibrous ->
@@ -11,6 +11,8 @@ describe 'a factory that throws exceptions', ->
 
     nestingFactory = Unionized.define fibrous ->
       @sync.embed 'errorFactory', factory
+
+    childFactory = factory.define fibrous ->
 
   it 'throws an error when JSON\'d up', fibrous ->
     expect(-> factory.sync.json()).to.throw Error
@@ -23,3 +25,6 @@ describe 'a factory that throws exceptions', ->
 
   it 'throws an error when an embedded factory throws an error', fibrous ->
     expect(-> nestingFactory.sync.json()).to.throw Error
+
+  it 'throws an error when a factory‘s parent throws an error', fibrous ->
+    expect(-> childFactory.sync.json()).to.throw Error
