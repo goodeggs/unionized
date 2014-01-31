@@ -8,9 +8,8 @@ describe 'a factory for plain objects', ->
   beforeEach ->
     factory = Unionized.define fibrous ->
       @set 'foo', 10
-      @set 'biz',
-        fizz: 10
-        faz: 10
+      @set 'biz.fizz', 10
+      @set 'biz.faz', 10
 
   it 'creates an object', fibrous ->
     result = factory.sync.create()

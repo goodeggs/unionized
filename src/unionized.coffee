@@ -15,11 +15,12 @@ class FactoryDefinition
     @setAttrs() # attrs should be set in the beginning so they can be referenced
 
   setAttrs: ->
-    @set(key, value) for key, value of @attrs
+    init = yes
+    dot.set(@_out, key, value, init) for key, value of @attrs
 
   set: (key, value, options = {}) ->
     options.init = yes unless options.init?
-    dot.set @_out, key, value, options.init
+    dot.set(@_out, key, value, options.init) unless @attrs[key]?
     value
 
   unset: (key) ->
