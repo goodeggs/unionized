@@ -24,7 +24,8 @@ class FactoryDefinition
     value
 
   unset: (key) ->
-    dot.set(@_out, key, undefined, no)
+    init = no
+    dot.set(@_out, key, undefined, init)
 
   embed: (key, factory, callback) ->
     factory[@mode] @get(key), (err, value) =>
