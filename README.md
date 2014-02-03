@@ -36,10 +36,11 @@ unionized.create({
 ...or, better, define factories to create those objects for you:
 
 ```javascript
-pickupFactory = unionized.define(function() {
+pickupFactory = unionized.define(function(done) {
   this.set('pickup.pickupWindow.startAt', '2pm');
   this.set('pickup.pickupWindow.endAt', '4pm');
   this.set('pickup.name', 'San Francisco Ferry Building');
+  done();
 });
 pickupFactory.create(function(err, result) { console.log(result); });
 
