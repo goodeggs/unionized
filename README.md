@@ -36,7 +36,7 @@ unionized.create({
 ...or, better, define factories to create those objects for you:
 
 ```javascript
-pickupFactory = unionized.define(function(done) {
+var pickupFactory = unionized.define(function(done) {
   this.set('pickup.pickupWindow.startAt', '2pm');
   this.set('pickup.pickupWindow.endAt', '4pm');
   this.set('pickup.name', 'San Francisco Ferry Building');
@@ -76,6 +76,53 @@ pickupFactory.create({
 //      options: {
 //        caveats: 'Customers are expected to bring their own shopping bags'
 //      }
+//   }
+```
+
+We can also embed factories inside other factories:
+
+```javascript
+var orderFactory = unionized.define(function(done) {
+  this.set('customer', 'Lex Luthor');
+  this.set('total', 3.50);
+  this.embed('deliveryDetails', pickupFactory, done);
+});
+orderFactory.create(function(err, result) { console.log(result); });
+
+// prints:
+//    {
+//      customer: "Lex Luthor",
+//      total: 3.50,
+//      deliveryDetails: {
+//        pickup: {
+//          pickupWindow: {
+//            startAt: '2pm',
+//            endAt: '4pm',
+//          },
+//          name: 'San Francisco Ferry Building'
+//        }
+//      }
+//    }
+```
+
+And we can create factories that extend and modify other factories:
+
+```javascript
+var lateNightPickupFactory = pickupFactory.define(function(done) {
+  this.set('pickupWindow.startAt', '11pm');
+  this.set('pickupWindow.endAt', '12am');
+});
+lateNightPickupFactory.create(function(err, result) { console.log(result); });
+
+// prints:
+//   {
+//      pickup: {
+//        pickupWindow: {
+//          startAt: '11pm',
+//          endAt: '12am',
+//        },
+//        name: 'San Francisco Ferry Building'
+//     }
 //   }
 ```
 
