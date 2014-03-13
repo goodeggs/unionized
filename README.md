@@ -111,6 +111,7 @@ And we can create factories that extend and modify other factories:
 var lateNightPickupFactory = pickupFactory.define(function(done) {
   this.set('pickupWindow.startAt', '11pm');
   this.set('pickupWindow.endAt', '12am');
+  done();
 });
 lateNightPickupFactory.create(function(err, result) { console.log(result); });
 
