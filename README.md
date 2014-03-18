@@ -1,4 +1,4 @@
-# Unionized
+# Unionized 
 
 A user-friendly factory system for easily building up complex objects. Entirely asynchronous.
 Recommended for use in testing, but you never know where else this could be useful!
