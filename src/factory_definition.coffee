@@ -3,7 +3,7 @@ dotpath = require './dotpath'
 module.exports = class FactoryDefinition
   constructor: (@attrs = {}, @mode, @args) ->
     @_out = {}
-    @setAttrs() # attrs should be set in the beginning so they can be referenced
+    @setAttrs() # attrs are set in the beginning so they can be referenced
 
   setAttrs: ->
     for key, value of @attrs when value isnt undefined
