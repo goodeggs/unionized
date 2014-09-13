@@ -3,7 +3,6 @@ dotpath = require './dotpath'
 module.exports = class FactoryDefinition
   constructor: (@attrs = {}, @mode, @args) ->
     @_out = {}
-    @attrKeys = Object.keys @attrs
     @setAttrs() # attrs should be set in the beginning so they can be referenced
 
   setAttrs: ->
@@ -11,14 +10,9 @@ module.exports = class FactoryDefinition
       dotpath.set @_out, key, value
 
   set: (key, value, options = {}) ->
+    return if dotpath.containsSubpath @attrs, key
     options.init ?= yes
-
-    # if something is already set in an attr, don't clobber that.
-    for subpath in dotpath.subpaths key
-      return @attrs[subpath] if subpath in @attrKeys
-
     dotpath.set @_out, key, value, options.init
-
     value
 
   unset: (key) ->

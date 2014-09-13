@@ -9,6 +9,14 @@ getPointer = (object, pathArray, init = no) ->
 getPathArray = (pathString) ->
   pathString.split '.'
 
+getSubpaths = (pathString) ->
+  rebuildPath = []
+  subPaths = []
+  for component in getPathArray pathString
+    rebuildPath.push component
+    subPaths.push rebuildPath.join '.'
+  subPaths
+
 module.exports = dotpath =
   get: (object, pathString) ->
     getPointer object, getPathArray pathString
@@ -22,10 +30,7 @@ module.exports = dotpath =
   clear: (object, pathString) ->
     delete dotpath.get object, pathString
 
-  subpaths: (pathString) ->
-    rebuildPath = []
-    subPaths = []
-    for component in getPathArray pathString
-      rebuildPath.push component
-      subPaths.push rebuildPath.join '.'
-    subPaths
+  containsSubpath: (obj, pathString) ->
+    keys = Object.keys obj
+    for subpath in getSubpaths(pathString)
+      return true if subpath in keys
