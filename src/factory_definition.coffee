@@ -4,11 +4,15 @@ dotpath = require './dotpath'
 module.exports = class FactoryDefinition
   constructor: (@attrs = {}, @mode, @args) ->
     @_out = {}
+    @_arraySizes = {}
     @setAttrs() # attrs are set in the beginning so they can be referenced
 
   setAttrs: ->
     for path, value of @attrs when value isnt undefined
-      dotpath.set @_out, path, value
+      if path.substr(-2) is '[]'
+        @_arraySizes[path.slice 0, -2] = value
+      else
+        dotpath.set @_out, path, value
 
   set: (path, value, options = {}) ->
     return if dotpath.containsSubpath @attrs, path
@@ -21,13 +25,17 @@ module.exports = class FactoryDefinition
 
   embed: (path, factory, callback) ->
     return _.defer(callback) if dotpath.containsSubpath @attrs, path
-    factory[@mode] @get(path), (err, value) =>
+    factory[@mode] (@get(path) ? {}), (err, value) =>
       return callback(err) if err?
       @set path, value
       callback null, value
 
   embedArray: (path, defaultCount, factory, callback) ->
-    callback()
+    return _.defer(callback) if dotpath.containsSubpath @attrs, path
+    count = @_arraySizes[path] ? defaultCount
+    embedInstance = (index, done) =>
+      @embed "#{path}[#{index}]", factory, done
+    _.asyncRepeat count, embedInstance, callback
 
   get: (path) ->
     dotpath.get @_out, path
