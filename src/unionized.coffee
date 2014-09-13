@@ -31,7 +31,7 @@ class Unionized
       return callback err if err?
       @factoryFn.call definition, definition.args..., (err) =>
         return callback err if err?
-        callback null, definition.resolve()
+        callback null, definition._resolve()
 
   ###
   Creates an instance of the model with the parameters defined when you created

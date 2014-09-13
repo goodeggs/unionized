@@ -32,5 +32,5 @@ module.exports = class FactoryDefinition
   get: (path) ->
     dotpath.get @_out, path
 
-  resolve: ->
+  _resolve: ->
     @_out
