@@ -17,16 +17,15 @@
     "factory",
     "objects"
   ],
-  "dependencies": {
-    "lodash": ">=1.2.1"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "coffee-script": "~1.7.1",
-    "mocha": "~1.17.1",
-    "fibrous": "~0.3.1",
-    "chai": "~1.9.0",
     "blanket": "~1.1.6",
+    "chai": "~1.9.0",
+    "coffee-script": "~1.7.1",
     "coveralls": "~2.7.0",
+    "fibrous": "~0.3.1",
+    "lodash": "^2.4.1",
+    "mocha": "~1.17.1",
     "mocha-lcov-reporter": "0.0.1"
   },
   "description": "A factory framework for mock test objects in JavaScript. Will generate objects, models, and scenarios for tests.",

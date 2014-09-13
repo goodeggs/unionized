@@ -6,12 +6,11 @@ Lightweight test factories, optimized for
 [CoffeeScript](http://coffeescript.org/).
 ###
 
-_ = require 'lodash'
 FactoryDefinition = require './factory_definition'
 
 class Unionized
   constructor: (args...) ->
-    @parent = args.pop() if typeof _(args).last() is 'object'
+    @parent = args.pop() if typeof last(args) is 'object'
     @factoryFn = args.pop()
     @model = args.pop() ? Object
     @children = []
@@ -118,10 +117,10 @@ class Unionized
   @async
   ###
   saveModel: (model, callback) ->
-    if _.isFunction model.save
+    if isFunction model.save
       model.save callback
     else
-      _.defer callback, null, model
+      defer callback, null, model
 
 factoryFunctions = ['json', 'build', 'create']
 for fn in factoryFunctions
@@ -134,4 +133,13 @@ for fn in factoryFunctions
       definition = new FactoryDefinition(attrs, fn, args)
       fnWithSaneArgs.call instance, definition, callback
 
-module.exports = new Unionized(_.defer).define(_.defer)
+# helpers
+last = (array) ->
+  array[array.length - 1]
+isFunction = (value) ->
+  typeof value is 'function'
+defer = (func, args...) ->
+  throw new TypeError unless isFunction func
+  setTimeout (-> func.apply undefined, args), 1
+
+module.exports = new Unionized(defer).define(defer)
