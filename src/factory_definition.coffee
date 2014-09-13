@@ -7,30 +7,30 @@ module.exports = class FactoryDefinition
     @setAttrs() # attrs are set in the beginning so they can be referenced
 
   setAttrs: ->
-    for key, value of @attrs when value isnt undefined
-      dotpath.set @_out, key, value
+    for path, value of @attrs when value isnt undefined
+      dotpath.set @_out, path, value
 
-  set: (key, value, options = {}) ->
-    return if dotpath.containsSubpath @attrs, key
+  set: (path, value, options = {}) ->
+    return if dotpath.containsSubpath @attrs, path
     options.init ?= yes
-    dotpath.set @_out, key, value, options.init
+    dotpath.set @_out, path, value, options.init
     value
 
-  unset: (key) ->
-    dotpath.clear @_out, key
+  unset: (path) ->
+    dotpath.clear @_out, path
 
-  embed: (key, factory, callback) ->
-    return _.defer(callback) if dotpath.containsSubpath @attrs, key
-    factory[@mode] @get(key), (err, value) =>
+  embed: (path, factory, callback) ->
+    return _.defer(callback) if dotpath.containsSubpath @attrs, path
+    factory[@mode] @get(path), (err, value) =>
       return callback(err) if err?
-      @set key, value
+      @set path, value
       callback null, value
 
-  embedArray: (key, defaultCount, factory, callback) ->
+  embedArray: (path, defaultCount, factory, callback) ->
     callback()
 
-  get: (key) ->
-    dotpath.get @_out, key
+  get: (path) ->
+    dotpath.get @_out, path
 
   resolve: ->
     @_out
