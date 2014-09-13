@@ -1,3 +1,4 @@
+_ = require './helpers'
 dotpath = require './dotpath'
 
 module.exports = class FactoryDefinition
@@ -19,6 +20,7 @@ module.exports = class FactoryDefinition
     dotpath.clear @_out, key
 
   embed: (key, factory, callback) ->
+    return _.defer(callback) if dotpath.containsSubpath @attrs, key
     factory[@mode] @get(key), (err, value) =>
       return callback(err) if err?
       @set key, value
