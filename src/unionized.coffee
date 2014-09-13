@@ -7,50 +7,7 @@ Lightweight test factories, optimized for
 ###
 
 _ = require 'lodash'
-dot = require 'dot-component'
-
-dotSubPaths = (dotPath) ->
-  rebuildPath = []
-  subPaths = []
-  for component in dotPath.split '.'
-    rebuildPath.push component
-    subPaths.push rebuildPath.join '.'
-  subPaths
-
-class FactoryDefinition
-  constructor: (@attrs = {}, @mode, @args) ->
-    @_out = {}
-    @attrKeys = Object.keys @attrs
-    @setAttrs() # attrs should be set in the beginning so they can be referenced
-
-  setAttrs: ->
-    init = yes
-    for key, value of @attrs
-      dot.set(@_out, key, value, init) if value isnt undefined
-
-  set: (key, value, options = {}) ->
-    for subpath in dotSubPaths key
-      return @attrs[subpath] if subpath in @attrKeys
-    options.init = yes unless options.init?
-    dot.set(@_out, key, value, options.init)
-    value
-
-  unset: (key) ->
-    init = no
-    dot.set(@_out, key, undefined, init)
-
-  embed: (key, factory, callback) ->
-    factory[@mode] @get(key), (err, value) =>
-      return callback(err) if err?
-      @set key, value
-      callback null, value
-
-  get: (key) ->
-    dot.get @_out, key
-
-  resolve: ->
-    @setAttrs() # attrs should take precedence
-    @_out
+FactoryDefinition = require './factory_definition'
 
 class Unionized
   constructor: (args...) ->
@@ -119,7 +76,7 @@ class Unionized
   @param {object} [model] - Optional model for the child factory to use
   @param {function} factoryFn - Factory function for the child factory. Will be
     applied before the factory function of the parent factory.
-  
+
   @returns {Unionized} A new factory that descends from the current one.
   ###
   define: (args...) ->
@@ -134,7 +91,7 @@ class Unionized
   Find a descendant factory by name
 
   @param {string} name - Name of the descendant factory
-  
+
   @returns {Unionized} The descendant factory with the supplied name
 
   @throws Complains if there is no descendant factory with the supplied name
@@ -154,7 +111,7 @@ class Unionized
 
   ###
   Persists a copy of the factory model
- 
+
   @param {object} An instance of the factory model to persist
 
   @returns {*} Whatever the persistance function for the model returns
