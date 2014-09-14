@@ -4,9 +4,11 @@ getPointer = (object, pathArray, init = no, last = null) ->
   pointer = object
   for component, index in pathArray
     unless _.isObject(pointer[component])
-      return unless init
       nextComponent = pathArray[index + 1] ? last
-      pointer[component] = if _.isNumber(nextComponent) then [] else {}
+      if init
+        pointer[component] = if _.isNumber(nextComponent) then [] else {}
+      else if nextComponent?
+        return
     pointer = pointer[component]
   pointer
 
