@@ -16,12 +16,15 @@ getPathArray = (pathString) ->
   pathString.match(/(\w+)/g).map (substr) ->
     if substr.match(/^\d+$/) then parseInt(substr) else substr
 
+getPathString = (pathArray) ->
+  pathArray.join '.'
+
 getSubpaths = (pathString) ->
   rebuildPath = []
   subPaths = []
   for component in getPathArray pathString
     rebuildPath.push component
-    subPaths.push rebuildPath.join '.'
+    subPaths.push getPathString rebuildPath
   subPaths
 
 module.exports = dotpath =
@@ -37,7 +40,9 @@ module.exports = dotpath =
   clear: (object, pathString) ->
     delete dotpath.get object, pathString
 
-  containsSubpath: (obj, pathString) ->
-    keys = Object.keys obj
+  normalizeSubpath: (path) ->
+    getPathString getPathArray path
+
+  containsSubpath: (paths, pathString) ->
     for subpath in getSubpaths(pathString)
-      return true if subpath in keys
+      return true if subpath in paths

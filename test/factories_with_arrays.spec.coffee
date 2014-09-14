@@ -2,10 +2,26 @@ expect    = require('chai').expect
 fibrous   = require 'fibrous'
 Unionized = require '..'
 
-describe 'factories with embedded arrays', ->
+describe 'factories with arrays', ->
   {factory} = {}
 
-  describe 'a factory that creates an object with an embedded array', ->
+  describe 'a factory that defines an array', ->
+    factory = Unionized.define fibrous ->
+      @setArray 'wiseMen', 3, ['melchior', 'balthazar', 'caspar']
+
+    it 'sets up the default array properly', fibrous ->
+      result = factory.sync.json()
+      expect(result.wiseMen).to.deep.equal ['melchior', 'balthazar', 'caspar']
+
+    it 'allows overridden wiseMen counts', fibrous ->
+      result = factory.sync.json 'wiseMen[]': 5
+      expect(result.wiseMen).to.deep.equal ['melchior', 'balthazar', 'caspar', 'melchior', 'balthazar']
+
+    it 'allows overridden specific wise men', fibrous ->
+      result = factory.sync.json 'wiseMen[2]': 'jeff'
+      expect(result.wiseMen).to.deep.equal ['melchior', 'balthazar', 'jeff']
+
+  describe 'a factory that defines an embedded array', ->
 
     beforeEach ->
       factory = Unionized.define fibrous ->

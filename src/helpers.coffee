@@ -28,6 +28,9 @@ module.exports = _ =
     throw new TypeError unless _.isFunction func
     setTimeout (-> func.apply undefined, args), 1
 
+  times: (count, func) ->
+    func(index) for index in [0...count]
+
   asyncRepeat: (count, func, done) ->
     completed = 0
     output = new Array count
