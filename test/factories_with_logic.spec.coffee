@@ -11,6 +11,7 @@ describe 'factories with logic', ->
       factory = Unionized.define fibrous ->
         @set 'smaller', 10
         @set 'larger', @get('smaller') + 10
+        @set 'foo.bar', 12
 
     it 'sets the default values properly', fibrous ->
       result = factory.sync.json()
@@ -21,3 +22,7 @@ describe 'factories with logic', ->
       result = factory.sync.json smaller: 20
       expect(result.smaller).to.equal 20
       expect(result.larger).to.equal 30
+
+    it 'overrides the logic value', fibrous ->
+      result = factory.sync.json larger: 2000
+      expect(result.larger).to.equal 2000
