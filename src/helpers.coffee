@@ -24,9 +24,10 @@ module.exports = _ =
   last: (array) ->
     array[array.length - 1]
 
-  defer: (func, args...) ->
-    throw new TypeError unless _.isFunction func
-    setTimeout (-> func.apply undefined, args), 1
+  defer: (args..., done) ->
+    throw new TypeError unless _.isFunction done
+    args = [null, args...] # callback without an error
+    setTimeout (-> done.apply undefined, args), 1
 
   times: (count, func) ->
     func(index) for index in [0...count]

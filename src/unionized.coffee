@@ -121,7 +121,7 @@ class Unionized
     if _.isFunction model.save
       model.save callback
     else
-      _.defer callback, null, model
+      _.defer model, callback
 
 factoryFunctions = ['json', 'build', 'create']
 for fn in factoryFunctions
