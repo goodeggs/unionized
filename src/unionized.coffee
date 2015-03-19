@@ -39,7 +39,7 @@ class Unionized
         context = context.parent
       factoryFns
 
-    # if passing a callback, assume all definitions are async
+    # if passing a callback, assume all definitions are asynchronous
     if typeof callback is 'function'
       asyncFactoryFns = factoryFns.map (factoryFn) ->
         (cb) ->
@@ -49,7 +49,7 @@ class Unionized
         return callback err if err?
         callback null, definition._resolve()
 
-    # if not a callback, assume all definitions are not synchronous
+    # if not a callback, assume all definitions are synchronous
     else
       factoryFns.forEach (factoryFn) ->
         factoryFn.call definition, definition.args
