@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file.
 This project follows [SemVer 2.0.0](http://www.semver.org).
 
+## 2.7.0
+
+### Added
+- Optionally define and instantiate factories synchronously with `.json()`
+- Allow inheriting from multiple ancestors (not just parent)
+
 ## 2.6.0
 
 ### Added
