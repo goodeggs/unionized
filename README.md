@@ -126,8 +126,9 @@ lateNightPickupFactory.create(function(err, result) { console.log(result); });
 //     }
 //   }
 
+```
 
-```If using `.json()`, you can optionally define and instantiate factories
+If using `.json()`, you can optionally define and instantiate factories
 synchronously.
 
 ```javascript
