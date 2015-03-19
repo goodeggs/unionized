@@ -27,11 +27,21 @@ class Unionized
   @async
   ###
   _json: (definition, callback) ->
-    @parent.factoryFn.call definition, definition.args..., (err) =>
-      return callback err if err?
-      @factoryFn.call definition, definition.args..., (err) =>
+    [..., callback] = arguments
+
+    # if passing a callback, assume all definitions are async
+    if typeof callback is 'function'
+      @parent.factoryFn.call definition, definition.args..., (err) =>
         return callback err if err?
-        callback null, definition._resolve()
+        @factoryFn.call definition, definition.args..., (err) =>
+          return callback err if err?
+          callback null, definition._resolve()
+
+    # if not a callback, assume all definitions are not synchronous
+    else
+      @factoryFn.call definition, definition.args
+      return definition._resolve()
+
 
   ###
   Creates an instance of the model with the parameters defined when you created
@@ -126,12 +136,14 @@ class Unionized
 factoryFunctions = ['json', 'build', 'create']
 for fn in factoryFunctions
   do (fn) ->
-    fnWithSaneArgs = Unionized::["_#{fn}"]
+    fnWithAllArgs = Unionized::["_#{fn}"]
     Unionized::[fn] = (args...) ->
       instance = if typeof args[0] is 'string' then @child(args.shift()) else @
-      callback = args.pop()
+      [..., callback] = arguments
       attrs = args.shift()
       definition = new FactoryDefinition(attrs, fn, args)
-      fnWithSaneArgs.call instance, definition, callback
+      fnWithAllArgs.call instance, definition, callback
 
+# create two default, async factory functions so that we can create an instance
+# without defining any models
 module.exports = new Unionized(_.defer).define(_.defer)
