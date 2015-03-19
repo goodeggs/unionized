@@ -6,6 +6,7 @@ Lightweight test factories, optimized for
 [CoffeeScript](http://coffeescript.org/).
 ###
 
+async = require 'async'
 _ = require './helpers'
 FactoryDefinition = require './factory_definition'
 
@@ -29,19 +30,30 @@ class Unionized
   _json: (definition, callback) ->
     [..., callback] = arguments
 
+    # get factory fns from factory and all relatives
+    factoryFns = do =>
+      factoryFns = if @factoryFn then [@factoryFn] else []
+      context = @
+      while context.parent?
+        factoryFns.unshift(context.parent.factoryFn) if context.parent.factoryFn?
+        context = context.parent
+      factoryFns
+
     # if passing a callback, assume all definitions are async
     if typeof callback is 'function'
-      @parent.factoryFn.call definition, definition.args..., (err) =>
+      asyncFactoryFns = factoryFns.map (factoryFn) ->
+        (cb) ->
+          factoryFn.call definition, definition.args..., cb
+
+      async.series asyncFactoryFns, (err) ->
         return callback err if err?
-        @factoryFn.call definition, definition.args..., (err) =>
-          return callback err if err?
-          callback null, definition._resolve()
+        callback null, definition._resolve()
 
     # if not a callback, assume all definitions are not synchronous
     else
-      @factoryFn.call definition, definition.args
+      factoryFns.forEach (factoryFn) ->
+        factoryFn.call definition, definition.args
       return definition._resolve()
-
 
   ###
   Creates an instance of the model with the parameters defined when you created
@@ -146,4 +158,4 @@ for fn in factoryFunctions
 
 # create two default, async factory functions so that we can create an instance
 # without defining any models
-module.exports = new Unionized(_.defer).define(_.defer)
+module.exports = new Unionized()
