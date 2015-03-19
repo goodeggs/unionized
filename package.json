@@ -37,8 +37,13 @@
   "directories": {
     "test": "test"
   },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "always-auth": true
+  },
   "contributors": [
     "Max Edmands <max@goodeggs.com> (http://maxedmands.com)",
+    "Danny Nelson <danny@goodeggs.com>",
     "Alex Gorbatchev <alex@goodeggs.com>"
   ],
   "license": "MIT",
