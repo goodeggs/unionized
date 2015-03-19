@@ -1,4 +1,4 @@
-# Unionized 
+# Unionized
 
 A user-friendly factory system for easily building up complex objects. Entirely asynchronous.
 Recommended for use in testing, but you never know where else this could be useful!
@@ -123,6 +123,28 @@ lateNightPickupFactory.create(function(err, result) { console.log(result); });
 //          endAt: '12am',
 //        },
 //        name: 'San Francisco Ferry Building'
+//     }
+//   }
+
+
+```If using `.json()`, you can optionally define and instantiate factories
+synchronously.
+
+```javascript
+var pickupFactory = unionized.define(function() {
+  this.set('pickupWindow.startAt', '11pm');
+  this.set('pickupWindow.endAt', '12am');
+});
+result = lateNightPickupFactory.json();
+console.log(result);
+
+// prints:
+//   {
+//      pickup: {
+//        pickupWindow: {
+//          startAt: '11pm',
+//          endAt: '12am'
+//        }
 //     }
 //   }
 ```

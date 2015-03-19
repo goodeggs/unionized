@@ -3,8 +3,6 @@ fibrous   = require 'fibrous'
 Unionized = require '..'
 
 describe 'inherited factories', ->
-  {parent, child, result} = {}
-
   beforeEach fibrous ->
     parent = Unionized.define fibrous ->
       @set 'foo', 'herp'
@@ -13,10 +11,19 @@ describe 'inherited factories', ->
     child = parent.define fibrous ->
       @set 'bar', 'slurp'
 
-    result = child.sync.create()
+    grandChild = child.define fibrous ->
+      @set 'boom', 'pow'
+
+    @child = child.sync.create()
+    @grandChild = grandChild.sync.create()
 
   it 'borrows default attributes up the inheritance chain', ->
-    expect(result.foo).to.equal 'herp'
+    expect(@child.foo).to.equal 'herp'
 
   it 'can overwrite default attributes', ->
-    expect(result.bar).to.equal 'slurp'
+    expect(@child.bar).to.equal 'slurp'
+
+  it 'can inherit from grandparents', ->
+    expect(@grandChild.boom).to.equal 'pow'
+    expect(@grandChild.bar).to.equal 'slurp'
+    expect(@grandChild.foo).to.equal 'herp'

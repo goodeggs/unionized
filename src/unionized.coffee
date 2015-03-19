@@ -6,6 +6,7 @@ Lightweight test factories, optimized for
 [CoffeeScript](http://coffeescript.org/).
 ###
 
+async = require 'async'
 _ = require './helpers'
 FactoryDefinition = require './factory_definition'
 
@@ -27,11 +28,32 @@ class Unionized
   @async
   ###
   _json: (definition, callback) ->
-    @parent.factoryFn.call definition, definition.args..., (err) =>
-      return callback err if err?
-      @factoryFn.call definition, definition.args..., (err) =>
+    [..., callback] = arguments
+
+    # get factory fns from factory and all relatives
+    factoryFns = do =>
+      factoryFns = if @factoryFn then [@factoryFn] else []
+      context = @
+      while context.parent?
+        factoryFns.unshift(context.parent.factoryFn) if context.parent.factoryFn?
+        context = context.parent
+      factoryFns
+
+    # if passing a callback, assume all definitions are asynchronous
+    if typeof callback is 'function'
+      asyncFactoryFns = factoryFns.map (factoryFn) ->
+        (cb) ->
+          factoryFn.call definition, definition.args..., cb
+
+      async.series asyncFactoryFns, (err) ->
         return callback err if err?
         callback null, definition._resolve()
+
+    # if not a callback, assume all definitions are synchronous
+    else
+      factoryFns.forEach (factoryFn) ->
+        factoryFn.call definition, definition.args
+      return definition._resolve()
 
   ###
   Creates an instance of the model with the parameters defined when you created
@@ -126,12 +148,14 @@ class Unionized
 factoryFunctions = ['json', 'build', 'create']
 for fn in factoryFunctions
   do (fn) ->
-    fnWithSaneArgs = Unionized::["_#{fn}"]
+    fnWithAllArgs = Unionized::["_#{fn}"]
     Unionized::[fn] = (args...) ->
       instance = if typeof args[0] is 'string' then @child(args.shift()) else @
-      callback = args.pop()
+      [..., callback] = arguments
       attrs = args.shift()
       definition = new FactoryDefinition(attrs, fn, args)
-      fnWithSaneArgs.call instance, definition, callback
+      fnWithAllArgs.call instance, definition, callback
 
-module.exports = new Unionized(_.defer).define(_.defer)
+# create two default, async factory functions so that we can create an instance
+# without defining any models
+module.exports = new Unionized()
