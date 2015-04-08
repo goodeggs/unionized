@@ -161,6 +161,16 @@ console.log(repeatingFactory.json());
 // prints:
 // { repeating: [ 'a', 'b', 'a' ] }
 ```
+
+Embedded arrays are just another parameter away.
+
+```javascript
+// using previously defined `pickupFactory`
+var pickupOptionsFactory = unionized.define(function(done) {
+  this.embedArray('pickupChoices', 3, pickupFactory, done);
+});
+```
+
 # License
 
 [The MIT License (MIT)](https://github.com/goodeggs/unionized/blob/master/LICENSE)
