@@ -167,8 +167,16 @@ Embedded arrays are just another parameter away.
 ```javascript
 // using previously defined `pickupFactory`
 var pickupOptionsFactory = unionized.define(function(done) {
-  this.embedArray('pickupChoices', 3, pickupFactory, done);
+  this.embedArray('choices', 3, pickupFactory, done);
 });
+
+// prints:
+// { choices: [
+//   { pickup: [Object] },
+//   { pickup: [Object] },
+//   { pickup: [Object] }
+//   ]
+// }
 ```
 
 # License
