@@ -15,11 +15,7 @@ module.exports = _ =
     false
 
   isArray: (value) ->
-    value and
-    typeof value is 'object' and
-    typeof value.length is 'number'
-    toString.call(value) is '[object Array]' or
-    false
+    Array.isArray value
 
   last: (array) ->
     array[array.length - 1]
