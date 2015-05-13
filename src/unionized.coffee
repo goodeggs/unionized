@@ -14,7 +14,7 @@ class Unionized
   constructor: (args...) ->
     @parent = args.pop() if typeof _.last(args) is 'object'
     @factoryFn = args.pop()
-    @model = args.pop() ? Object
+    @model = args.pop()
     @children = []
 
   ###
@@ -129,7 +129,12 @@ class Unionized
   @returns {object} A copy of the factory model with the attributes set
   ###
   modelInstanceWith: (attrs) ->
-    new @model attrs
+    if @model?
+      new @model attrs
+    else if @parent?
+      @parent.modelInstanceWith(attrs)
+    else
+      attrs
 
   ###
   Persists a copy of the factory model
