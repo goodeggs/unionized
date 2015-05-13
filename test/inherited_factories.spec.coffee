@@ -16,14 +16,23 @@ describe 'inherited factories', ->
 
     @child = child.sync.create()
     @grandChild = grandChild.sync.create()
+    @babyGrandChild = grandChild.sync.create(
+      foo: 'baby'
+      boom: 'waaah'
+    )
 
   it 'borrows default attributes up the inheritance chain', ->
-    expect(@child.foo).to.equal 'herp'
+    expect(@child).to.have.property 'foo', 'herp'
 
   it 'can overwrite default attributes', ->
-    expect(@child.bar).to.equal 'slurp'
+    expect(@child).to.have.property 'bar', 'slurp'
 
   it 'can inherit from grandparents', ->
-    expect(@grandChild.boom).to.equal 'pow'
-    expect(@grandChild.bar).to.equal 'slurp'
-    expect(@grandChild.foo).to.equal 'herp'
+    expect(@grandChild).to.have.property 'boom', 'pow'
+    expect(@grandChild).to.have.property 'bar', 'slurp'
+    expect(@grandChild).to.have.property 'foo', 'herp'
+
+  it 'can pass arguments', ->
+    expect(@babyGrandChild).to.have.property 'foo', 'baby'
+    expect(@babyGrandChild).to.have.property 'boom', 'waaah'
+    expect(@babyGrandChild).to.have.property 'bar', 'slurp'
