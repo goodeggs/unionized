@@ -1,15 +1,14 @@
 expect    = require('chai').expect
-fibrous   = require 'fibrous'
 Unionized = require '..'
 
 describe 'using the base factory', ->
 
-  it 'creates an empty object', fibrous ->
-    result = Unionized.sync.create()
+  it 'creates an empty object', ->
+    result = Unionized.create()
     expect(result).to.be.defined
 
-  it 'creates an object that contains things', fibrous ->
-    result = Unionized.sync.create
+  it 'creates an object that contains things', ->
+    result = Unionized.build
       fish: ['one', 'two', 'red', 'blue']
       'info.author': 'Theodore Geisel'
 
