@@ -1,7 +1,7 @@
 expect    = require('chai').expect
 _         = require 'lodash'
-fibrous   = require 'fibrous'
-Unionized = require '..'
+Unionized = require '../src/unionized'
+async = require 'async'
 
 describe 'embedded factories', ->
   before ->
@@ -22,6 +22,7 @@ describe 'embedded factories', ->
         callback()
 
       @embeddedFactory = Unionized.define (callback) ->
+        # TODO
         @embed 'simple1', @simpleFactory, =>
           @embed 'simple2', @simpleFactory, =>
             callback()
@@ -85,18 +86,6 @@ describe 'embedded factories', ->
         @embed 'simple2', @simpleFactory
 
     describe 'model instantiation', ->
-      describe '.build', ->
-        before ->
-          @result = @embeddedFactory.build()
-
-        it 'returns instances of Model', ->
-          expect(@result.simple1.isAModel).to.be.true
-          expect(@result.simple2.isAModel).to.be.true
-
-        it 'does not save returned Models', ->
-          expect(@result.simple1.isSaved).to.be.false
-          expect(@result.simple2.isSaved).to.be.false
-
       describe '.json', ->
         before ->
           @result = @embeddedFactory.json()

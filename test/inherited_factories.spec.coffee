@@ -54,9 +54,9 @@ describe 'inherited factories', ->
       grandChild = child.define ->
         @set 'boom', 'pow'
 
-      @child = child.build()
-      @grandChild = grandChild.build()
-      @babyGrandChild = grandChild.build(
+      @child = child.json()
+      @grandChild = grandChild.json()
+      @babyGrandChild = grandChild.json(
         foo: 'baby'
         boom: 'waaah'
       )
@@ -87,7 +87,7 @@ describe 'inherited factories', ->
         @set 'bar', 'slurp'
         process.nextTick -> callback()
 
-      asyncChild.build (err, @result) => done err
+      asyncChild.json (err, @result) => done err
 
     it 'is ok', ->
       expect(@child).to.be.ok

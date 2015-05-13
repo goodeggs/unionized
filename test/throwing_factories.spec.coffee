@@ -3,6 +3,9 @@ fibrous   = require 'fibrous'
 Unionized = require '..'
 
 describe 'a factory that throws exceptions', ->
+
+  # (only 'throwing' b/c it's fibrous -- really just passing errors to callback)
+
   {factory, nestingFactory, childFactory} = {}
 
   beforeEach ->
