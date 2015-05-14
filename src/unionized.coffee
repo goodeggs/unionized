@@ -60,11 +60,12 @@ class Unionized
       stack = factoryFns.map (factoryFn) ->
         if factoryFn.length is 1   # async
           return (cb) ->
-            factoryFn.call definition, definition.args..., cb
+            # factoryFn can introspect `@args` for special cases.
+            factoryFn.call definition, cb
         else
           return (cb) ->
             try    # sync parent
-              factoryFn.call definition, definition.args
+              factoryFn.call definition
               cb()
             catch err
               cb err

@@ -4,6 +4,7 @@ Unionized = require '..'
 
 describe 'factories with arrays', ->
   describe 'a factory that defines an array', ->
+
     describe 'async', ->
       beforeEach ->
         @factory = Unionized.define (callback) ->
@@ -56,7 +57,8 @@ describe 'factories with arrays', ->
         expect(result.wibbles[0].name).to.equal 'bob'
         expect(result.wibbles[2].name).to.equal 'suzanna'
 
-    describe 'sync', ->
+    ### NOT SUPPORTED ###
+    describe.skip 'sync', ->
       beforeEach ->
         @factory = Unionized.define ->
           @embedArray 'wibbles', 5, Unionized.define ->
