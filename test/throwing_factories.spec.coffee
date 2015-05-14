@@ -3,16 +3,21 @@ fibrous   = require 'fibrous'
 Unionized = require '..'
 
 describe 'a factory that throws exceptions', ->
+
+  # (only 'throwing' b/c it's fibrous -- really just passing errors to callback)
+
   {factory, nestingFactory, childFactory} = {}
 
   beforeEach ->
-    factory = Unionized.define fibrous ->
-      throw new Error('this is a problem factory!')
+    factory = Unionized.define (callback) ->
+      process.nextTick ->
+        callback new Error('this is a problem factory!')
 
-    nestingFactory = Unionized.define fibrous ->
-      @sync.embed 'errorFactory', factory
+    nestingFactory = Unionized.define (callback) ->
+      @sync.embed 'errorFactory', factory    # can this work??
+      callback()
 
-    childFactory = factory.define fibrous ->
+    childFactory = factory.define (callback) -> callback()
 
   it 'throws an error when JSON\'d up', fibrous ->
     expect(-> factory.sync.json()).to.throw Error

@@ -24,7 +24,11 @@ module.exports = class FactoryDefinition
     dotpath.clear @_out, path
 
   embed: (path, factory, callback) ->
+    # [bb] only support async embed, until there's a real use case otherwise.
+    unless typeof callback is 'function' then throw new Error "`embed` requires a callback."
+
     return _.defer(callback) if dotpath.containsSubpath @_attrPaths, path
+
     factory[@mode] (@get(path) ? {}), (err, value) =>
       return callback(err) if err?
       @set path, value
@@ -36,6 +40,9 @@ module.exports = class FactoryDefinition
     _.times count, (index) => @set "#{path}[#{index}]", value[index % value.length]
 
   embedArray: (path, defaultCount, factory, callback) ->
+    # [bb] only support async embed, until there's a real use case otherwise.
+    unless typeof callback is 'function' then throw new Error "`embed` requires a callback."
+
     return _.defer(callback) if dotpath.containsSubpath @_attrPaths, path
     count = @_arraySizes[path] ? defaultCount
     embedInstance = (index, done) =>

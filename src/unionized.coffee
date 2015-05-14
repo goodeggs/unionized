@@ -11,49 +11,74 @@ _ = require './helpers'
 FactoryDefinition = require './factory_definition'
 
 class Unionized
+  #
+  # new Unionized(model, factoryFn, parent)
+  # new Unionized(model, factoryFn)
+  # new Unionized(factoryFn, parent)
+  # new Unionized(factoryFn)
+  #
   constructor: (args...) ->
-    @parent = args.pop() if typeof _.last(args) is 'object'
+    if typeof _.last(args) is 'object'
+      @parent = args.pop()
+
     @factoryFn = args.pop()
+
+    # infer from lack of callback that it's meant to be run synchronously.
+    if @factoryFn.length is 0
+      @_synchronous = true
+      if @parent? and not @parent._synchronous
+        throw new Error("Cannot define a synchronous factory as a child of an asynchronous factory")
+
+    else if @factoryFn.length > 1
+      throw new Error "Factory functions should take 1 or 0 arguments."
+
     @model = args.pop()
     @children = []
 
+
   ###
-  Builds a plain, JSON-compatible object from your factory
-
-  @param {string} [name] - Name of the child factory to use
-    (or, just use this one if a name is not supplied)
-  @param {object} [factoryParams] - Parameters to send to the factory function
-
-  @returns {object} A plain old JavaScript object
-  @async
+  Builds a plain, JSON-compatible object from your factory.
+  sync or async.
   ###
   _json: (definition, callback) ->
-    [..., callback] = arguments
+    if @_synchronous and callback?
+      throw new Error "Synchronous factory .json does not accept a callback"
+    else if not @_synchronous and not callback?
+      throw new Error "Asynchronous factory .json requires a callback"
 
     # get factory fns from factory and all relatives
-    factoryFns = do =>
-      factoryFns = if @factoryFn then [@factoryFn] else []
-      context = @
-      while context.parent?
-        factoryFns.unshift(context.parent.factoryFn) if context.parent.factoryFn?
-        context = context.parent
-      factoryFns
+    # TODO refactor this loop?
+    factoryFns = if @factoryFn then [@factoryFn] else []
+    child = @
+    while child.parent?
+      factoryFns.unshift(child.parent.factoryFn) if child.parent.factoryFn?
+      child = child.parent
 
-    # if passing a callback, assume all definitions are asynchronous
-    if typeof callback is 'function'
-      asyncFactoryFns = factoryFns.map (factoryFn) ->
-        (cb) ->
-          factoryFn.call definition, definition.args..., cb
+    # already guarded above that synchronous factory can't have async in its parents,
+    # but vice-versa is ok.
+    if callback?
+      stack = factoryFns.map (factoryFn) ->
+        if factoryFn.length is 1   # async
+          return (cb) ->
+            # factoryFn can introspect `@args` for special cases.
+            factoryFn.call definition, cb
+        else
+          return (cb) ->
+            try    # sync parent
+              factoryFn.call definition
+              cb()
+            catch err
+              cb err
 
-      async.series asyncFactoryFns, (err) ->
-        return callback err if err?
-        callback null, definition._resolve()
+      async.series stack, (err) ->
+        if err? then callback err
+        else callback null, definition._resolve()
 
-    # if not a callback, assume all definitions are synchronous
-    else
+    else  # all sync
       factoryFns.forEach (factoryFn) ->
         factoryFn.call definition, definition.args
       return definition._resolve()
+
 
   ###
   Creates an instance of the model with the parameters defined when you created
@@ -64,9 +89,12 @@ class Unionized
   @param {object} [factoryParams] - Parameters to send to the factory function
 
   @returns {object} An instance of the factory model
-  @async
+
+  only async!
   ###
   _build: (definition, callback) ->
+    if @_synchronous
+      throw new Error "Cannot call `build` on a synchronous factory."
     @_json definition, (err, result) =>
       return callback err if err?
       model = @modelInstanceWith result
@@ -85,9 +113,12 @@ class Unionized
   @async
   ###
   _create: (definition, callback) ->
+    if @_synchronous
+      throw new Error "Cannot call `create` on a synchronous factory."
     @_build definition, (err, model) =>
       return callback err if err?
       @saveModel model, callback
+
 
   ###
   Define a sub-factory that shares the factory function, model, and overwritten
@@ -99,15 +130,20 @@ class Unionized
   @param {function} factoryFn - Factory function for the child factory. Will be
     applied before the factory function of the parent factory.
 
+  - IMPT: factoryFn should take either a callback (1 arg), or no arguments.
+
   @returns {Unionized} A new factory that descends from the current one.
   ###
-  define: (args...) ->
+  define: (args..., factoryFn) ->
+    if typeof factoryFn isnt 'function'
+      throw new Error "Factory definition needs a factory function"
+
     name =
-      if typeof args[0] is 'string'
-        args.shift()
-      else
-        @children.length
-    @children[name] = new Unionized args..., @
+      if typeof args[0] is 'string' then args.shift()
+      else @children.length
+
+    @children[name] = new Unionized args..., factoryFn, @
+
 
   ###
   Find a descendant factory by name
@@ -121,6 +157,7 @@ class Unionized
   child: (name) ->
     @children[name] or throw "Unknown factory `#{name}`"
 
+
   ###
   Create a new instance of the factory model, given a set of attributes
 
@@ -131,6 +168,7 @@ class Unionized
   modelInstanceWith: (attrs) ->
     if @model?
       new @model attrs
+    # delegate up the tree until there's a model.
     else if @parent?
       @parent.modelInstanceWith(attrs)
     else
@@ -150,17 +188,39 @@ class Unionized
     else
       _.defer model, callback
 
-factoryFunctions = ['json', 'build', 'create']
-for fn in factoryFunctions
-  do (fn) ->
-    fnWithAllArgs = Unionized::["_#{fn}"]
-    Unionized::[fn] = (args...) ->
-      instance = if typeof args[0] is 'string' then @child(args.shift()) else @
-      [..., callback] = arguments
+
+for fnName in ['json', 'build', 'create']
+  do (fnName) ->
+    fnWithAllArgs = Unionized::["_#{fnName}"]
+
+    # any of these are valid:
+    #  fn(name, attrs, callback)
+    #  fn(attrs, callback)
+    #  fn(callback)
+    #  fn(attrs, extra1, extra2, callback)   (see factories_with_arguments.spec)
+    #  fn(attrs, extra1, extra2)
+    #
+    Unionized::[fnName] = (args...) ->
+      if typeof args[0] is 'string'
+        childName = args.shift()
+        instance = @child(childName)
+      else
+        instance = @
+
+      # callback is necessary for async factories. otherwise can be undefined.
+      # (each method has its own handling/requirements for callback.)
+      if typeof _.last(args) is 'function'
+        callback = args.pop()
+
       attrs = args.shift()
-      definition = new FactoryDefinition(attrs, fn, args)
+
+      # any remaining `args` are arbitrary, for introspection in factoryFn.
+      definition = new FactoryDefinition attrs, fnName, args
+
       fnWithAllArgs.call instance, definition, callback
 
-# create two default, async factory functions so that we can create an instance
-# without defining any models
-module.exports = new Unionized()
+
+# create default, (synchronous) factory for extending.
+baseFactory = new Unionized (->)
+
+module.exports = baseFactory

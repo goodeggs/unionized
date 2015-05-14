@@ -6,10 +6,11 @@ describe 'a factory for plain objects', ->
   {factory} = {}
 
   beforeEach ->
-    factory = Unionized.define fibrous ->
+    factory = Unionized.define (callback) ->
       @set 'foo', 10
       @set 'biz.fizz', 10
       @set 'biz.faz', 10
+      process.nextTick -> callback()
 
   it 'creates an object', fibrous ->
     result = factory.sync.create()

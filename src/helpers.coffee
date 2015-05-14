@@ -20,8 +20,9 @@ module.exports = _ =
   last: (array) ->
     array[array.length - 1]
 
+  ## [bb] ??
   defer: (args..., done) ->
-    throw new TypeError unless _.isFunction done
+    throw new TypeError('`defer` requires a callback') unless _.isFunction done
     args = [null, args...] # callback without an error
     setTimeout (-> done.apply undefined, args), 1
 
