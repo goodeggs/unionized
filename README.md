@@ -1,6 +1,7 @@
 # Unionized
 
-A user-friendly factory system for easily building up complex objects. Entirely asynchronous.
+A user-friendly factory system for easily building up complex objects.
+Can be either synchronous or asynchronous.
 Recommended for use in testing, but you never know where else this could be useful!
 
 [![NPM version](https://badge.fury.io/js/unionized.png)](http://badge.fury.io/js/unionized)
@@ -13,7 +14,6 @@ Recommended for use in testing, but you never know where else this could be usef
 Create complex objects really easily:
 
 ```javascript
-
 var unionized = require('unionized');
 unionized.create({
   'pickup.pickupWindow.startAt': '2pm',
@@ -56,7 +56,7 @@ pickupFactory.create(function(err, result) { console.log(result); });
 //   }
 ```
 
-now we can customize the objects that our factory returns us:
+We can customize the objects that our factory returns us:
 
 ```javascript
 pickupFactory.create({
@@ -78,6 +78,22 @@ pickupFactory.create({
 //      }
 //   }
 ```
+
+
+We can do this **synchronously**, too:
+
+```javascript
+var pickupFactory = unionized.define(function() {
+  this.set('pickup.pickupWindow.startAt', '2pm');
+  this.set('pickup.pickupWindow.endAt', '4pm');
+  this.set('pickup.name', 'San Francisco Ferry Building');
+});
+```
+
+but then we can only use `.json` on the factory to get a POJO; `.create` and `.build` are
+only for asynchronous factories.
+
+
 
 We can also embed factories inside other factories:
 
@@ -128,27 +144,23 @@ lateNightPickupFactory.create(function(err, result) { console.log(result); });
 
 ```
 
-If using `.json()`, you can optionally define and instantiate factories
-synchronously.
 
-```javascript
-var pickupFactory = unionized.define(function() {
-  this.set('pickupWindow.startAt', '11pm');
-  this.set('pickupWindow.endAt', '12am');
-});
-result = lateNightPickupFactory.json();
-console.log(result);
+The main **methods** on a factory are:
+ 
+1. `create`: Use with database models that have a `save` method, this will save a real record to the database.
+  (For async factories only.)
+    
+2. `build`: Also used with database models, but only returns a model, does not save it to the database.
+  (For async factories only.)
 
-// prints:
-//   {
-//      pickup: {
-//        pickupWindow: {
-//          startAt: '11pm',
-//          endAt: '12am'
-//        }
-//     }
-//   }
-```
+3. `json`: Generate a plain ol' object. Sync or async.
+
+
+The **factory function** itself can either take 1 argument (a callback, implies an async interface),
+or 0 arguments, for a sync interface.
+You can pass additional parameters to your factory functions - e.g. `factory.create(attrs, extra1, extra2, callback)` -
+and your factory function can access the extra parameters by introspecting `this.args`.
+
 
 # License
 
