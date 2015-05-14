@@ -37,6 +37,7 @@ describe 'factories with arrays', ->
     describe 'async', ->
       beforeEach ->
         # TODO use callback instead of fibrous
+        # -- doesn't work -- :confused: --
         @factory = Unionized.define fibrous ->
           @sync.embedArray 'wibbles', 5, Unionized.define fibrous ->
             @set 'name', 'bob'
