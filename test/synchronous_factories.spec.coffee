@@ -30,9 +30,9 @@ describe 'a synchronous factory', ->
 
   describe '.build', ->
     it 'is not allowed', ->
-      expect(-> factory.build()).to.throw /async/i
+      expect(-> factory.build()).to.throw /build.*sync/i
 
   describe '.create', ->
     it 'is not allowed', ->
-      expect(-> factory.create()).to.throw /async/i
+      expect(-> factory.create()).to.throw /create.*sync/i
 

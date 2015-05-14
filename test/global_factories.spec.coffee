@@ -15,9 +15,5 @@ describe 'the global object', ->
       expect(result.fiz).to.equal 'buzz'
       done()
 
-  it 'cannot use an undefined factory', (done) ->
-    Unionized.sync.create 'unknown', (err, result) ->
-      expect(err).to.be.an.instanceof Error
-      expect(err.message).to.equal 'Unknown factory `unknown`'
-      expect(result).not.to.be.ok
-      done()
+  it 'cannot use an undefined factory', ->
+    expect(-> Unionized.sync.create 'unknown').to.throw 'Unknown factory `unknown`'

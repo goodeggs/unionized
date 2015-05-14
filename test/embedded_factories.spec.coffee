@@ -1,6 +1,6 @@
 expect    = require('chai').expect
 _         = require 'lodash'
-Unionized = require '../src/unionized'
+Unionized = require '..'
 async = require 'async'
 
 describe 'embedded factories', ->
