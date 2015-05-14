@@ -36,12 +36,13 @@ describe 'factories with arrays', ->
   describe 'a factory that defines an embedded array', ->
     describe 'async', ->
       beforeEach ->
-        # TODO use callback instead of fibrous
-        # -- doesn't work -- :confused: --
-        @factory = Unionized.define fibrous ->
-          @sync.embedArray 'wibbles', 5, Unionized.define fibrous ->
-            @set 'name', 'bob'
-            @set 'age', 10
+        wibble = Unionized.define (callback) ->
+          @set 'name', 'bob'
+          @set 'age', 10
+          callback()
+
+        @factory = Unionized.define (callback) ->
+          @sync.embedArray 'wibbles', 5, wibble, callback
 
       it 'sets up the default embedded array properly', fibrous ->
         result = @factory.sync.json()
