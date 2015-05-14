@@ -162,6 +162,35 @@ You can pass additional parameters to your factory functions - e.g. `factory.cre
 and your factory function can access the extra parameters by introspecting `this.args`.
 
 
+Arrays are simple too!
+
+```javascript
+var repeatingFactory = unionized.define(function(done) {
+  this.setArray('repeating', 3, ['a', 'b']);
+});
+console.log(repeatingFactory.json());
+
+// prints:
+// { repeating: [ 'a', 'b', 'a' ] }
+```
+
+Embedded arrays are just another parameter away.
+
+```javascript
+// using previously defined `pickupFactory`
+var pickupOptionsFactory = unionized.define(function(done) {
+  this.embedArray('choices', 3, pickupFactory, done);
+});
+
+// prints:
+// { choices: [
+//   { pickup: [Object] },
+//   { pickup: [Object] },
+//   { pickup: [Object] }
+//   ]
+// }
+```
+
 # License
 
 [The MIT License (MIT)](https://github.com/goodeggs/unionized/blob/master/LICENSE)
