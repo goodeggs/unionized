@@ -34,6 +34,20 @@ it 'can override factory parameters', ->
   expect(result.foo.biz).to.equal 'buzz'
   expect(result.grue).to.equal 'snork'
 
+it 'can create child factories', ->
+  parentFactory = unionized.factory
+    'do': 'wop'
+    'foo.bar': 'baz'
+    'foo.biz': 'buzz'
+  childFactory = parentFactory.factory
+    'foo.bar': 'zab'
+    'grue': 'snork'
+  result = childFactory.create()
+  expect(result.do).to.equal 'wop'
+  expect(result.foo.bar).to.equal 'zab'
+  expect(result.foo.biz).to.equal 'buzz'
+  expect(result.grue).to.equal 'snork'
+
 it 'can pass in functions', ->
   result = unionized.create
     'foo.bar': -> 'baz'
@@ -55,10 +69,10 @@ it 'can pass in promises', ->
     expect(result.foo.bar).to.equal 'baz'
 
 it 'can pass in other factories', ->
-  childFactory = unionized.factory
+  componentFactory = unionized.factory
     'bar': 'baz'
   factory = unionized.factory
-    'foo': childFactory
+    'foo': componentFactory
   result = factory.create()
   expect(result.foo.bar).to.equal 'baz'
 
