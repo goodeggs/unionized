@@ -1,32 +1,12 @@
 Promise = require 'bluebird'
 _ = require 'lodash'
 
-class Unionized
-  constructor: (@definitions) ->
-  factory: (definition) ->
-    new Unionized [@definitions..., Definition.new(definition)]
-  create: (optionalDefinition) ->
-    return @factory(optionalDefinition).create() if optionalDefinition?
-    @definitions.reduce ((memo, definition) -> definition.apply(memo)), {}
-  createAsync: (args...) ->
-    callback = args.pop() # there should always be a callback
-    optionalDefinition = args.shift() # there may or may not be an optional definition
-    return @factory(optionalDefinition).createAsync(callback) if optionalDefinition?
-    object = {}
-    reducer = (builtObject, definition) -> definition.applyAsync(builtObject)
-    Promise.reduce(@definitions, reducer, object).asCallback(callback)
-
-  # it's awkward that these following are instance methods, but it means they'll
-  # always be available even if a subclass gets exported
-  async: (resolver) -> Promise.fromNode(resolver)
-
 class Definition
   @new: (definition) ->
+    return definition if definition.isDefinition?()
     subclass =
       if _.isFunction(definition)
         FunctionDefinition
-      else if _.isFunction(definition.create) # factory!
-        FactoryDefinition
       else if _.isFunction(definition.then) # promise!
         AsyncDefinition
       else if _.isPlainObject(definition)
@@ -34,31 +14,46 @@ class Definition
       else
         IdentityDefinition
     new subclass(arguments...)
+  isDefinition: -> true
   constructor: (@args...) -> @initialize?()
-  apply: -> throw new Error("Subclasses must implement `apply`!")
-  applyAsync: (args...) -> new Promise (resolve) => resolve(@apply(args...))
+  create: -> throw new Error("Subclasses must implement `create`!")
+  createAsync: (args...) -> new Promise (resolve) => resolve(@create(args...))
 
-class FactoryDefinition extends Definition
-  initialize: -> [@factory] = @args
-  apply: -> @factory.create()
-  applyAsync: -> @factory.createAsync()
+class Unionized extends Definition
+  initialize: -> [@definitions] = @args
+  factory: (definition) ->
+    new Unionized [@definitions..., Definition.new(definition)]
+  create: (optionalDefinition) ->
+    return @factory(optionalDefinition).create() if optionalDefinition?
+    @definitions.reduce ((memo, definition) -> definition.create(memo)), {}
+  createAsync: (args...) ->
+    callback = args.pop() # there should always be a callback
+    optionalDefinition = args.shift() # there may or may not be an optional definition
+    return @factory(optionalDefinition).createAsync(callback) if optionalDefinition?
+    object = {}
+    reducer = (builtObject, definition) -> definition.createAsync(builtObject)
+    Promise.reduce(@definitions, reducer, object).asCallback(callback)
+
+  # it's awkward that these following are instance methods, but it means they'll
+  # always be available even if a subclass gets exported
+  async: (resolver) -> Promise.fromNode(resolver)
 
 class IdentityDefinition extends Definition
   initialize: -> [@identity] = @args
-  apply: -> @identity
+  create: -> @identity
 
 class DotNotationObjectDefinition extends Definition
   initialize: ->
     object = @args[0]
     @paths = Object.keys(object).map (path) ->
       new DotNotationPathDefinition(path, object[path])
-  apply: (object) ->
+  create: (object) ->
     object ?= {}
-    @paths.reduce ((memo, definition) -> definition.apply(memo)), object
+    @paths.reduce ((memo, definition) -> definition.create(memo)), object
     object
-  applyAsync: (object) ->
+  createAsync: (object) ->
     object ?= {}
-    reducer = (builtObject, definition) -> definition.applyAsync(builtObject)
+    reducer = (builtObject, definition) -> definition.createAsync(builtObject)
     Promise.reduce(@paths, reducer, object)
 
 class DotNotationPathDefinition extends Definition
@@ -69,24 +64,24 @@ class DotNotationPathDefinition extends Definition
       new DotNotationPathDefinition(childPath, descendantDefinition)
     else
       Definition.new descendantDefinition
-  apply: (object) ->
+  create: (object) ->
     object ?= {}
-    object[@param] = @childDefinition.apply(object[@param])
+    object[@param] = @childDefinition.create(object[@param])
     object
-  applyAsync: (object) ->
+  createAsync: (object) ->
     object ?= {}
-    @childDefinition.applyAsync(object[@param]).then (result) =>
+    @childDefinition.createAsync(object[@param]).then (result) =>
       object[@param] = result
       object
 
 class FunctionDefinition extends Definition
   initialize: -> [@function] = @args
-  apply: (args...) -> @function(args...)
+  create: (args...) -> @function(args...)
 
 class AsyncDefinition extends Definition
   initialize: -> [@promise] = @args
-  apply: -> throw new Error("Cannot synchronously create this object!")
-  applyAsync: (args...) ->
-    @promise.then (definition) -> Definition.new(definition).apply(args...)
+  create: -> throw new Error("Cannot synchronously create this object!")
+  createAsync: (args...) ->
+    @promise.then (definition) -> Definition.new(definition).create(args...)
 
 module.exports = unionized = new Unionized([])
