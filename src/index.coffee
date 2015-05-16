@@ -1,3 +1,4 @@
+Promise = require 'bluebird'
 _ = require 'lodash'
 
 class Unionized
@@ -7,19 +8,40 @@ class Unionized
   create: (optionalDefinition) ->
     return @factory(optionalDefinition).create() if optionalDefinition?
     @definitions.reduce ((memo, definition) -> definition.apply(memo)), {}
+  createAsync: (args...) ->
+    callback = args.pop() # there should always be a callback
+    optionalDefinition = args.shift() # there may or may not be an optional definition
+    return @factory(optionalDefinition).createAsync(callback) if optionalDefinition?
+    object = {}
+    reducer = (builtObject, definition) -> definition.applyAsync(builtObject)
+    Promise.reduce(@definitions, reducer, object).asCallback(callback)
+
+  # it's awkward that these following are instance methods, but it means they'll
+  # always be available even if a subclass gets exported
+  async: (resolver) -> Promise.fromNode(resolver)
 
 class Definition
   @new: (definition) ->
-    subclass = if _.isPlainObject(definition)
-      DotNotationObjectDefinition
-    else if _.isFunction(definition)
-      FunctionDefinition
-    else
-      IdentityDefinition
+    subclass =
+      if _.isFunction(definition)
+        FunctionDefinition
+      else if _.isFunction(definition.create) # factory!
+        FactoryDefinition
+      else if _.isFunction(definition.then) # promise!
+        AsyncDefinition
+      else if _.isPlainObject(definition)
+        DotNotationObjectDefinition
+      else
+        IdentityDefinition
     new subclass(arguments...)
   constructor: (@args...) -> @initialize?()
-  apply: (object) ->
-    throw new Error("Subclasses must implement `apply`!")
+  apply: -> throw new Error("Subclasses must implement `apply`!")
+  applyAsync: (args...) -> new Promise (resolve) => resolve(@apply(args...))
+
+class FactoryDefinition extends Definition
+  initialize: -> [@factory] = @args
+  apply: -> @factory.create()
+  applyAsync: -> @factory.createAsync()
 
 class IdentityDefinition extends Definition
   initialize: -> [@identity] = @args
@@ -34,6 +56,10 @@ class DotNotationObjectDefinition extends Definition
     object ?= {}
     @paths.reduce ((memo, definition) -> definition.apply(memo)), object
     object
+  applyAsync: (object) ->
+    object ?= {}
+    reducer = (builtObject, definition) -> definition.applyAsync(builtObject)
+    Promise.reduce(@paths, reducer, object)
 
 class DotNotationPathDefinition extends Definition
   initialize: ->
@@ -47,9 +73,20 @@ class DotNotationPathDefinition extends Definition
     object ?= {}
     object[@param] = @childDefinition.apply(object[@param])
     object
+  applyAsync: (object) ->
+    object ?= {}
+    @childDefinition.applyAsync(object[@param]).then (result) =>
+      object[@param] = result
+      object
 
 class FunctionDefinition extends Definition
   initialize: -> [@function] = @args
   apply: (args...) -> @function(args...)
+
+class AsyncDefinition extends Definition
+  initialize: -> [@promise] = @args
+  apply: -> throw new Error("Cannot synchronously create this object!")
+  applyAsync: (args...) ->
+    @promise.then (definition) -> Definition.new(definition).apply(args...)
 
 module.exports = unionized = new Unionized([])

@@ -43,13 +43,14 @@ it 'can pass in async functions', (testDone) ->
   asyncFactory = unionized.factory
     'foo.bar': unionized.async (propReady) ->
       propReady(null, 'baz')
-  asyncFactory.createAsync (result) ->
+  asyncFactory.createAsync (err, result) ->
+    return testDone(err) if err
     expect(result.foo.bar).to.equal 'baz'
     testDone()
 
 it 'can pass in promises', ->
   asyncFactory = unionized.factory
-    'foo.bar': -> new Promise(resolve, reject) -> resolve 'baz'
+    'foo.bar': new Promise (resolve, reject) -> resolve 'baz'
   asyncFactory.createAsync().then (result) ->
     expect(result.foo.bar).to.equal 'baz'
 
