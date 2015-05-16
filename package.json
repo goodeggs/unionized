@@ -1,6 +1,6 @@
 {
   "name": "unionized",
-  "main": "./lib/unionized.js",
+  "main": "./lib/index.js",
   "version": "3.0.0",
   "scripts": {
     "build": "coffee --bare --output lib/ --compile src/*.coffee",
@@ -18,7 +18,8 @@
     "objects"
   ],
   "dependencies": {
-    "async": "^0.9.0"
+    "bluebird": "^2.9.25",
+    "lodash": "^3.8.0"
   },
   "devDependencies": {
     "blanket": "~1.1.6",
