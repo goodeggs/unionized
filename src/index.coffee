@@ -19,10 +19,10 @@ class Definition
   create: -> throw new Error("Subclasses must implement `create`!")
   createAsync: (args...) -> new Promise (resolve) => resolve(@create(args...))
 
-class Unionized extends Definition
+class Factory extends Definition
   initialize: -> [@definitions] = @args
   factory: (definition) ->
-    new Unionized [@definitions..., Definition.new(definition)]
+    new Factory [@definitions..., Definition.new(definition)]
   create: (optionalDefinition) ->
     return @factory(optionalDefinition).create() if optionalDefinition?
     @definitions.reduce ((memo, definition) -> definition.create(memo)), {}
@@ -84,4 +84,4 @@ class AsyncDefinition extends Definition
   createAsync: (args...) ->
     @promise.then (definition) -> Definition.new(definition).create(args...)
 
-module.exports = unionized = new Unionized([])
+module.exports = new Factory([])
