@@ -71,9 +71,9 @@ it 'can pass in promises', ->
 it 'can pass in other factories', ->
   componentFactory = unionized.factory
     'bar': 'baz'
-  factory = unionized.factory
+  compositeFactory = unionized.factory
     'foo': componentFactory
-  result = factory.create()
+  result = compositeFactory.create()
   expect(result.foo.bar).to.equal 'baz'
 
 it 'can override objects passed into child factories from the parent factory', ->
