@@ -1,6 +1,22 @@
 Promise = require 'bluebird'
 _ = require 'lodash'
 
+class Instance
+  constructor: (@value) ->
+  toObject: -> @value
+
+class ObjectInstance extends Instance
+  constructor: ->
+    @instances = {}
+  set: (key, value) ->
+    @instances[key] = value
+  getInstance: (key) ->
+    @instances[key]
+  toObject: ->
+    out = {}
+    out[key] = value.toObject() for key, value of @instances
+    out
+
 class Definition
   @new: (definition) ->
     return definition if definition.isDefinition?()
@@ -27,21 +43,21 @@ class Factory extends Definition
     new Factory [@definitions..., Definition.new(definition)]
   create: (optionalDefinition) ->
     return @factory(optionalDefinition).create() if optionalDefinition?
-    @stage()
+    @stage().toObject()
   createAsync: (args...) ->
     callback = args.pop() # there should always be a callback
     optionalDefinition = args.shift() # there may or may not be an optional definition
     return @factory(optionalDefinition).createAsync(callback) if optionalDefinition?
-    @stageAsync().asCallback(callback)
+    @stageAsync().then((instance) -> instance.toObject()).asCallback(callback)
 
   # Private:
   initialize: -> [@definitions] = @args
   stage: ->
-    @definitions.reduce ((memo, definition) -> definition.stage(memo)), {}
+    @definitions.reduce ((instance, definition) -> definition.stage(instance)), new ObjectInstance()
   stageAsync: ->
-    object = {}
-    reducer = (builtObject, definition) -> definition.stageAsync(builtObject)
-    Promise.reduce(@definitions, reducer, object)
+    instance = new ObjectInstance()
+    reducer = (memo, definition) -> definition.stageAsync(memo)
+    Promise.reduce(@definitions, reducer, instance)
 
   # it's awkward that these following are instance methods, but it means they'll
   # always be available even if a subclass gets exported
@@ -49,30 +65,27 @@ class Factory extends Definition
 
 class IdentityDefinition extends Definition
   initialize: -> [@identity] = @args
-  stage: -> @identity
+  stage: -> new Instance(@identity)
 
 class ArrayDefinition extends Definition
   initialize: ->
     [@modelArray] = @args
     @length = @modelArray.length
-  stage: ->
-    out = []
-    out.__definition = @
-    out
+  stage: -> new Instance([])
 
 class DotNotationObjectDefinition extends Definition
   initialize: ->
     object = @args[0]
     @paths = Object.keys(object).map (path) ->
       new DotNotationPathDefinition(path, object[path])
-  stage: (object) ->
-    object ?= {}
-    @paths.reduce ((memo, definition) -> definition.stage(memo)), object
-    object
-  stageAsync: (object) ->
-    object ?= {}
-    reducer = (builtObject, definition) -> definition.stageAsync(builtObject)
-    Promise.reduce(@paths, reducer, object)
+  stage: (instance) ->
+    instance ?= new ObjectInstance()
+    @paths.reduce ((memo, definition) -> definition.stage(memo)), instance
+    instance
+  stageAsync: (instance) ->
+    instance ?= new ObjectInstance()
+    reducer = (memo, definition) -> definition.stageAsync(memo)
+    Promise.reduce(@paths, reducer, instance)
 
 class DotNotationPathDefinition extends Definition
   initialize: ->
@@ -82,19 +95,19 @@ class DotNotationPathDefinition extends Definition
       new DotNotationPathDefinition(childPath, descendantDefinition)
     else
       Definition.new descendantDefinition
-  stage: (object) ->
-    object ?= {}
-    object[@param] = @childDefinition.stage(object[@param])
-    object
-  stageAsync: (object) ->
-    object ?= {}
-    @childDefinition.stageAsync(object[@param]).then (result) =>
-      object[@param] = result
-      object
+  stage: (instance) ->
+    instance ?= new ObjectInstance()
+    instance.set(@param, @childDefinition.stage(instance.getInstance @param))
+    instance
+  stageAsync: (instance) ->
+    instance ?= new ObjectInstance()
+    @childDefinition.stageAsync(instance.getInstance @param).then (valueInstance) =>
+      instance.set(@param, valueInstance)
+      instance
 
 class FunctionDefinition extends Definition
   initialize: -> [@function] = @args
-  stage: (args...) -> @function(args...)
+  stage: (args...) -> new Instance(@function(args...))
 
 class AsyncDefinition extends Definition
   initialize: -> [@promise] = @args
