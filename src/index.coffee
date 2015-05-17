@@ -19,10 +19,17 @@ class ObjectInstance extends Instance
 
 class ArrayInstance extends Instance
   constructor: (@model, @length = 0) ->
+    @instances = {}
+  getInstance: (index) ->
+    index = parseInt(index)
+    @instances[index] ? @model[index % @model.length]
+  set: (index, value) ->
+    index = parseInt(index)
+    @instances[index] = value
   toObject: ->
     out = []
-    for outIndex in [0...@length]
-      out.push @model[outIndex % @model.length]
+    for index in [0...@length]
+      out.push @getInstance(index).toObject()
     out
 
 class Definition
@@ -77,7 +84,8 @@ class IdentityDefinition extends Definition
 
 class ArrayDefinition extends Definition
   initialize: -> [@modelArray] = @args
-  stage: -> new ArrayInstance(@modelArray, @modelArray.length)
+  stage: ->
+    new ArrayInstance(@modelArray.map((value) -> new Instance value), @modelArray.length)
 
 class DotNotationObjectDefinition extends Definition
   initialize: ->
@@ -96,6 +104,7 @@ class DotNotationObjectDefinition extends Definition
 class DotNotationPathDefinition extends Definition
   initialize: ->
     [fullPath, descendantDefinition] = @args
+    fullPath = fullPath.replace /\[(.+?)\]/g, '.$1' # prefer dot notation instead of bracket notation
     [fullPath, @param, childPath] = fullPath.match /^(.+?)(?:\.(.*))?$/
     @childDefinition =
       if @param.match /\[\]$/
