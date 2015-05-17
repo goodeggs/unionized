@@ -9,6 +9,8 @@ class Definition
         FunctionDefinition
       else if _.isFunction(definition.then) # promise!
         AsyncDefinition
+      else if _.isArray(definition)
+        ArrayDefinition
       else if _.isPlainObject(definition)
         DotNotationObjectDefinition
       else
@@ -16,23 +18,30 @@ class Definition
     new subclass(arguments...)
   isDefinition: -> true
   constructor: (@args...) -> @initialize?()
-  create: -> throw new Error("Subclasses must implement `create`!")
-  createAsync: (args...) -> new Promise (resolve) => resolve(@create(args...))
+  stage: -> throw new Error("Subclasses must implement `stage`!")
+  stageAsync: (args...) -> new Promise (resolve) => resolve(@stage(args...))
 
 class Factory extends Definition
-  initialize: -> [@definitions] = @args
+  # Public API:
   factory: (definition) ->
     new Factory [@definitions..., Definition.new(definition)]
   create: (optionalDefinition) ->
     return @factory(optionalDefinition).create() if optionalDefinition?
-    @definitions.reduce ((memo, definition) -> definition.create(memo)), {}
+    @stage()
   createAsync: (args...) ->
     callback = args.pop() # there should always be a callback
     optionalDefinition = args.shift() # there may or may not be an optional definition
     return @factory(optionalDefinition).createAsync(callback) if optionalDefinition?
+    @stageAsync().asCallback(callback)
+
+  # Private:
+  initialize: -> [@definitions] = @args
+  stage: ->
+    @definitions.reduce ((memo, definition) -> definition.stage(memo)), {}
+  stageAsync: ->
     object = {}
-    reducer = (builtObject, definition) -> definition.createAsync(builtObject)
-    Promise.reduce(@definitions, reducer, object).asCallback(callback)
+    reducer = (builtObject, definition) -> definition.stageAsync(builtObject)
+    Promise.reduce(@definitions, reducer, object)
 
   # it's awkward that these following are instance methods, but it means they'll
   # always be available even if a subclass gets exported
@@ -40,20 +49,29 @@ class Factory extends Definition
 
 class IdentityDefinition extends Definition
   initialize: -> [@identity] = @args
-  create: -> @identity
+  stage: -> @identity
+
+class ArrayDefinition extends Definition
+  initialize: ->
+    [@modelArray] = @args
+    @length = @modelArray.length
+  stage: ->
+    out = []
+    out.__definition = @
+    out
 
 class DotNotationObjectDefinition extends Definition
   initialize: ->
     object = @args[0]
     @paths = Object.keys(object).map (path) ->
       new DotNotationPathDefinition(path, object[path])
-  create: (object) ->
+  stage: (object) ->
     object ?= {}
-    @paths.reduce ((memo, definition) -> definition.create(memo)), object
+    @paths.reduce ((memo, definition) -> definition.stage(memo)), object
     object
-  createAsync: (object) ->
+  stageAsync: (object) ->
     object ?= {}
-    reducer = (builtObject, definition) -> definition.createAsync(builtObject)
+    reducer = (builtObject, definition) -> definition.stageAsync(builtObject)
     Promise.reduce(@paths, reducer, object)
 
 class DotNotationPathDefinition extends Definition
@@ -64,24 +82,24 @@ class DotNotationPathDefinition extends Definition
       new DotNotationPathDefinition(childPath, descendantDefinition)
     else
       Definition.new descendantDefinition
-  create: (object) ->
+  stage: (object) ->
     object ?= {}
-    object[@param] = @childDefinition.create(object[@param])
+    object[@param] = @childDefinition.stage(object[@param])
     object
-  createAsync: (object) ->
+  stageAsync: (object) ->
     object ?= {}
-    @childDefinition.createAsync(object[@param]).then (result) =>
+    @childDefinition.stageAsync(object[@param]).then (result) =>
       object[@param] = result
       object
 
 class FunctionDefinition extends Definition
   initialize: -> [@function] = @args
-  create: (args...) -> @function(args...)
+  stage: (args...) -> @function(args...)
 
 class AsyncDefinition extends Definition
   initialize: -> [@promise] = @args
-  create: -> throw new Error("Cannot synchronously create this object!")
-  createAsync: (args...) ->
-    @promise.then (definition) -> Definition.new(definition).create(args...)
+  stage: -> throw new Error("Cannot synchronously stage this object!")
+  stageAsync: (args...) ->
+    @promise.then (definition) -> Definition.new(definition).stage(args...)
 
 module.exports = new Factory([])
