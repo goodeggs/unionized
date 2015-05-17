@@ -17,6 +17,14 @@ class ObjectInstance extends Instance
     out[key] = value.toObject() for key, value of @instances
     out
 
+class ArrayInstance extends Instance
+  constructor: (@model, @length = 0) ->
+  toObject: ->
+    out = []
+    for outIndex in [0...@length]
+      out.push @model[outIndex % @model.length]
+    out
+
 class Definition
   @new: (definition) ->
     return definition if definition.isDefinition?()
@@ -68,10 +76,8 @@ class IdentityDefinition extends Definition
   stage: -> new Instance(@identity)
 
 class ArrayDefinition extends Definition
-  initialize: ->
-    [@modelArray] = @args
-    @length = @modelArray.length
-  stage: -> new Instance([])
+  initialize: -> [@modelArray] = @args
+  stage: -> new ArrayInstance(@modelArray, @modelArray.length)
 
 class DotNotationObjectDefinition extends Definition
   initialize: ->
@@ -91,10 +97,14 @@ class DotNotationPathDefinition extends Definition
   initialize: ->
     [fullPath, descendantDefinition] = @args
     [fullPath, @param, childPath] = fullPath.match /^(.+?)(?:\.(.*))?$/
-    @childDefinition = if childPath
-      new DotNotationPathDefinition(childPath, descendantDefinition)
-    else
-      Definition.new descendantDefinition
+    @childDefinition =
+      if @param.match /\[\]$/
+        @param = @param.substring(0, @param.length - 2)
+        new DotNotationArrayLengthDefinition descendantDefinition
+      else if childPath
+        new DotNotationPathDefinition(childPath, descendantDefinition)
+      else
+        Definition.new descendantDefinition
   stage: (instance) ->
     instance ?= new ObjectInstance()
     instance.set(@param, @childDefinition.stage(instance.getInstance @param))
@@ -104,6 +114,12 @@ class DotNotationPathDefinition extends Definition
     @childDefinition.stageAsync(instance.getInstance @param).then (valueInstance) =>
       instance.set(@param, valueInstance)
       instance
+
+class DotNotationArrayLengthDefinition extends Definition
+  initialize: -> [@length] = @args
+  stage: (instance) ->
+    instance.length = @length
+    instance
 
 class FunctionDefinition extends Definition
   initialize: -> [@function] = @args
