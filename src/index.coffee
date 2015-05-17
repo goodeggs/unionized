@@ -65,6 +65,11 @@ class Factory extends Definition
     return @factory(optionalDefinition).createAsync(callback) if optionalDefinition?
     @stageAsync().then((instance) -> instance.toObject()).asCallback(callback)
 
+  # it's awkward that these following are instance methods, but it means they'll
+  # always be available even if a subclass gets exported
+  async: (resolver) -> Promise.fromNode(resolver)
+  array: (args...) -> new EmbeddedArrayDefinition(args...)
+
   # Private:
   initialize: -> [@definitions] = @args
   stage: ->
@@ -74,18 +79,26 @@ class Factory extends Definition
     reducer = (memo, definition) -> definition.stageAsync(memo)
     Promise.reduce(@definitions, reducer, instance)
 
-  # it's awkward that these following are instance methods, but it means they'll
-  # always be available even if a subclass gets exported
-  async: (resolver) -> Promise.fromNode(resolver)
-
 class IdentityDefinition extends Definition
   initialize: -> [@identity] = @args
   stage: -> new Instance(@identity)
 
 class ArrayDefinition extends Definition
-  initialize: -> [@modelArray] = @args
+  initialize: ->
+    [modelArray] = @args
+    @length = modelArray.length
+    @modelArray = modelArray.map (definition) -> Definition.new definition
   stage: ->
-    new ArrayInstance(@modelArray.map((value) -> new Instance value), @modelArray.length)
+    instances = @modelArray.map((definition) -> definition.stage())
+    new ArrayInstance(instances, @length)
+  stageAsync: ->
+    Promise.map(@modelArray, (definition) -> definition.stageAsync())
+      .then (instances) => new ArrayInstance(instances, @length)
+
+class EmbeddedArrayDefinition extends ArrayDefinition
+  initialize: ->
+    [repeatObject, @length] = @args
+    @modelArray = [Definition.new repeatObject]
 
 class DotNotationObjectDefinition extends Definition
   initialize: ->
