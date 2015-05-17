@@ -15,7 +15,7 @@ module.exports = class Factory extends Definition
     callback = args.pop() # there should always be a callback
     optionalDefinition = args.shift() # there may or may not be an optional definition
     return @factory(optionalDefinition).createAsync(callback) if optionalDefinition?
-    @stageAsync().then((instance) -> instance.toObject()).asCallback(callback)
+    @stageAsync().then((instance) -> instance.toObjectAsync()).asCallback(callback)
 
   # it's awkward that these following are instance methods, but it means they'll
   # always be available even if a subclass gets exported
