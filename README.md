@@ -7,7 +7,6 @@ Recommended for use in testing, but you never know where else this could be usef
 [![NPM version](https://badge.fury.io/js/unionized.png)](http://badge.fury.io/js/unionized)
 [![Dependency status](https://david-dm.org/goodeggs/unionized.png)](https://david-dm.org/goodeggs/unionized)
 [![Build Status](https://travis-ci.org/goodeggs/unionized.png)](https://travis-ci.org/goodeggs/unionized)
-[![Coverage Status](https://coveralls.io/repos/goodeggs/unionized/badge.png?branch=master)](https://coveralls.io/r/goodeggs/unionized?branch=master)
 
 # Usage
 
@@ -19,9 +18,9 @@ unionized.create({
   'pickup.pickupWindow.startAt': '2pm',
   'pickup.pickupWindow.endAt': '4pm',
   'pickup.name': 'San Francisco Ferry Building'
-}, function(err, result) { console.log(result); });
+})
 
-// prints:
+// creates:
 //   {
 //      pickup: {
 //        pickupWindow: {
@@ -36,15 +35,14 @@ unionized.create({
 ...or, better, define factories to create those objects for you:
 
 ```javascript
-var pickupFactory = unionized.define(function(done) {
-  this.set('pickup.pickupWindow.startAt', '2pm');
-  this.set('pickup.pickupWindow.endAt', '4pm');
-  this.set('pickup.name', 'San Francisco Ferry Building');
-  done();
-});
-pickupFactory.create(function(err, result) { console.log(result); });
+var pickupFactory = unionized.factory({
+  'pickup.pickupWindow.startAt': '2pm',
+  'pickup.pickupWindow.endAt': '4pm',
+  'pickup.name': 'San Francisco Ferry Building'
+})
+pickupFactory.create()
 
-// prints:
+// creates:
 //   {
 //      pickup: {
 //        pickupWindow: {
@@ -56,15 +54,15 @@ pickupFactory.create(function(err, result) { console.log(result); });
 //   }
 ```
 
-We can customize the objects that our factory returns us:
+We can override results on created factories:
 
 ```javascript
 pickupFactory.create({
   'pickup.pickupWindow.startAt': '1am',
   'options.caveats': 'Customers are expected to bring their own shopping bags'
-}, function(err, result) { console.log(result); });
+})
 
-// prints:
+//creates:
 //   {
 //      pickup: {
 //        pickupWindow: {
@@ -79,33 +77,58 @@ pickupFactory.create({
 //   }
 ```
 
-
-We can do this **synchronously**, too:
+We can create objects dynamically:
 
 ```javascript
-var pickupFactory = unionized.define(function() {
-  this.set('pickup.pickupWindow.startAt', '2pm');
-  this.set('pickup.pickupWindow.endAt', '4pm');
-  this.set('pickup.name', 'San Francisco Ferry Building');
-});
+pickupFactory.create({
+  'pickup.pickupWindow.startAt': -> clock.now()
+})
 ```
 
-but then we can only use `.json` on the factory to get a POJO; `.create` and `.build` are
-only for asynchronous factories.
+We can create objects **asynchronously**, too:
 
+```javascript
+var request = require('request')
+var pickupFactory = unionized.factory({
+  'pickup.pickupWindow.startAt': '2pm',
+  'pickup.pickupWindow.endAt': '4pm',
+  'pickup.websiteContents': unionized.async(function(propReady) {
+    request('https://goodeggs.com', function(error, response, body) { propReady(error, body) })
+   })
+})
+pickupFactory.createAsync(
+  {'pickup.name': 'San Francisco Ferry Building'},
+  function(error, pickup) {
+    console.log(pickup.websiteContents)
+  }
+)
+```
 
+Asynchronous objects can also be created using promises:
+
+```javascript
+var pickupFactory = unionized.factory({
+  'pickup.pickupWindow.startAt': '2pm',
+  'pickup.pickupWindow.endAt': '4pm',
+  'pickup.websiteContents': -> jQuery.ajax('https://goodeggs.com')
+})
+pickupFactory.createAsync({'pickup.name': 'San Francisco Ferry Building'})
+  .then(function(pickup) {
+    console.log(pickup.websiteContents)
+  })
+```
 
 We can also embed factories inside other factories:
 
 ```javascript
-var orderFactory = unionized.define(function(done) {
-  this.set('customer', 'Lex Luthor');
-  this.set('total', 3.50);
-  this.embed('deliveryDetails', pickupFactory, done);
+var orderFactory = unionized.factory({
+  'customer': 'Lex Luthor'
+  'total': 3.50
+  'deliveryDetails': pickupFactory
 });
-orderFactory.create(function(err, result) { console.log(result); });
+orderFactory.create()
 
-// prints:
+// creates:
 //    {
 //      customer: "Lex Luthor",
 //      total: 3.50,
@@ -124,14 +147,13 @@ orderFactory.create(function(err, result) { console.log(result); });
 And we can create factories that extend and modify other factories:
 
 ```javascript
-var lateNightPickupFactory = pickupFactory.define(function(done) {
-  this.set('pickupWindow.startAt', '11pm');
-  this.set('pickupWindow.endAt', '12am');
-  done();
+var lateNightPickupFactory = pickupFactory.factory({
+  'pickupWindow.startAt': '11pm'
+  'pickupWindow.endAt': '12am'
 });
-lateNightPickupFactory.create(function(err, result) { console.log(result); });
+lateNightPickupFactory.create();
 
-// prints:
+// creates:
 //   {
 //      pickup: {
 //        pickupWindow: {
@@ -141,7 +163,6 @@ lateNightPickupFactory.create(function(err, result) { console.log(result); });
 //        name: 'San Francisco Ferry Building'
 //     }
 //   }
-
 ```
 
 
