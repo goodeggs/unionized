@@ -54,19 +54,32 @@ it 'can pass in functions', ->
   expect(result.foo.bar).to.equal 'baz'
 
 it 'can pass in async functions', (testDone) ->
+  asyncFunctionHasRun = false
   asyncFactory = unionized.factory
     'foo.bar': unionized.async (propReady) ->
+      asyncFunctionHasRun = true
       propReady(null, 'baz')
+  expect(asyncFunctionHasRun).to.be.false
   asyncFactory.createAsync (err, result) ->
     return testDone(err) if err
     expect(result.foo.bar).to.equal 'baz'
     testDone()
 
-it 'can pass in promises', ->
+it 'can pass in promises',  (testDone) ->
   asyncFactory = unionized.factory
     'foo.bar': new Promise (resolve, reject) -> resolve 'baz'
-  asyncFactory.createAsync().then (result) ->
+  asyncFactory.createAsync (err, result) ->
+    return testDone(err) if err
     expect(result.foo.bar).to.equal 'baz'
+    testDone()
+
+it 'can pass in promises that are created within functions', (testDone) ->
+  asyncFactory = unionized.factory
+    'foo.bar': -> new Promise (resolve, reject) -> resolve 'baz'
+  asyncFactory.createAsync (err, result) ->
+    return testDone(err) if err
+    expect(result.foo.bar).to.equal 'baz'
+    testDone()
 
 it 'can pass in other factories', ->
   componentFactory = unionized.factory
@@ -102,3 +115,13 @@ it 'can pass in arrays of other factories', ->
   factory = unionized.factory
     'arr': unionized.array childFactory, 3
   expect(factory.create().arr).to.deep.equal [{bar: 'baz'}, {bar: 'baz'}, {bar: 'baz'}]
+
+it 'can pass in arrays of async factories', (testDone) ->
+  childFactory = unionized.factory
+    'bar': -> new Promise (resolve) -> resolve 'baz'
+  factory = unionized.factory
+    'arr': unionized.array childFactory, 3
+  factory.createAsync (err, result) ->
+    return testDone(err) if err
+    expect(result.arr).to.deep.equal [{bar: 'baz'}, {bar: 'baz'}, {bar: 'baz'}]
+    testDone()

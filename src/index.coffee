@@ -67,7 +67,8 @@ class Factory extends Definition
 
   # it's awkward that these following are instance methods, but it means they'll
   # always be available even if a subclass gets exported
-  async: (resolver) -> Promise.fromNode(resolver)
+  async: (resolver, thisArg = null) ->
+    (args...) -> Promise.fromNode(resolver.bind thisArg, args...)
   array: (args...) -> new EmbeddedArrayDefinition(args...)
 
   # Private:
@@ -145,7 +146,10 @@ class DotNotationArrayLengthDefinition extends Definition
 
 class FunctionDefinition extends Definition
   initialize: -> [@function] = @args
-  stage: (args...) -> new Instance(@function(args...))
+  stage: (args...) ->
+    Definition.new(@function(_.compact(args)...)).stage(args...)
+  stageAsync: (args...) ->
+    Definition.new(@function(_.compact(args)...)).stageAsync(args...)
 
 class AsyncDefinition extends Definition
   initialize: -> [@promise] = @args
