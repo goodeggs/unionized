@@ -1,11 +1,9 @@
 expect = require('chai').expect
 moment = require 'moment'
-mongoose = require 'mongoose'
+mongoose = require './mongoose'
 unionized = require '..'
 
-mongoose.connect('mongodb://localhost/test')
-
-describe 'mongoose tests', ->
+describe 'mongoose kitten tests', ->
 
   beforeEach ->
     @instance = null
