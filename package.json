@@ -6,8 +6,7 @@
     "build": "coffee --bare --output lib/ --compile src/*.coffee",
     "pretest": "npm run build",
     "test": "mocha test/*.spec.coffee",
-    "coveralls": "mocha --compilers coffee:coffee-script/register --require blanket --reporter mocha-lcov-reporter | ./node_modules/coveralls/bin/coveralls.js",
-    "ci": "npm run test && npm run coveralls"
+    "ci": "npm run test"
   },
   "repository": {
     "type": "git",
@@ -26,11 +25,9 @@
     "blanket": "~1.1.6",
     "chai": "~1.9.0",
     "coffee-script": "^1.9.2",
-    "coveralls": "~2.7.0",
     "fibrous": "~0.3.1",
     "lodash": "^2.4.1",
     "mocha": "~1.17.1",
-    "mocha-lcov-reporter": "0.0.1",
     "moment": "^2.10.3",
     "mongoose": "^4.0.3"
   },
@@ -48,7 +45,8 @@
   "contributors": [
     "Max Edmands <max@goodeggs.com> (http://maxedmands.com)",
     "Danny Nelson <danny@goodeggs.com>",
-    "Alex Gorbatchev <alex@goodeggs.com>"
+    "Ben Buckman <ben@goodeggs.com>",
+    "Alex Gorbatchev"
   ],
   "license": "MIT",
   "config": {
