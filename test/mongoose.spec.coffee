@@ -159,6 +159,9 @@ describe 'mongoose tests', ->
       @factory = unionized.mongooseFactory(@Model).factory name: 'Fluffy'
 
     beforeEach (done) ->
+      @Model.remove (error) -> done error
+
+    beforeEach (done) ->
       @factory.createAndSave({description: 'Big ball of fluff'}, (error) => done error)
 
     it 'saves the kitten to the database', (done) ->
