@@ -126,3 +126,29 @@ describe 'readme tests', ->
       return testDone(err) if err
       expect(result.arr).to.deep.equal [{bar: 'baz'}, {bar: 'baz'}, {bar: 'baz'}]
       testDone()
+
+  it 'returns a promise from createAsync', (testDone) ->
+    asyncFactory = unionized.factory
+      'foo.bar': unionized.async (propReady) ->
+        propReady(null, 'baz')
+
+    asyncFactory.createAsync()
+      .then (result) ->
+        expect(result.foo.bar).to.equal('baz')
+        testDone()
+      .catch (error) ->
+        testDone(error)
+
+  it 'returns a promise from createAsync when parameters are overridden', (testDone) ->
+    asyncFactory = unionized.factory
+      'foo.bar': unionized.async (propReady) ->
+        propReady(null, 'baz')
+
+    asyncFactory.createAsync('foo.biz': 'buzz')
+      .then (result) ->
+        expect(result.foo.bar).to.equal('baz')
+        expect(result.foo.biz).to.equal('buzz')
+        testDone()
+      .catch (error) ->
+        testDone(error)
+

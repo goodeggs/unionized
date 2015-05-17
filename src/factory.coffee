@@ -1,4 +1,5 @@
 Promise = require 'bluebird'
+_ = require 'lodash'
 Definition = require './definition'
 EmbeddedArrayDefinition = require './embedded_array_definition'
 ObjectInstance = require './object_instance'
@@ -12,8 +13,8 @@ module.exports = class Factory extends Definition
     return @factory(optionalDefinition).create() if optionalDefinition?
     @stage().toObject()
   createAsync: (args...) ->
-    callback = args.pop() # there should always be a callback
-    optionalDefinition = args.shift() # there may or may not be an optional definition
+    optionalDefinition = args[0] if _.isObject(args[0]) and not _.isFunction(args[0])
+    callback = args[args.length - 1] if _.isFunction(args[args.length - 1])
     return @factory(optionalDefinition).createAsync(callback) if optionalDefinition?
     @stageAsync().then((instance) -> instance.toObjectAsync()).asCallback(callback)
 
