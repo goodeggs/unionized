@@ -34,11 +34,11 @@ class ArrayInstance extends Instance
 
 class Definition
   @new: (definition) ->
-    return definition if definition.isDefinition?()
+    return definition if definition?.isDefinition?()
     subclass =
       if _.isFunction(definition)
         FunctionDefinition
-      else if _.isFunction(definition.then) # promise!
+      else if _.isFunction(definition?.then) # promise!
         AsyncDefinition
       else if _.isArray(definition)
         ArrayDefinition
