@@ -99,6 +99,7 @@ class ArrayDefinition extends Definition
 class EmbeddedArrayDefinition extends ArrayDefinition
   initialize: ->
     [repeatObject, @length] = @args
+    @length ?= 2
     @modelArray = [Definition.new repeatObject]
 
 class DotNotationObjectDefinition extends Definition
