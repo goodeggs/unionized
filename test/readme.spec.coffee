@@ -49,10 +49,35 @@ describe 'readme tests', ->
     expect(result.foo.biz).to.equal 'buzz'
     expect(result.grue).to.equal 'snork'
 
-  it 'can pass in functions', ->
-    result = unionized.create
-      'foo.bar': -> 'baz'
+  it 'can pass in function for factory', ->
+    factory = unionized.factory ->
+      'foo.bar': 'baz'
+    result = factory.create()
     expect(result.foo.bar).to.equal 'baz'
+
+  it 'can pass in function for value', ->
+    factory = unionized.factory
+      'foo.bar': -> 'baz'
+    result = factory.create()
+    expect(result.foo.bar).to.equal 'baz'
+
+  it 'has access to current instance', ->
+    baseFactory = unionized.factory ->
+      foo: -> Math.ceil Math.random() * 100
+
+    factory = baseFactory.factory (instance) ->
+      bar: instance.toObject().foo + 1
+
+    result = factory.create()
+    expect(result.bar).to.equal result.foo + 1
+
+  it 'has access to overrides', ->
+    factory = unionized.factory (instance, overrides) ->
+      bar: overrides.foo + 1
+
+    result = factory.create(foo: 10)
+    expect(result.foo).to.equal 10
+    expect(result.bar).to.equal 11
 
   it 'can pass in async functions', (testDone) ->
     asyncFunctionHasRun = false
