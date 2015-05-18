@@ -12,24 +12,24 @@ module.exports = class Factory extends Definition
 
   create: (overrides) ->
     return @factory(overrides).create() if overrides?
-    @stage().toObject()
+    @buildInstance().toObject()
 
   createAsync: (args...) ->
     optionalDefinition = args[0] if _.isObject(args[0]) and not _.isFunction(args[0])
     callback = args[args.length - 1] if _.isFunction(args[args.length - 1])
     return @factory(optionalDefinition).createAsync(callback) if optionalDefinition?
-    @stageAsync().then((instance) -> instance.toObjectAsync()).asCallback(callback)
+    @buildInstanceAsync().then((instance) -> instance.toObjectAsync()).asCallback(callback)
 
   onCreate: (hook) -> @factory(new HookDefinition(hook))
 
   # Private:
   initialize: -> [@definitions] = @args
 
-  stage: ->
-    @definitions.reduce ((instance, definition) -> definition.stage(instance)), new ObjectInstance()
+  buildInstance: ->
+    @definitions.reduce ((instance, definition) -> definition.buildInstance(instance)), new ObjectInstance()
 
-  stageAsync: ->
+  buildInstanceAsync: ->
     instance = new ObjectInstance()
-    reducer = (memo, definition) -> definition.stageAsync(memo)
+    reducer = (memo, definition) -> definition.buildInstanceAsync(memo)
     Promise.reduce(@definitions, reducer, instance)
 

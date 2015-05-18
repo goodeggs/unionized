@@ -3,7 +3,8 @@ Definition = require './definition'
 module.exports = class HookDefinition extends Definition
   initialize: ->
     [@hook] = @args
-  stage: (instance) ->
+
+  buildInstance: (instance) ->
     instance ?= new ObjectInstance()
     instance.hooks.push(@hook)
     instance

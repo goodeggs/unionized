@@ -5,6 +5,8 @@ module.exports = class MongooseDocumentDefinition extends DotNotationObjectDefin
   initialize: ->
     @Model = @args[1]
     super()
-  stage: -> super(new MongooseDocumentInstance(@Model))
-  stageAsync: -> super(new MongooseDocumentInstance(@Model))
+
+  buildInstance: -> super(new MongooseDocumentInstance(@Model))
+
+  buildInstanceAsync: -> super(new MongooseDocumentInstance(@Model))
 

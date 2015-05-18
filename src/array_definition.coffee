@@ -8,10 +8,10 @@ module.exports = class ArrayDefinition extends Definition
     [modelArray] = @args
     @length = modelArray.length
     @modelArray = modelArray.map (definition) -> definitionFactory(definition)
-  stage: ->
-    instances = @modelArray.map((definition) -> definition.stage())
+  buildInstance: ->
+    instances = @modelArray.map((definition) -> definition.buildInstance())
     new ArrayInstance(instances, @length)
-  stageAsync: ->
-    Promise.map(@modelArray, (definition) -> definition.stageAsync())
+  buildInstanceAsync: ->
+    Promise.map(@modelArray, (definition) -> definition.buildInstanceAsync())
       .then (instances) => new ArrayInstance(instances, @length)
 

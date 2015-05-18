@@ -3,7 +3,7 @@ definitionFactory = require './definition_factory'
 
 module.exports = class AsyncDefinition extends Definition
   initialize: -> [@promise] = @args
-  stage: -> throw new Error("Cannot synchronously stage this object!")
-  stageAsync: (args...) ->
-    @promise.then (definition) -> definitionFactory(definition).stage(args...)
+  buildInstance: -> throw new Error("Cannot synchronously buildInstance this object!")
+  buildInstanceAsync: (args...) ->
+    @promise.then (definition) -> definitionFactory(definition).buildInstance(args...)
 

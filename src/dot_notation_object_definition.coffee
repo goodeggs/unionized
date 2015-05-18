@@ -8,12 +8,14 @@ module.exports = class DotNotationObjectDefinition extends Definition
     object = @args[0]
     @paths = Object.keys(object).map (path) ->
       new DotNotationPathDefinition(path, object[path])
-  stage: (instance) ->
+
+  buildInstance: (instance) ->
     instance ?= new ObjectInstance()
-    @paths.reduce ((memo, definition) -> definition.stage(memo)), instance
+    @paths.reduce ((memo, definition) -> definition.buildInstance(memo)), instance
     instance
-  stageAsync: (instance) ->
+
+  buildInstanceAsync: (instance) ->
     instance ?= new ObjectInstance()
-    reducer = (memo, definition) -> definition.stageAsync(memo)
+    reducer = (memo, definition) -> definition.buildInstanceAsync(memo)
     Promise.reduce(@paths, reducer, instance)
 
