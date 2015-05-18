@@ -83,14 +83,6 @@ describe 'readme tests', ->
     result = factory.create()
     expect(result.bar).to.equal result.foo + 1
 
-  it 'has access to overrides', ->
-    factory = unionized.factory (instance, overrides) ->
-      bar: overrides.foo + 1
-
-    result = factory.create(foo: 10)
-    expect(result.foo).to.equal 10
-    expect(result.bar).to.equal 11
-
   it 'can pass in async functions', (testDone) ->
     asyncFunctionHasRun = false
     asyncFactory = unionized.factory

@@ -147,9 +147,27 @@ describe 'mongoose kitten tests', ->
     it 'is a model', ->
       expect(@instance).to.be.an.instanceof @Model
 
-  describe 'saving', ->
+  describe 'onCreate hooks', ->
     before ->
       @Model = mongoose.model 'Kitten6', mongoose.Schema
+        age: { type: Number, required: true }
+        humanEquivalentAge: Number
+
+      @factory = unionized.mongooseFactory(@Model).onCreate (instance) ->
+        instance.humanEquivalentAge = instance.age * 3
+        instance
+
+    beforeEach (done) ->
+      @factory.createAsync { age: 1 }
+      , (error, @instance) => done error
+
+    it 'combines default attributes', ->
+      expect(@instance).to.have.property 'age', 1
+      expect(@instance).to.have.property 'humanEquivalentAge', 3
+
+  describe 'saving', ->
+    before ->
+      @Model = mongoose.model 'Kitten7', mongoose.Schema
         name: { type: String, required: true }
         age: { type: Number, required: true }
         description: String
@@ -169,7 +187,7 @@ describe 'mongoose kitten tests', ->
 
   describe 'lean creation', ->
     before ->
-      @Model = mongoose.model 'Kitten7', mongoose.Schema
+      @Model = mongoose.model 'Kitten8', mongoose.Schema
         name: { type: String, required: true }
         age: { type: Number, required: true }
         description: String
