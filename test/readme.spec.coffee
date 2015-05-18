@@ -138,11 +138,14 @@ describe 'readme tests', ->
     expect(factory.create('arr[]': 3).arr).to.deep.equal [1, 2, 3]
     expect(factory.create('arr[]': 4).arr).to.deep.equal [1, 2, 3, 1]
     expect(factory.create('arr[1]': 5).arr).to.deep.equal [1, 5, 3]
+    expect(factory.factory('arr[]': 1).create(arr: [4,5,6,7]).arr).to.deep.equal [4,5,6,7]
 
-    factory = factory.factory
-      'arr[]': 1
-    expect(factory.create().arr).to.deep.equal [1]
-    expect(factory.create(arr: [4,5,6,7]).arr).to.deep.equal [4,5,6,7]
+    factory = factory.factory('arr[]': 0)
+    result = factory.create('arr[0]': 4)
+    expect(result.arr).to.deep.equal [4]
+
+    result = factory.create('arr[3]': 4)
+    expect(result.arr).to.deep.equal [1, 2, 3, 4]
 
   it 'can pass in arrays of other factories', ->
     childFactory = unionized.factory

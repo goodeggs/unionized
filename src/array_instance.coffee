@@ -11,6 +11,10 @@ module.exports = class ArrayInstance extends Instance
 
   set: (index, value) ->
     index = parseInt(index)
+
+    if index >= @length
+      @length = index + 1
+
     @instances[index] = value
 
   toObject: ->
