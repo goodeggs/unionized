@@ -130,7 +130,7 @@ describe 'readme tests', ->
     expect(result.foo.bar).to.equal 'spuz'
     expect(result.foo.do).to.equal 'wop'
 
-  it 'can pass in configurable arrays', ->
+  it 'can pass in and override configurable arrays', ->
     factory = unionized.factory
       'arr': [1,2,3]
     expect(factory.create('arr[]': 1).arr).to.deep.equal [1]
@@ -138,6 +138,11 @@ describe 'readme tests', ->
     expect(factory.create('arr[]': 3).arr).to.deep.equal [1, 2, 3]
     expect(factory.create('arr[]': 4).arr).to.deep.equal [1, 2, 3, 1]
     expect(factory.create('arr[1]': 5).arr).to.deep.equal [1, 5, 3]
+
+    factory = factory.factory
+      'arr[]': 1
+    expect(factory.create().arr).to.deep.equal [1]
+    expect(factory.create(arr: [4,5,6,7]).arr).to.deep.equal [4,5,6,7]
 
   it 'can pass in arrays of other factories', ->
     childFactory = unionized.factory
