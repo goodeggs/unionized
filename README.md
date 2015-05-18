@@ -11,7 +11,7 @@ license](https://img.shields.io/npm/l/express.svg)](https://img.shields.io/travi
 
 # Links
 
-- Installation Instructions
+- Installation instructions
 - API Documentation
 
 # Examples
