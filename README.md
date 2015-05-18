@@ -5,14 +5,14 @@ Unionized is a factory library for setting up JavaScript objects as test data. C
 [![NPM
 version](https://img.shields.io/npm/v/unionized.svg)](https://www.npmjs.com/package/unionized)
 [![NPM
-license](https://img.shields.io/npm/l/express.svg)](https://img.shields.io/travis/joyent/node.svg)
+license](https://img.shields.io/npm/l/express.svg)](https://github.com/goodeggs/unionized/blob/master/LICENSE)
 [![Dependency status](https://img.shields.io/david/goodeggs/unionized.svg)](https://david-dm.org/goodeggs/unionized)
 [![Build Status](https://img.shields.io/travis/goodeggs/unionized.svg)](https://travis-ci.org/goodeggs/unionized)
 
 # Links
 
-- Installation instructions
-- API Documentation
+- [Installation instructions](https://github.com/goodeggs/unionized/blob/master/docs/installation.md)
+- [API Documentation](https://github.com/goodeggs/unionized/blob/master/docs/api.md)
 
 # Examples
 
@@ -73,9 +73,9 @@ organizationFactory.create()
 
 More features you may be interested in:
 
-- Factory inheritance
-- Auto-generating factories from database schemas (currently we only support mongoose)
-- Asynchronous factories
+- [Factory inheritance](https://github.com/goodeggs/unionized/blob/master/docs/api.md#example)
+- [Auto-generating factories from database schemas (currently we only support mongoose)](https://github.com/goodeggs/unionized/blob/master/docs/api.md#factorymongoosefactory)
+- [Asynchronous factories](https://github.com/goodeggs/unionized/blob/master/docs/api.md#example-2)
 
 # License
 

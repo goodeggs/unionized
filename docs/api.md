@@ -6,7 +6,7 @@
 var factory = require('unionized');
 ```
 
-The `unionized` module exports an instance of the [`Factory`](#-factory-) class.
+The `unionized` module exports an instance of the [`Factory`](#factory) class.
 
 ---------------------------
 
@@ -14,29 +14,29 @@ The `unionized` module exports an instance of the [`Factory`](#-factory-) class.
 
 `Factory` contains the following public methods:
 
-Method                                            | Description
---------------------------------------------------|-------
-[`factory.factory()`](#-factory-factory-)         | Build a new factory as a child of the current factory
-[`factory.create()`](#-factory-create-)           | Create an object using this factory
-[`factory.createAsync()`](#-factory-createasync-) | Create an object using this factory, asynchronously
+Method                                         | Description
+-----------------------------------------------|-------
+[`factory.factory()`](#factoryfactory)         | Build a new factory as a child of the current factory
+[`factory.create()`](#factorycreate)           | Create an object using this factory
+[`factory.createAsync()`](#factorycreateasync) | Create an object using this factory, asynchronously
 
 Additionally, every instance of `Factory` contains the following utility methods:
 
-Method                                                    | Description
-----------------------------------------------------------|-------
-[`factory.array()`](#-factory-array-)                     | Describe the contents of an array that a factory can create
-[`factory.async()`](#-factory-async-)                     | Define an asynchronous and dynamically-generated factory attribute
-[`factory.enum()`](#-factory-enum-)                       | Define a list of options for a factory attribute
-[`factory.mongooseFactory()`](#-factory-mongoosefactory-) | Build a new factory out of a mongoose model
+Method                                                 | Description
+-------------------------------------------------------|-------
+[`factory.array()`](#factoryarray)                     | Describe the contents of an array that a factory can create
+[`factory.async()`](#factoryasync)                     | Define an asynchronous and dynamically-generated factory attribute
+[`factory.enum()`](#factoryenum)                       | Define a list of options for a factory attribute
+[`factory.mongooseFactory()`](#factorymongoosefactory) | Build a new factory out of a mongoose model
 
-`Factory` is a subtype of [`Definition`](#-definition-) &mdash;
+`Factory` is a subtype of [`Definition`](#definition) &mdash;
 which means you can embed factories inside other factories. More on this later.
 
 -----------------------
 
 ### `factory.factory()`
 
-Build a new factory out of a [`Definition`](#-definition-). Returns another instance of [`Factory`](#-factory-).
+Build a new factory out of a [`Definition`](#definition). Returns another instance of [`Factory`](#factory).
 
 #### Usage:
 
@@ -46,7 +46,7 @@ var factory = parentFactory.factory(definition)
 
 #### Example:
 
-The most common type of [`Definition`](#-definition-) to use here is a [`DotNotationObjectDefinition`](#-dotnotationobjectdefinition-), which can be coerced from an `Object` like in the following example:
+The most common type of [`Definition`](#definition) to use here is a [`DotNotationObjectDefinition`](#dotnotationobjectdefinition), which can be coerced from an `Object` like in the following example:
 
 ```javascript
 var blogFactory = factory.factory({
@@ -56,9 +56,9 @@ var blogFactory = factory.factory({
 })
 ```
 
-Once you have defined your `Factory`, you can call [`create()`](#-factory-create-) or
-[`createAsync()`](#-factory-createasync-) on it to make it create an object, or
-you can call `factory()` on it again to create a (generally more specific) variation on the [`Factory`](#-factory-) you
+Once you have defined your `Factory`, you can call [`create()`](#factorycreate) or
+[`createAsync()`](#factorycreateasync) on it to make it create an object, or
+you can call `factory()` on it again to create a (generally more specific) variation on the [`Factory`](#factory) you
 already have. For example:
 
 ```javascript
@@ -86,10 +86,10 @@ blogFactoryByMax.create() // =>
 
 ### `factory.create()`
 
-Create an instance using this [`Factory`](#-factory-). In most cases, this
+Create an instance using this [`Factory`](#factory). In most cases, this
 creates an instance of `Object`, but that depends on the
-[`Definitions`](#-definition-) that were used to build up the
-`Factory`. Optionally, also accepts a [`Definition`](#-definition`) that can be used to override existing values or add new values to the created instance.
+[`Definitions`](#definition) that were used to build up the
+`Factory`. Optionally, also accepts a [`Definition`](#definition) that can be used to override existing values or add new values to the created instance.
 
 #### Usage:
 
@@ -129,17 +129,17 @@ var card = creditCardFactory.create({
 }
 ```
 
-If any of the [`Definitions`](#-definition-) that make up the Factory are
-asynchronous, you should use [`factory.createAsync()`](#-factory-createasync-);
+If any of the [`Definitions`](#definition) that make up the Factory are
+asynchronous, you should use [`factory.createAsync()`](#factorycreateasync);
 using `factory.create()` will throw an exception.
 
 -------
 
 ### `factory.createAsync()`
 
-Create an object asynchronously, using this [`Factory`](#-factory-). This method returns a `Promise` for an instance. In most cases, the instance will be an `Object`, but that depends on the
-[`Definitions`](#-definition-) that were used to build up the `Factory`.
-Optionally, accepts a [`Definition`](#-definition-) that can be used to override
+Create an object asynchronously, using this [`Factory`](#factory). This method returns a `Promise` for an instance. In most cases, the instance will be an `Object`, but that depends on the
+[`Definitions`](#definition) that were used to build up the `Factory`.
+Optionally, accepts a [`Definition`](#definition) that can be used to override
 existing values or add new values to the created instance. Optionally, also
 accepts a traditional Node-style callback function which returns the instance.
 
