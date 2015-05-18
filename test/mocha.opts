@@ -1,4 +1,5 @@
 --compilers coffee:coffee-script/register
+--bail
 --recursive
 --reporter spec
 --ui bdd

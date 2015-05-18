@@ -1,13 +1,12 @@
 {
   "name": "unionized",
-  "main": "./lib/unionized.js",
+  "main": "./lib/index.js",
   "version": "3.0.0",
   "scripts": {
     "build": "coffee --bare --output lib/ --compile src/*.coffee",
     "pretest": "npm run build",
     "test": "mocha test/*.spec.coffee",
-    "coveralls": "mocha --compilers coffee:coffee-script/register --require blanket --reporter mocha-lcov-reporter | ./node_modules/coveralls/bin/coveralls.js",
-    "ci": "npm run test && npm run coveralls"
+    "ci": "npm run test"
   },
   "repository": {
     "type": "git",
@@ -18,17 +17,19 @@
     "objects"
   ],
   "dependencies": {
-    "async": "^0.9.0"
+    "bluebird": "^2.9.25",
+    "faker": "^2.1.3",
+    "lodash": "^3.8.0"
   },
   "devDependencies": {
     "blanket": "~1.1.6",
     "chai": "~1.9.0",
     "coffee-script": "^1.9.2",
-    "coveralls": "~2.7.0",
     "fibrous": "~0.3.1",
     "lodash": "^2.4.1",
     "mocha": "~1.17.1",
-    "mocha-lcov-reporter": "0.0.1"
+    "moment": "^2.10.3",
+    "mongoose": "^4.0.3"
   },
   "description": "A factory framework for mock test objects in JavaScript. Will generate objects, models, and scenarios for tests.",
   "bugs": {
@@ -44,7 +45,8 @@
   "contributors": [
     "Max Edmands <max@goodeggs.com> (http://maxedmands.com)",
     "Danny Nelson <danny@goodeggs.com>",
-    "Alex Gorbatchev <alex@goodeggs.com>"
+    "Ben Buckman <ben@goodeggs.com>",
+    "Alex Gorbatchev"
   ],
   "license": "MIT",
   "config": {

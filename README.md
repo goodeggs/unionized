@@ -1,195 +1,81 @@
 # Unionized
 
-A user-friendly factory system for easily building up complex objects.
-Can be either synchronous or asynchronous.
-Recommended for use in testing, but you never know where else this could be useful!
+Unionized is a factory library for setting up JavaScript objects as test data. Compare to the [factory_girl](https://github.com/thoughtbot/factory_girl) Ruby gem by [thoughtbot](https://thoughtbot.com/open-source).
 
-[![NPM version](https://badge.fury.io/js/unionized.png)](http://badge.fury.io/js/unionized)
-[![Dependency status](https://david-dm.org/goodeggs/unionized.png)](https://david-dm.org/goodeggs/unionized)
-[![Build Status](https://travis-ci.org/goodeggs/unionized.png)](https://travis-ci.org/goodeggs/unionized)
-[![Coverage Status](https://coveralls.io/repos/goodeggs/unionized/badge.png?branch=master)](https://coveralls.io/r/goodeggs/unionized?branch=master)
+[![NPM
+version](https://img.shields.io/npm/v/unionized.svg)](https://www.npmjs.com/package/unionized)
+[![NPM
+license](https://img.shields.io/npm/l/express.svg)](https://github.com/goodeggs/unionized/blob/master/LICENSE)
+[![Dependency status](https://img.shields.io/david/goodeggs/unionized.svg)](https://david-dm.org/goodeggs/unionized)
+[![Build Status](https://img.shields.io/travis/goodeggs/unionized.svg)](https://travis-ci.org/goodeggs/unionized)
 
-# Usage
+# Links
 
-Create complex objects really easily:
+- [Installation instructions](https://github.com/goodeggs/unionized/blob/master/docs/installation.md)
+- [API Documentation](https://github.com/goodeggs/unionized/blob/master/docs/api.md)
 
-```javascript
-var unionized = require('unionized');
-unionized.create({
-  'pickup.pickupWindow.startAt': '2pm',
-  'pickup.pickupWindow.endAt': '4pm',
-  'pickup.name': 'San Francisco Ferry Building'
-}, function(err, result) { console.log(result); });
+# Examples
 
-// prints:
-//   {
-//      pickup: {
-//        pickupWindow: {
-//          startAt: '2pm',
-//          endAt: '4pm',
-//        },
-//        name: 'San Francisco Ferry Building'
-//     }
-//   }
-```
-
-...or, better, define factories to create those objects for you:
+**Define** a factory:
 
 ```javascript
-var pickupFactory = unionized.define(function(done) {
-  this.set('pickup.pickupWindow.startAt', '2pm');
-  this.set('pickup.pickupWindow.endAt', '4pm');
-  this.set('pickup.name', 'San Francisco Ferry Building');
-  done();
-});
-pickupFactory.create(function(err, result) { console.log(result); });
-
-// prints:
-//   {
-//      pickup: {
-//        pickupWindow: {
-//          startAt: '2pm',
-//          endAt: '4pm',
-//        },
-//        name: 'San Francisco Ferry Building'
-//     }
-//   }
+var humanFactory = unionized.factory({
+  name: {
+    first: unionized.enum(['Azrael', 'Bastiaan', 'Laurentiu', 'Gerolf']),
+    last: 'Smithy'
+  },
+  birthdate: function() { return new Date() }
+})
 ```
 
-We can customize the objects that our factory returns us:
+Use that factory to **create instances**:
 
 ```javascript
-pickupFactory.create({
-  'pickup.pickupWindow.startAt': '1am',
-  'options.caveats': 'Customers are expected to bring their own shopping bags'
-}, function(err, result) { console.log(result); });
-
-// prints:
-//   {
-//      pickup: {
-//        pickupWindow: {
-//          startAt: '1am',
-//          endAt: '4pm',
-//        },
-//        name: 'San Francisco Ferry Building'
-//      },
-//      options: {
-//        caveats: 'Customers are expected to bring their own shopping bags'
-//      }
-//   }
+var human = humanFactory.create()
+/*
+ { name: { first: 'Gerolf', last: 'Smithy' }
+   birthdate: Sun May 17 2015 16:52:25 GMT-0700 (PDT) }
+*/
 ```
 
-
-We can do this **synchronously**, too:
+You can **override the defaults** if you like, using **dot notation**:
 
 ```javascript
-var pickupFactory = unionized.define(function() {
-  this.set('pickup.pickupWindow.startAt', '2pm');
-  this.set('pickup.pickupWindow.endAt', '4pm');
-  this.set('pickup.name', 'San Francisco Ferry Building');
-});
+var chen = humanFactory.create({ 'name.first': 'Chen' })
+/*
+ { name: { first: 'Chen', last: 'Smithy' }
+   birthdate: Sun May 17 2015 16:58:19 GMT-0700 (PDT) }
+*/
 ```
 
-but then we can only use `.json` on the factory to get a POJO; `.create` and `.build` are
-only for asynchronous factories.
-
-
-
-We can also embed factories inside other factories:
+You might want factories that are **composed out of other factories**:
 
 ```javascript
-var orderFactory = unionized.define(function(done) {
-  this.set('customer', 'Lex Luthor');
-  this.set('total', 3.50);
-  this.embed('deliveryDetails', pickupFactory, done);
-});
-orderFactory.create(function(err, result) { console.log(result); });
-
-// prints:
-//    {
-//      customer: "Lex Luthor",
-//      total: 3.50,
-//      deliveryDetails: {
-//        pickup: {
-//          pickupWindow: {
-//            startAt: '2pm',
-//            endAt: '4pm',
-//          },
-//          name: 'San Francisco Ferry Building'
-//        }
-//      }
-//    }
+var organizationFactory = unionized.factory({
+  name: 'Board Game Club',
+  members: unionized.array(humanFactory, 4)
+})
+organizationFactory.create()
+/*
+ { name: 'Board Game Club',
+   members: [
+     { name: { first: 'Bastiaan', last: 'Smithy' },
+       birthdate: Sun May 17 2015 17:09:52 GMT-0700 (PDT) },
+     { name: { first: 'Azrael', last: 'Smithy' },
+       birthdate: Sun May 17 2015 17:09:52 GMT-0700 (PDT) }
+     { name: { first: 'Gerolf', last: 'Smithy' },
+       birthdate: Sun May 17 2015 17:09:52 GMT-0700 (PDT) }
+     { name: { first: 'Bastiaan', last: 'Smithy' },
+       birthdate: Sun May 17 2015 17:09:52 GMT-0700 (PDT) }
+   ] }
+*/
 ```
 
-And we can create factories that extend and modify other factories:
+More features you may be interested in:
 
-```javascript
-var lateNightPickupFactory = pickupFactory.define(function(done) {
-  this.set('pickupWindow.startAt', '11pm');
-  this.set('pickupWindow.endAt', '12am');
-  done();
-});
-lateNightPickupFactory.create(function(err, result) { console.log(result); });
-
-// prints:
-//   {
-//      pickup: {
-//        pickupWindow: {
-//          startAt: '11pm',
-//          endAt: '12am',
-//        },
-//        name: 'San Francisco Ferry Building'
-//     }
-//   }
-
-```
-
-
-The main **methods** on a factory are:
- 
-1. `create`: Use with database models that have a `save` method, this will save a real record to the database.
-  (For async factories only.)
-    
-2. `build`: Also used with database models, but only returns a model, does not save it to the database.
-  (For async factories only.)
-
-3. `json`: Generate a plain ol' object. Sync or async.
-
-
-The **factory function** itself can either take 1 argument (a callback, implies an async interface),
-or 0 arguments, for a sync interface.
-You can pass additional parameters to your factory functions - e.g. `factory.create(attrs, extra1, extra2, callback)` -
-and your factory function can access the extra parameters by introspecting `this.args`.
-
-
-Arrays are simple too!
-
-```javascript
-var repeatingFactory = unionized.define(function(done) {
-  this.setArray('repeating', 3, ['a', 'b']);
-});
-console.log(repeatingFactory.json());
-
-// prints:
-// { repeating: [ 'a', 'b', 'a' ] }
-```
-
-Embedded arrays are just another parameter away.
-
-```javascript
-// using previously defined `pickupFactory`
-var pickupOptionsFactory = unionized.define(function(done) {
-  this.embedArray('choices', 3, pickupFactory, done);
-});
-
-// prints:
-// { choices: [
-//   { pickup: [Object] },
-//   { pickup: [Object] },
-//   { pickup: [Object] }
-//   ]
-// }
-```
+- [Factory inheritance](https://github.com/goodeggs/unionized/blob/master/docs/api.md#example)
+- [Auto-generating factories from database schemas (currently we only support mongoose)](https://github.com/goodeggs/unionized/blob/master/docs/api.md#factorymongoosefactory)
+- [Asynchronous factories](https://github.com/goodeggs/unionized/blob/master/docs/api.md#example-2)
 
 # License
 
