@@ -4,10 +4,13 @@ module.exports = class ObjectInstance extends Instance
   constructor: ->
     @instances = {}
     super()
+
   set: (key, value) ->
     @instances[key] = value
+
   getInstance: (key) ->
     @instances[key]
+
   toObject: ->
     @value = {}
     @value[key] = value.toObject() for key, value of @instances
