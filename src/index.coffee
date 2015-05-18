@@ -1,4 +1,5 @@
 Promise = require 'bluebird'
+faker = require 'faker'
 Factory = require './factory'
 EmbeddedArrayDefinition = require './embedded_array_definition'
 MongooseFactory = require './mongoose_factory'
@@ -9,5 +10,6 @@ Factory::array = (args...) -> new EmbeddedArrayDefinition(args...)
 Factory::async = (resolver, thisArg = null) ->
   (args...) -> Promise.fromNode(resolver.bind thisArg, args...)
 Factory::mongooseFactory = MongooseFactory.createFromModel
+Factory::enum = (array) -> -> faker.random.array_element array
 
 module.exports = new Factory([])

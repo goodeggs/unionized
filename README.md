@@ -1,6 +1,6 @@
 # Unionized
 
-Unionized is a library for setting up JavaScript objects as test data. Compare to the [factory_girl](https://github.com/thoughtbot/factory_girl) Ruby gem by [thoughtbot](https://thoughtbot.com/open-source).
+Unionized is a factory library for setting up JavaScript objects as test data. Compare to the [factory_girl](https://github.com/thoughtbot/factory_girl) Ruby gem by [thoughtbot](https://thoughtbot.com/open-source).
 
 [![NPM
 version](https://img.shields.io/npm/v/unionized.svg)](https://www.npmjs.com/package/unionized)
