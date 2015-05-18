@@ -35,6 +35,18 @@ describe 'readme tests', ->
     expect(result.foo.biz).to.equal 'buzz'
     expect(result.grue).to.equal 'snork'
 
+  it 'can configure a factory to do things to the created instance', ->
+    factory = unionized.factory(
+        'do': 'wop'
+        'foo.bar': 'baz'
+        'foo.biz': 'buzz'
+      ).onCreate (instance) ->
+        instance.extra = 'extra!'
+        instance
+    result = factory.create()
+    expect(result.do).to.equal 'wop'
+    expect(result.extra).to.equal 'extra!'
+
   it 'can create child factories', ->
     parentFactory = unionized.factory
       'do': 'wop'

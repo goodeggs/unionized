@@ -3,7 +3,7 @@ ObjectInstance = require './object_instance'
 module.exports = class MongooseDocumentInstance extends ObjectInstance
   constructor: (@Model) -> super()
   toObject: (options = {}) ->
-    leanDoc = super(arguments...)
+    leanDoc = super
     return leanDoc if options.lean
     new @Model leanDoc
   toObjectAsync: (options = {}) ->

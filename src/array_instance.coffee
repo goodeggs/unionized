@@ -3,6 +3,7 @@ Instance = require './instance'
 module.exports = class ArrayInstance extends Instance
   constructor: (@model, @length = 0) ->
     @instances = {}
+    super()
   getInstance: (index) ->
     index = parseInt(index)
     @instances[index] ? @model[index % @model.length]
@@ -10,8 +11,8 @@ module.exports = class ArrayInstance extends Instance
     index = parseInt(index)
     @instances[index] = value
   toObject: ->
-    out = []
+    @value = []
     for index in [0...@length]
-      out.push @getInstance(index).toObject()
-    out
+      @value.push @getInstance(index).toObject()
+    super
 

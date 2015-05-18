@@ -1,6 +1,7 @@
 Promise = require 'bluebird'
 _ = require 'lodash'
 Definition = require './definition'
+HookDefinition = require './hook_definition'
 ObjectInstance = require './object_instance'
 definitionFactory = require './definition_factory'
 
@@ -18,6 +19,8 @@ module.exports = class Factory extends Definition
     callback = args[args.length - 1] if _.isFunction(args[args.length - 1])
     return @factory(optionalDefinition).createAsync(callback) if optionalDefinition?
     @stageAsync().then((instance) -> instance.toObjectAsync()).asCallback(callback)
+
+  onCreate: (hook) -> @factory(new HookDefinition(hook))
 
   # Private:
   initialize: -> [@definitions] = @args
