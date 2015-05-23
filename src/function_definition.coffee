@@ -6,7 +6,10 @@ module.exports = class FunctionDefinition extends Definition
   initialize: -> [@function] = @args
 
   buildInstance: (args...) ->
-    definitionFactory(@function(_.compact(args)...)).buildInstance(args...)
+    @_buildDefinitionFromFunction(args).buildInstance(args...)
 
   buildInstanceAsync: (args...) ->
-    definitionFactory(@function(_.compact(args)...)).buildInstanceAsync(args...)
+    @_buildDefinitionFromFunction(args).buildInstanceAsync(args...)
+
+  _buildDefinitionFromFunction: (args) ->
+    definitionFactory @function.apply(null, _.compact args)
