@@ -1,31 +1,30 @@
 Definition = require './definition'
 DotNotationArrayLengthDefinition = require './dot_notation_array_length_definition'
 DotNotationPathDefinition = require './dot_notation_path_definition'
+DotNotation = require './dot_notation'
 ObjectInstance = require './object_instance'
 definitionFactory = require './definition_factory'
 
 module.exports = class DotNotationPathDefinition extends Definition
   initialize: ->
-    [fullPath, descendantDefinition] = @args
-    fullPath = fullPath.replace /\[(.+?)\]/g, '.$1' # prefer dot notation instead of bracket notation
-    [fullPath, @param, childPath] = fullPath.match /^(.+?)(?:\.(.*))?$/
+    [pathString, descendantDefinition] = @args
+    @dotNotation = new DotNotation(pathString)
     @childDefinition =
-      if @param.match /\[\]$/
-        @param = @param.substring(0, @param.length - 2)
+      if @dotNotation.isArrayLength()
         new DotNotationArrayLengthDefinition descendantDefinition
-      else if childPath
-        new DotNotationPathDefinition(childPath, descendantDefinition)
-      else
+      else if @dotNotation.isLeaf()
         definitionFactory descendantDefinition
+      else
+        new DotNotationPathDefinition(@dotNotation.childPathString(), descendantDefinition)
 
   buildInstance: (instance) ->
     instance ?= new ObjectInstance()
-    instance.setInstance(@param, @childDefinition.buildInstance(instance.getInstance @param))
+    instance.setInstance(@dotNotation.param(), @childDefinition.buildInstance(instance.getInstance @dotNotation.param()))
     instance
 
   buildInstanceAsync: (instance) ->
     instance ?= new ObjectInstance()
-    @childDefinition.buildInstanceAsync(instance.getInstance @param).then (valueInstance) =>
-      instance.setInstance(@param, valueInstance)
+    @childDefinition.buildInstanceAsync(instance.getInstance @dotNotation.param()).then (valueInstance) =>
+      instance.setInstance(@dotNotation.param(), valueInstance)
       instance
 
