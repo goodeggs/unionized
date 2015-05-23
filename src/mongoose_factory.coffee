@@ -57,15 +57,15 @@ module.exports = class MongooseFactory extends Factory
     new MongooseFactory [@definitions..., definitionFactory(definition)]
 
   createAndSave: (args...) ->
-    optionalDefinition = args[0] if _.isObject(args[0]) and not _.isFunction(args[0])
+    overrides = args[0] if _.isObject(args[0]) and not _.isFunction(args[0])
     callback = args[args.length - 1] if _.isFunction(args[args.length - 1])
-    return @factory(optionalDefinition).createAndSave(callback) if optionalDefinition?
+    return @factory(overrides).createAndSave(callback) if overrides?
     @buildInstanceAsync().then((instance) -> instance.toObjectAsync(save: true)).asCallback(callback)
 
   createLeanAsync: (args...) ->
-    optionalDefinition = args[0] if _.isObject(args[0]) and not _.isFunction(args[0])
+    overrides = args[0] if _.isObject(args[0]) and not _.isFunction(args[0])
     callback = args[args.length - 1] if _.isFunction(args[args.length - 1])
-    return @factory(optionalDefinition).createLeanAsync(callback) if optionalDefinition?
+    return @factory(overrides).createLeanAsync(callback) if overrides?
     @buildInstanceAsync().then((instance) -> instance.toObjectAsync(lean: true)).asCallback(callback)
 
   @createFromModel: (Model) ->
