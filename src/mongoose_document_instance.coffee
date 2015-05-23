@@ -9,7 +9,9 @@ module.exports = class MongooseDocumentInstance extends ObjectInstance
     new @Model leanDoc
 
   toObjectAsync: (options = {}) ->
-    super(arguments...).then (document) ->
+    super(arguments...).then (leanDoc) =>
+      return leanDoc if options.lean
+      document = new @Model leanDoc
       return document if not options.save
       return document.save().then -> document
 

@@ -16,8 +16,7 @@ module.exports = class ObjectInstance extends Instance
     dotNotation = new DotNotation(dotNotationKey)
     @getInstance(dotNotation.param()).get(dotNotation.childPathString())
 
-  toObject: ->
-    @value = {}
-    @value[key] = value.toObject() for key, value of @instances
-    super
-
+  calculateValue: ->
+    value = {}
+    value[key] = instance.toObject() for key, instance of @instances
+    value

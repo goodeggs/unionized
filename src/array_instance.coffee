@@ -15,9 +15,8 @@ module.exports = class ArrayInstance extends Instance
       @length = index + 1
     @instances[index] = value
 
-  toObject: ->
-    @value = []
+  calculateValue: ->
+    value = []
     for index in [0...@length]
-      @value.push @getInstance(index).toObject()
-    super
-
+      value.push @getInstance(index).toObject()
+    value

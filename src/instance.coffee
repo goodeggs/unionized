@@ -6,8 +6,11 @@ module.exports = class Instance
 
   get: -> @value
 
+  calculateValue: -> @value
+
   toObject: ->
     # uses return value of hooks; be careful that hooks return a modified object.
-    @hooks.reduce(((memo, hook) -> hook(memo)), @value)
+    @hooks.reduce ((memo, hook) -> hook(memo)), @calculateValue()
 
-  toObjectAsync: (args...) -> new Promise (resolve) => resolve(@toObject(args...))
+  toObjectAsync: ->
+    Promise.reduce @hooks, ((memo, hook) -> hook(memo)), @calculateValue()
