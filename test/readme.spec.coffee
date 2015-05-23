@@ -76,10 +76,8 @@ describe 'readme tests', ->
   it 'has access to current instance', ->
     baseFactory = unionized.factory ->
       foo: -> Math.ceil Math.random() * 100
-
-    factory = baseFactory.factory (instance) ->
-      bar: instance.toObject().foo + 1
-
+    factory = baseFactory.factory ->
+      bar: @toObject().foo + 1
     result = factory.create()
     expect(result.bar).to.equal result.foo + 1
 
@@ -188,4 +186,3 @@ describe 'readme tests', ->
         testDone()
       .catch (error) ->
         testDone(error)
-

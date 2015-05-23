@@ -1,15 +1,14 @@
-_ = require 'lodash'
 Definition = require './definition'
 definitionFactory = require './definition_factory'
 
 module.exports = class FunctionDefinition extends Definition
   initialize: -> [@function] = @args
 
-  buildInstance: (args...) ->
-    @_buildDefinitionFromFunction(args).buildInstance(args...)
+  buildInstance: (instance, args...) ->
+    @_buildDefinitionFromFunction(instance, args).buildInstance(instance, args)
 
-  buildInstanceAsync: (args...) ->
-    @_buildDefinitionFromFunction(args).buildInstanceAsync(args...)
+  buildInstanceAsync: (instance, args...) ->
+    @_buildDefinitionFromFunction(instance, args).buildInstanceAsync(instance, args)
 
-  _buildDefinitionFromFunction: (args) ->
-    definitionFactory @function.apply(null, _.compact args)
+  _buildDefinitionFromFunction: (instance, args) ->
+    definitionFactory @function.apply(instance, args)
