@@ -5,7 +5,7 @@ module.exports = class ObjectInstance extends Instance
     @instances = {}
     super()
 
-  set: (key, value) ->
+  setInstance: (key, value) ->
     @instances[key] = value
 
   getInstance: (key) ->

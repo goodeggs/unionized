@@ -9,12 +9,10 @@ module.exports = class ArrayInstance extends Instance
     index = parseInt(index)
     @instances[index] ? @model[index % @model.length]
 
-  set: (index, value) ->
+  setInstance: (index, value) ->
     index = parseInt(index)
-
     if index >= @length
       @length = index + 1
-
     @instances[index] = value
 
   toObject: ->
