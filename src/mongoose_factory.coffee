@@ -2,7 +2,7 @@ _ = require 'lodash'
 faker = require 'faker'
 definitionFactory = require './definition_factory'
 Factory = require './factory'
-MongooseDocumentDefinition = require './mongoose_document_definition'
+DotNotationObjectDefinition = require './dot_notation_object_definition'
 EmbeddedArrayDefinition = require './embedded_array_definition'
 
 buildDefinitionFromSchemaType = (schemaType, mongoose, {ignoreRequired} = {}) ->
@@ -55,19 +55,20 @@ buildDefinitionObjectFromSchema = (schema, mongoose) ->
 module.exports = class MongooseFactory extends Factory
   class: MongooseFactory
 
-  createAndSave: (args...) ->
-    overrides = args[0] if _.isObject(args[0]) and not _.isFunction(args[0])
-    callback = args[args.length - 1] if _.isFunction(args[args.length - 1])
-    return @factory(overrides).createAndSave(callback) if overrides?
-    @buildInstanceAsync().then((instance) -> instance.toObjectAsync(save: true)).asCallback(callback)
+  createLean: (args) ->
+    @onCreate((document) -> document.toObject())
+      .create(args...)
 
   createLeanAsync: (args...) ->
-    overrides = args[0] if _.isObject(args[0]) and not _.isFunction(args[0])
-    callback = args[args.length - 1] if _.isFunction(args[args.length - 1])
-    return @factory(overrides).createLeanAsync(callback) if overrides?
-    @buildInstanceAsync().then((instance) -> instance.toObjectAsync(lean: true)).asCallback(callback)
+    @onCreate((document) -> document.toObject())
+      .createAsync(args...)
+
+  createAndSave: (args...) ->
+    @onCreate((document) -> document.save())
+      .createAsync(args...)
 
   @fromModel: (Model) ->
-    mongoose = Model.db.base
-    definitionObject = buildDefinitionObjectFromSchema(Model.schema, mongoose)
-    new MongooseFactory [new MongooseDocumentDefinition(definitionObject, Model)]
+    definitionObject = buildDefinitionObjectFromSchema(Model.schema, Model.db.base)
+    definition = new DotNotationObjectDefinition(definitionObject)
+    factory = new MongooseFactory([definition])
+    factory.onCreate (leanDoc) -> new Model leanDoc

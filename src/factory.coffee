@@ -32,6 +32,7 @@ module.exports = class Factory extends Definition
 
   buildInstanceAsync: ->
     instance = new ObjectInstance()
-    reducer = (memo, definition) -> definition.buildInstanceAsync(memo)
+    reducer = (memo, definition) ->
+      definition.buildInstanceAsync(memo)
     Promise.reduce(@definitions, reducer, instance)
 
