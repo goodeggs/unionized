@@ -10,6 +10,6 @@ Factory::array = (args...) -> new EmbeddedArrayDefinition(args...)
 Factory::async = (resolver) ->
   (args...) -> Promise.fromNode(resolver.bind @, args...)
 Factory::enum = (array) -> -> faker.random.array_element array
-Factory::mongooseFactory = MongooseFactory.createFromModel
+Factory::mongooseFactory = MongooseFactory.fromModel
 
 module.exports = new Factory([])

@@ -68,7 +68,7 @@ module.exports = class MongooseFactory extends Factory
     return @factory(overrides).createLeanAsync(callback) if overrides?
     @buildInstanceAsync().then((instance) -> instance.toObjectAsync(lean: true)).asCallback(callback)
 
-  @createFromModel: (Model) ->
+  @fromModel: (Model) ->
     mongoose = Model.db.base
     definitionObject = buildDefinitionObjectFromSchema(Model.schema, mongoose)
     new MongooseFactory [new MongooseDocumentDefinition(definitionObject, Model)]
