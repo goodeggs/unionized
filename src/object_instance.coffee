@@ -1,3 +1,4 @@
+DotNotation = require './dot_notation'
 Instance = require './instance'
 
 module.exports = class ObjectInstance extends Instance
@@ -10,6 +11,10 @@ module.exports = class ObjectInstance extends Instance
 
   getInstance: (key) ->
     @instances[key]
+
+  get: (dotNotationKey) ->
+    dotNotation = new DotNotation(dotNotationKey)
+    @getInstance(dotNotation.param()).get(dotNotation.childPathString())
 
   toObject: ->
     @value = {}
