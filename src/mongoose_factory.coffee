@@ -53,8 +53,7 @@ buildDefinitionObjectFromSchema = (schema, mongoose) ->
   definitionObject
 
 module.exports = class MongooseFactory extends Factory
-  factory: (definition) ->
-    new MongooseFactory [@definitions..., definitionFactory(definition)]
+  class: MongooseFactory
 
   createAndSave: (args...) ->
     overrides = args[0] if _.isObject(args[0]) and not _.isFunction(args[0])

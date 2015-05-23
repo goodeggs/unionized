@@ -6,9 +6,11 @@ ObjectInstance = require './object_instance'
 definitionFactory = require './definition_factory'
 
 module.exports = class Factory extends Definition
+  class: Factory
+
   # Public API:
   factory: (definition) ->
-    new Factory [@definitions..., definitionFactory(definition)]
+    new (@class) [@definitions..., definitionFactory(definition)]
 
   create: (overrides) ->
     return @factory(overrides).create() if overrides?
