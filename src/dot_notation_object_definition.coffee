@@ -9,13 +9,13 @@ module.exports = class DotNotationObjectDefinition extends Definition
     @paths = Object.keys(object).map (path) ->
       new DotNotationPathDefinition(path, object[path])
 
-  buildInstance: (instance) ->
-    instance ?= new ObjectInstance()
-    @paths.reduce ((memo, definition) -> definition.buildInstance(memo)), instance
+  buildInstance: (options = {}) ->
+    instance = options.instance ? new ObjectInstance()
+    @paths.reduce ((memo, definition) -> definition.buildInstance(instance: memo)), instance
     instance
 
-  buildInstanceAsync: (instance) ->
-    instance ?= new ObjectInstance()
-    reducer = (memo, definition) -> definition.buildInstanceAsync(memo)
+  buildInstanceAsync: (options = {}) ->
+    instance = options.instance ? new ObjectInstance()
+    reducer = (memo, definition) -> definition.buildInstanceAsync(instance: memo)
     Promise.reduce(@paths, reducer, instance)
 

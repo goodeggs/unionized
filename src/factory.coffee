@@ -16,7 +16,7 @@ module.exports = class Factory extends Definition
     if overridingDefinition?
       overridingDefinition = definitionFactory overridingDefinition
     factory = if overridingDefinition? then @factory(overridingDefinition) else @
-    factory.buildInstance(overridingDefinition).toObject()
+    factory.buildInstance({overridingDefinition}).toObject()
 
   createAsync: (args...) ->
     if _.isObject(args[0]) and not _.isFunction(args[0])
@@ -24,7 +24,7 @@ module.exports = class Factory extends Definition
     if _.isFunction(args[args.length - 1])
       callback = args[args.length - 1]
     factory = if overridingDefinition? then @factory(overridingDefinition) else @
-    factory.buildInstanceAsync(overridingDefinition)
+    factory.buildInstanceAsync({overridingDefinition})
       .then((instance) -> instance.toObjectAsync())
       .asCallback(callback)
 
@@ -33,13 +33,13 @@ module.exports = class Factory extends Definition
   # Private:
   initialize: -> [@definitions] = @args
 
-  buildInstance: (overridingDefinition) ->
-    instance = new ObjectInstance(overridingDefinition)
-    reducer = (memo, definition) -> definition.buildInstance(memo)
+  buildInstance: (options = {}) ->
+    instance = new ObjectInstance(options.overridingDefinition)
+    reducer = (memo, definition) -> definition.buildInstance(instance: memo)
     @definitions.reduce reducer, instance
 
-  buildInstanceAsync: (overridingDefinition) ->
-    instance = new ObjectInstance(overridingDefinition)
-    reducer = (memo, definition) -> definition.buildInstanceAsync(memo)
+  buildInstanceAsync: (options = {}) ->
+    instance = new ObjectInstance(options.overridingDefinition)
+    reducer = (memo, definition) -> definition.buildInstanceAsync(instance: memo)
     Promise.reduce @definitions, reducer, instance
 

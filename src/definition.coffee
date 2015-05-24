@@ -7,4 +7,4 @@ module.exports = class Definition
 
   buildInstance: -> throw new Error("Subclasses must implement `buildInstance`!")
 
-  buildInstanceAsync: (args...) -> new Promise (resolve) => resolve(@buildInstance(args...))
+  buildInstanceAsync: (options) -> new Promise (resolve) => resolve(@buildInstance(options))

@@ -5,13 +5,13 @@ definitionFactory = require './definition_factory'
 module.exports = class FunctionDefinition extends Definition
   initialize: -> [@function] = @args
 
-  buildInstance: (instance, args...) ->
-    instance ?= new Instance()
-    @_buildDefinitionFromFunction(instance, args).buildInstance(instance, args)
+  buildInstance: (options = {}) ->
+    instance = options.instance ? new Instance()
+    @_buildDefinitionFromFunction(instance).buildInstance({instance})
 
-  buildInstanceAsync: (instance, args...) ->
-    instance ?= new Instance()
-    @_buildDefinitionFromFunction(instance, args).buildInstanceAsync(instance, args)
+  buildInstanceAsync: (options = {}) ->
+    instance = options.instance ? new Instance()
+    @_buildDefinitionFromFunction(instance).buildInstanceAsync({instance})
 
-  _buildDefinitionFromFunction: (instance, args) ->
-    definitionFactory @function.apply(instance, args)
+  _buildDefinitionFromFunction: (instance) ->
+    definitionFactory @function.apply(instance)

@@ -15,7 +15,7 @@ module.exports = class ObjectInstance extends Instance
   get: (dotNotationKey) ->
     dotNotation = new DotNotation(dotNotationKey)
     overriddenInstance = if @overridingDefinition
-      @overridingDefinition.buildInstance(@)
+      @overridingDefinition.buildInstance(instance: @)
     else
       @
     instance = overriddenInstance.instances[dotNotation.param()]
