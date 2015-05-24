@@ -125,13 +125,13 @@ describe 'readme tests', ->
     result = compositeFactory.create()
     expect(result.foo.bar).to.equal 'baz'
 
-  it 'can override objects passed into child factories from the parent factory', ->
-    childFactory = unionized.factory ->
+  it 'can override objects passed into embedded factories from the outer factory', ->
+    innerFactory = unionized.factory ->
       'bar': 'baz'
       'do': 'wop'
       'barz': @get('bar') + 'z'
     factory = unionized.factory
-      'foo': childFactory
+      'foo': innerFactory
     result = factory.create
       'foo.bar': 'spuz'
     expect(result.foo.bar).to.equal 'spuz'
@@ -155,17 +155,17 @@ describe 'readme tests', ->
     expect(result.arr).to.deep.equal [1, 2, 3, 4]
 
   it 'can pass in arrays of other factories', ->
-    childFactory = unionized.factory
+    innerFactory = unionized.factory
       'bar': 'baz'
     factory = unionized.factory
-      'arr': unionized.array childFactory, 3
+      'arr': unionized.array innerFactory, 3
     expect(factory.create().arr).to.deep.equal [{bar: 'baz'}, {bar: 'baz'}, {bar: 'baz'}]
 
   it 'can pass in arrays of async factories', (testDone) ->
-    childFactory = unionized.factory
+    innerFactory = unionized.factory
       'bar': -> new Promise (resolve) -> resolve 'baz'
     factory = unionized.factory
-      'arr': unionized.array childFactory, 3
+      'arr': unionized.array innerFactory, 3
     factory.createAsync (err, result) ->
       return testDone(err) if err
       expect(result.arr).to.deep.equal [{bar: 'baz'}, {bar: 'baz'}, {bar: 'baz'}]
