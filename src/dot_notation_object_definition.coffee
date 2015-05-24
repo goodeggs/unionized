@@ -1,26 +1,11 @@
 Promise = require 'bluebird'
-Definition = require './definition'
+MultiDefinition = require './multi_definition'
 DotNotationPathDefinition = require './dot_notation_path_definition'
 ObjectInstance = require './object_instance'
 
-module.exports = class DotNotationObjectDefinition extends Definition
+module.exports = class DotNotationObjectDefinition extends MultiDefinition
   initialize: ->
     object = @args[0]
-    @paths = Object.keys(object).map (path) ->
+    @definitions = Object.keys(object).map (path) ->
       new DotNotationPathDefinition(path, object[path])
-
-  buildInstance: (options = {}) ->
-    instance = options.instance ? new ObjectInstance()
-    reducer = (memo, definition) ->
-      definition.buildInstance
-        instance: memo
-    @paths.reduce reducer, instance
-    instance
-
-  buildInstanceAsync: (options = {}) ->
-    instance = options.instance ? new ObjectInstance()
-    reducer = (memo, definition) ->
-      definition.buildInstanceAsync
-        instance: memo
-    Promise.reduce(@paths, reducer, instance)
 
