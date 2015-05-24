@@ -30,11 +30,12 @@ module.exports = class Factory extends Definition
   initialize: -> [@definitions] = @args
 
   buildInstance: ->
-    @definitions.reduce ((instance, definition) -> definition.buildInstance(instance)), new ObjectInstance()
+    instance = new ObjectInstance()
+    reducer = (memo, definition) -> definition.buildInstance(memo)
+    @definitions.reduce reducer, instance
 
   buildInstanceAsync: ->
     instance = new ObjectInstance()
-    reducer = (memo, definition) ->
-      definition.buildInstanceAsync(memo)
-    Promise.reduce(@definitions, reducer, instance)
+    reducer = (memo, definition) -> definition.buildInstanceAsync(memo)
+    Promise.reduce @definitions, reducer, instance
 
