@@ -62,16 +62,16 @@ you can call `factory()` on it again to create a (generally more specific) varia
 already have. For example:
 
 ```javascript
-var blogFactoryByMax = blogFactory.factory({
+var blogByNatsumiFactory = blogFactory.factory({
   'metadata.author': 'Natsumi'
 })
 ```
 
-Now, creating an instance out of `blogFactoryByMax` will give you a blog entry
+Now, creating an instance out of `blogByNatsumiFactory` will give you a blog entry
 that looks like the following:
 
 ```javascript
-blogFactoryByMax.create() // =>
+blogByNatsumiFactory.create() // =>
 {
   title: 'How to make falafel',
   body: 'Lorem ipsum dolor sit amet',
@@ -174,7 +174,8 @@ var quoteFactory = factory.factory({
 });
 ```
 
-...then you can create an instance and override things with `createAsync()`:
+...then you can create an instance and override things with `createAsync()`
+(using the **promise** syntax):
 
 ```javascript
 var promise = quoteFactory.createAsync({createdAt: new Date()})
@@ -188,13 +189,107 @@ promise.then(function (quote) {
 })
 ```
 
+Alternatively, here's the same example using node-style callbacks:
+
+```javascript
+quoteFactory.createAsync({createdAt: new Date()}, function (err, quote) {
+  quote // =>
+  {
+    content: "The best laid plans of mice and men are usually about equal."
+    source: "http://www.iheartquotes.com/api/v1/random",
+    createdAt: '2015-05-18T06:17:16.989Z'
+  }
+})
+```
+
 -------
 
 ### `factory.array()`
 
+Terse syntax to create an `ArrayDefinition`. Allows you to specify an array by
+describing an object to repeat, and a default length.
+
+#### Usage:
+
+```
+var arrayDefinition = factory.array(definition, length)
+```
+
+#### Example:
+
+Here is a factory for a carton of green eggs:
+
+```javascript
+var eggCartonFactory = factory.factory({
+  eggs: factory.array({shellColor: 'ecru', yolkColor: 'yellow'}, 12)
+})
+eggCartonFactory.create() // =>
+{
+  eggs: [
+    { shellColor: 'ecru', yolkColor: 'yellow' }
+    { shellColor: 'ecru', yolkColor: 'yellow' }
+    { shellColor: 'ecru', yolkColor: 'yellow' }
+    { shellColor: 'ecru', yolkColor: 'yellow' }
+    { shellColor: 'ecru', yolkColor: 'yellow' }
+    { shellColor: 'ecru', yolkColor: 'yellow' }
+    { shellColor: 'ecru', yolkColor: 'yellow' }
+    { shellColor: 'ecru', yolkColor: 'yellow' }
+    { shellColor: 'ecru', yolkColor: 'yellow' }
+    { shellColor: 'ecru', yolkColor: 'yellow' }
+    { shellColor: 'ecru', yolkColor: 'yellow' }
+    { shellColor: 'ecru', yolkColor: 'yellow' }
+  ]
+}
+```
+
+Here we create a half-carton with one green egg:
+
+```javascript
+eggCartonFactory.create({'eggs[]': 6, 'eggs[1].shellColor': 'green'}) // =>
+{
+  eggs: [
+    { shellColor: 'ecru', yolkColor: 'yellow' }
+    { shellColor: 'green', yolkColor: 'yellow' }
+    { shellColor: 'ecru', yolkColor: 'yellow' }
+    { shellColor: 'ecru', yolkColor: 'yellow' }
+    { shellColor: 'ecru', yolkColor: 'yellow' }
+    { shellColor: 'ecru', yolkColor: 'yellow' }
+  ]
+}
+```
+
 -------
 
 ### `factory.async()`
+
+Create an asynchronous factory definition using node-style callbacks.
+
+#### Usage:
+
+```javascript
+var asyncDefinition = factory.async(function(done) { done(error, definition) })
+```
+
+#### Example:
+
+Let's say we want to grab the contents of a file in a factory:
+
+```javascript
+var fs = require('fs');
+var fileFactory = factory.factory({
+  name: 'paul-clifford.txt'
+  contents: factory.async(function(done) {
+    fs.readFile('paul-clifford.txt', {encoding: 'utf-8'}, done)
+  })
+});
+fileFactory.createAsync(function(err, file) {
+  file // =>
+  {
+    name: 'paul-clifford.txt',
+    contents: 'It was a dark and stormy night; the rain fell in torrents...'
+  }
+})
+```
 
 -------
 
