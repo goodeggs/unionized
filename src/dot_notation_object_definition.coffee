@@ -11,11 +11,16 @@ module.exports = class DotNotationObjectDefinition extends Definition
 
   buildInstance: (options = {}) ->
     instance = options.instance ? new ObjectInstance()
-    @paths.reduce ((memo, definition) -> definition.buildInstance(instance: memo)), instance
+    reducer = (memo, definition) ->
+      definition.buildInstance
+        instance: memo
+    @paths.reduce reducer, instance
     instance
 
   buildInstanceAsync: (options = {}) ->
     instance = options.instance ? new ObjectInstance()
-    reducer = (memo, definition) -> definition.buildInstanceAsync(instance: memo)
+    reducer = (memo, definition) ->
+      definition.buildInstanceAsync
+        instance: memo
     Promise.reduce(@paths, reducer, instance)
 

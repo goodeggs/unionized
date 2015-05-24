@@ -35,11 +35,17 @@ module.exports = class Factory extends Definition
 
   buildInstance: (options = {}) ->
     instance = new ObjectInstance(options.overridingDefinition)
-    reducer = (memo, definition) -> definition.buildInstance(instance: memo)
+    reducer = (memo, definition) ->
+      definition.buildInstance
+        instance: memo
+        overridingDefinition: options.overridingDefinition
     @definitions.reduce reducer, instance
 
   buildInstanceAsync: (options = {}) ->
     instance = new ObjectInstance(options.overridingDefinition)
-    reducer = (memo, definition) -> definition.buildInstanceAsync(instance: memo)
+    reducer = (memo, definition) ->
+      definition.buildInstanceAsync
+        instance: memo
+        overridingDefinition: options.overridingDefinition
     Promise.reduce @definitions, reducer, instance
 
