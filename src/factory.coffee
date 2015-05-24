@@ -1,11 +1,11 @@
 Promise = require 'bluebird'
 _ = require 'lodash'
-Definition = require './definition'
 HookDefinition = require './hook_definition'
+MultiDefinition = require './multi_definition'
 ObjectInstance = require './object_instance'
 definitionFactory = require './definition_factory'
 
-module.exports = class Factory extends Definition
+module.exports = class Factory extends MultiDefinition
   class: Factory
 
   # Public API:
@@ -32,20 +32,3 @@ module.exports = class Factory extends Definition
 
   # Private:
   initialize: -> [@definitions] = @args
-
-  buildInstance: (options = {}) ->
-    instance = new ObjectInstance(options.overridingDefinition)
-    reducer = (memo, definition) ->
-      definition.buildInstance
-        instance: memo
-        overridingDefinition: options.overridingDefinition
-    @definitions.reduce reducer, instance
-
-  buildInstanceAsync: (options = {}) ->
-    instance = new ObjectInstance(options.overridingDefinition)
-    reducer = (memo, definition) ->
-      definition.buildInstanceAsync
-        instance: memo
-        overridingDefinition: options.overridingDefinition
-    Promise.reduce @definitions, reducer, instance
-
