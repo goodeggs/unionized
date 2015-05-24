@@ -162,13 +162,14 @@ describe 'readme tests', ->
     expect(factory.create().arr).to.deep.equal [{bar: 'baz'}, {bar: 'baz'}, {bar: 'baz'}]
 
   it 'can pass in arrays of async factories', (testDone) ->
+    counter = 0
     innerFactory = unionized.factory
-      'bar': -> new Promise (resolve) -> resolve 'baz'
+      'bar': -> new Promise (resolve) -> resolve ++counter
     factory = unionized.factory
       'arr': unionized.array innerFactory, 3
     factory.createAsync (err, result) ->
       return testDone(err) if err
-      expect(result.arr).to.deep.equal [{bar: 'baz'}, {bar: 'baz'}, {bar: 'baz'}]
+      expect(result.arr).to.deep.equal [{bar: 1}, {bar: 2}, {bar: 3}]
       testDone()
 
   it 'returns a promise from createAsync', (testDone) ->

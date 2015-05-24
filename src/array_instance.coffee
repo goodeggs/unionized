@@ -1,3 +1,4 @@
+Promise = require 'bluebird'
 Instance = require './instance'
 
 module.exports = class ArrayInstance extends Instance
@@ -7,7 +8,16 @@ module.exports = class ArrayInstance extends Instance
 
   getInstance: (index) ->
     index = parseInt(index)
-    @instances[index] ? @model[index % @model.length]
+    return @instances[index] if @instances[index]?
+    @instances[index] = @model[index % @model.length].buildInstance()
+    @instances[index]
+
+  getInstanceAsync: (index) ->
+    if @instances[index]?
+      return new Promise (resolve) => resolve(@instances[index])
+    @model[index % @model.length].buildInstanceAsync().then (instance) =>
+      @instances[index] = instance
+      instance
 
   setInstance: (index, value) ->
     index = parseInt(index)
@@ -20,3 +30,8 @@ module.exports = class ArrayInstance extends Instance
     for index in [0...@length]
       value.push @getInstance(index).toObject()
     value
+
+  calculateValueAsync: ->
+    Promise.map [0...@length], (index) =>
+      @getInstanceAsync(index)
+        .then (instance) -> instance.toObjectAsync()
