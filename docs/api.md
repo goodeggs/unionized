@@ -2,11 +2,11 @@
 
 # Unionized API
 
+The `unionized` module exports an instance of the [`Factory`](#factory) class:
+
 ```javascript
 var factory = require('unionized');
 ```
-
-The `unionized` module exports an instance of the [`Factory`](#factory) class.
 
 ---------------------------
 
@@ -49,6 +49,7 @@ var factory = parentFactory.factory(definition)
 The most common type of [`Definition`](#definition) to use here is a [`DotNotationObjectDefinition`](#dotnotationobjectdefinition), which can be coerced from an `Object` like in the following example:
 
 ```javascript
+var factory = require('unionized');
 var blogFactory = factory.factory({
   title: 'How to make falafel'
   body: loremIpsumGenerator
@@ -103,6 +104,7 @@ var instance = factory.create(definition)
 If we're starting with a `Factory` that's alredy been created:
 
 ```javascript
+var factory = require('unionized');
 var creditCardFactory = factory.factory({
   type: 'Visa',
   last4: '1111',
@@ -164,6 +166,7 @@ factory.createAsync(definition, function(err, instance) { /* ... */ })
 If we're starting with a `Factory` that's already been created:
 
 ```javascript
+var factory = require('unionized');
 var request = require('request');
 var quoteSource = 'http://www.iheartquotes.com/api/v1/random';
 var quoteFactory = factory.factory({
@@ -220,6 +223,7 @@ var arrayDefinition = factory.array(definition, length)
 Here is a factory for a carton of green eggs:
 
 ```javascript
+var factory = require('unionized');
 var eggCartonFactory = factory.factory({
   eggs: factory.array({shellColor: 'ecru', yolkColor: 'yellow'}, 12)
 })
@@ -275,6 +279,7 @@ var asyncDefinition = factory.async(function(done) { done(error, definition) })
 Let's say we want to grab the contents of a file in a factory:
 
 ```javascript
+var factory = require('unionized');
 var fs = require('fs');
 var fileFactory = factory.factory({
   name: 'paul-clifford.txt'
