@@ -126,15 +126,17 @@ describe 'readme tests', ->
     expect(result.foo.bar).to.equal 'baz'
 
   it 'can override objects passed into child factories from the parent factory', ->
-    childFactory = unionized.factory
+    childFactory = unionized.factory ->
       'bar': 'baz'
       'do': 'wop'
+      'barz': @get('bar') + 'z'
     factory = unionized.factory
       'foo': childFactory
     result = factory.create
       'foo.bar': 'spuz'
     expect(result.foo.bar).to.equal 'spuz'
     expect(result.foo.do).to.equal 'wop'
+    expect(result.foo.barz).to.equal 'spuzz'
 
   it 'can pass in and override configurable arrays', ->
     factory = unionized.factory arr: [1,2,3]

@@ -1,7 +1,7 @@
 expect = require('chai').expect
 moment = require 'moment'
 mongoose = require './mongoose'
-unionized = require '..'
+unionized = require '../src'
 
 describe 'mongoose kitten tests', ->
 

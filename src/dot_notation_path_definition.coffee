@@ -17,17 +17,24 @@ module.exports = class DotNotationPathDefinition extends Definition
       else
         new DotNotationPathDefinition(@dotNotation.childPathString(), descendantDefinition)
 
+  param: -> @dotNotation.param()
+
   buildInstance: (options = {}) ->
-    instance = options.instance ? new ObjectInstance()
-    childInstance = instance.getInstance @dotNotation.param()
-    valueInstance = @childDefinition.buildInstance instance: childInstance
-    instance.setInstance @dotNotation.param(), valueInstance
+    instance = options.instance ? new ObjectInstance(options.overridingDefinition)
+    childInstance = instance.getInstance @param()
+    buildInstanceOptions =
+      instance: childInstance
+      overridingDefinition: options.overridingDefinition?.objectDefinitionForParam?(@param())
+    valueInstance = @childDefinition.buildInstance buildInstanceOptions
+    instance.setInstance @param(), valueInstance
     instance
 
   buildInstanceAsync: (options = {}) ->
-    instance = options.instance ? new ObjectInstance()
-    childInstance = instance.getInstance @dotNotation.param()
-    @childDefinition.buildInstanceAsync(instance: childInstance).then (valueInstance) =>
-      instance.setInstance(@dotNotation.param(), valueInstance)
+    instance = options.instance ? new ObjectInstance(options.overridingDefinition)
+    childInstance = instance.getInstance @param()
+    buildInstanceOptions =
+      instance: childInstance
+      overridingDefinition: options.overridingDefinition?.objectDefinitionForParam?(@param())
+    @childDefinition.buildInstanceAsync(buildInstanceOptions).then (valueInstance) =>
+      instance.setInstance(@param(), valueInstance)
       instance
-

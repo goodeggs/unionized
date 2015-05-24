@@ -9,3 +9,9 @@ module.exports = class DotNotationObjectDefinition extends MultiDefinition
     @definitions = Object.keys(object).map (path) ->
       new DotNotationPathDefinition(path, object[path])
 
+  objectDefinitionForParam: (param) ->
+    definition = new MultiDefinition()
+    definition.definitions = @definitions
+      .filter (path) -> path.param() is param
+      .map (path) -> path.childDefinition
+    definition
