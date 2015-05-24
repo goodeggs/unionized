@@ -19,12 +19,15 @@ module.exports = class DotNotationPathDefinition extends Definition
 
   buildInstance: (instance) ->
     instance ?= new ObjectInstance()
-    instance.setInstance(@dotNotation.param(), @childDefinition.buildInstance(instance.getInstance @dotNotation.param()))
+    childInstance = instance.getInstance @dotNotation.param()
+    valueInstance = @childDefinition.buildInstance childInstance
+    instance.setInstance @dotNotation.param(), valueInstance
     instance
 
   buildInstanceAsync: (instance) ->
     instance ?= new ObjectInstance()
-    @childDefinition.buildInstanceAsync(instance.getInstance @dotNotation.param()).then (valueInstance) =>
+    childInstance = instance.getInstance @dotNotation.param()
+    @childDefinition.buildInstanceAsync(childInstance).then (valueInstance) =>
       instance.setInstance(@dotNotation.param(), valueInstance)
       instance
 
