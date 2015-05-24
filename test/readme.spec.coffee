@@ -74,7 +74,7 @@ describe 'readme tests', ->
     expect(result.foo.bar).to.equal 'baz'
 
   it 'has access to current instance', ->
-    baseFactory = unionized.factory ->
+    baseFactory = unionized.factory
       'foo.bar': -> Math.ceil Math.random() * 100
     factory = baseFactory.factory ->
       baz: @get('foo.bar') + 1
