@@ -2,7 +2,7 @@ DotNotation = require './dot_notation'
 Instance = require './instance'
 
 module.exports = class ObjectInstance extends Instance
-  constructor: ->
+  constructor: (@overridingDefinition) ->
     @instances = {}
     super()
 

@@ -33,13 +33,13 @@ module.exports = class Factory extends Definition
   # Private:
   initialize: -> [@definitions] = @args
 
-  buildInstance: ->
-    instance = new ObjectInstance()
+  buildInstance: (overridingDefinition) ->
+    instance = new ObjectInstance(overridingDefinition)
     reducer = (memo, definition) -> definition.buildInstance(memo)
     @definitions.reduce reducer, instance
 
-  buildInstanceAsync: ->
-    instance = new ObjectInstance()
+  buildInstanceAsync: (overridingDefinition) ->
+    instance = new ObjectInstance(overridingDefinition)
     reducer = (memo, definition) -> definition.buildInstanceAsync(memo)
     Promise.reduce @definitions, reducer, instance
 
