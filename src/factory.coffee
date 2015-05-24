@@ -13,14 +13,16 @@ module.exports = class Factory extends Definition
     new (@class) [@definitions..., definitionFactory(definition)]
 
   create: (overrides) ->
-    return @factory(overrides).create() if overrides?
-    @buildInstance().toObject()
+    factory = if overrides? then @factory(overrides) else @
+    factory.buildInstance().toObject()
 
   createAsync: (args...) ->
     overrides = args[0] if _.isObject(args[0]) and not _.isFunction(args[0])
     callback = args[args.length - 1] if _.isFunction(args[args.length - 1])
-    return @factory(overrides).createAsync(callback) if overrides?
-    @buildInstanceAsync().then((instance) -> instance.toObjectAsync()).asCallback(callback)
+    factory = if overrides? then @factory(overrides) else @
+    factory.buildInstanceAsync()
+      .then((instance) -> instance.toObjectAsync())
+      .asCallback(callback)
 
   onCreate: (hook) -> @factory(new HookDefinition(hook))
 
