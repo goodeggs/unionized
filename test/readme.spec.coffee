@@ -129,8 +129,7 @@ describe 'readme tests', ->
     expect(result.foo.do).to.equal 'wop'
 
   it 'can pass in and override configurable arrays', ->
-    factory = unionized.factory
-      'arr': [1,2,3]
+    factory = unionized.factory arr: [1,2,3]
     expect(factory.create('arr[]': 1).arr).to.deep.equal [1]
     expect(factory.create('arr[]': 2).arr).to.deep.equal [1, 2]
     expect(factory.create('arr[]': 3).arr).to.deep.equal [1, 2, 3]
