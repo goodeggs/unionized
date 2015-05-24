@@ -70,3 +70,14 @@ describe 'mongoose route, stop, and order tests', ->
         expect(stops).to.have.length 2
         expect(orders).to.have.length 4
         done()
+
+  it 'provides default locations for different stop types', ->
+    stopFactory = unionized.mongooseFactory(Stop).factory ->
+      'location.name': switch @get('type')
+        when 'delivery' then '7419 Park Drive'
+        when 'pickup' then 'Good Eggs Foodhub'
+        when 'backhaul' then 'Three Babes Bakeshop'
+        else 'Minas Morgul'
+
+    expect(stopFactory.create()).to.have.deep.property 'location.name', 'Minas Morgul'
+    expect(stopFactory.create(type: 'delivery')).to.have.deep.property 'location.name', '7419 Park Drive'
