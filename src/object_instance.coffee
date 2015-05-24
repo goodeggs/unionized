@@ -14,7 +14,12 @@ module.exports = class ObjectInstance extends Instance
 
   get: (dotNotationKey) ->
     dotNotation = new DotNotation(dotNotationKey)
-    @getInstance(dotNotation.param()).get(dotNotation.childPathString())
+    overriddenInstance = if @overridingDefinition
+      @overridingDefinition.buildInstance(@)
+    else
+      @
+    instance = overriddenInstance.instances[dotNotation.param()]
+    instance?.get(dotNotation.childPathString())
 
   calculateValue: ->
     value = {}

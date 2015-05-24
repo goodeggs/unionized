@@ -81,6 +81,14 @@ describe 'readme tests', ->
     result = factory.create()
     expect(result.baz).to.equal result.foo.bar + 1
 
+  it 'has access to overriding definition', ->
+    factory = unionized.factory ->
+      'baz': 10
+      'foo.bar': @get('baz') + 1
+    result = factory.create baz: 123
+    expect(result.baz).to.equal 123
+    expect(result.foo.bar).to.equal 124
+
   it 'can pass in async functions', (testDone) ->
     asyncFunctionHasRun = false
     asyncFactory = unionized.factory
