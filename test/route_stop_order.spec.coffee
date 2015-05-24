@@ -24,7 +24,7 @@ Stop = mongoose.model 'Stop',
   endAt: type: Date, required: true
   tzid: type: String, required: true
   location: name: type: String, required: true
-  orders: type: [ type: mongoose.Schema.ObjectId, ref: 'Order' ], index: true
+  orders: type: [ type: mongoose.Schema.ObjectId, ref: 'Order' ], index: true, required: true
 
 Order = mongoose.model 'Order',
   fulfillmentId: type: mongoose.Schema.ObjectId, required: true, index: unique: true
@@ -46,3 +46,27 @@ describe 'mongoose route, stop, and order tests', ->
       return done(error) if error
       expect(route.stops).to.have.length 3
       done()
+
+  it 'can create routes, stops, and orders from the same factory', (done) ->
+    orderFactory = unionized.mongooseFactory(Order)
+
+    stopFactory = unionized.mongooseFactory(Stop).onCreate (stop) ->
+      Promise.all stop.orders.map (orderId) ->
+        orderFactory.createAndSave _id: orderId
+      .then ->
+        stop
+
+    routeFactory = unionized.mongooseFactory(Route).onCreate (route) ->
+      Promise.all route.stops.map (stopId) ->
+        stopFactory.createAndSave _id: stopId
+      .then ->
+        route
+
+    routeFactory.createAndSave()
+      .then ->
+        Promise.all([Route.find(), Stop.find(), Order.find()])
+      .then ([routes, stops, orders]) ->
+        expect(routes).to.have.length 1
+        expect(stops).to.have.length 2
+        expect(orders).to.have.length 4
+        done()
