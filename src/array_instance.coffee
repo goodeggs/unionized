@@ -7,7 +7,7 @@ module.exports = class ArrayInstance extends Instance
     super()
 
   getInstance: (index) ->
-    index = parseInt(index)
+    index = parseInt(index, 10)
     return @instances[index] if @instances[index]?
     @instances[index] = @model[index % @model.length].buildInstance()
     @instances[index]
@@ -20,7 +20,7 @@ module.exports = class ArrayInstance extends Instance
       instance
 
   setInstance: (index, value) ->
-    index = parseInt(index)
+    index = parseInt(index, 10)
     if index >= @length
       @length = index + 1
     @instances[index] = value
