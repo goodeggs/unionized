@@ -74,7 +74,7 @@ organizationFactory.create()
 More features you may be interested in:
 
 - [Factory inheritance](https://github.com/goodeggs/unionized/blob/master/docs/api.md#example)
-- [Auto-generating factories from database schemas (currently we only support mongoose)](https://github.com/goodeggs/unionized/blob/master/docs/api.md#factorymongoosefactory)
+- [Auto-generating factories from schemas (currently supported: JSON-schema and mongoose)](https://github.com/goodeggs/unionized/blob/master/docs/api.md#factorymongoosefactory)
 - [Asynchronous factories](https://github.com/goodeggs/unionized/blob/master/docs/api.md#example-2)
 
 # License
