@@ -8,4 +8,7 @@ eventFactory = unionized.factory
 createdEventFactory = eventFactory.factory
   name: 'order.created'
 
-console.log createdEventFactory.create()
+addedItemsEventFactory = eventFactory.factory
+  name: 'order.addedItems'
+
+console.log addedItemsEventFactory.create()

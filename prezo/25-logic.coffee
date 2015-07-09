@@ -5,4 +5,4 @@ eventFactory = unionized.factory ->
   'refs.userId': userId
   'args.order.user': @get('refs.userId') ? userId
 
-console.log eventFactory.create('refs.userId': '456def')
+console.log eventFactory.create('refs.userId': 'foobar')

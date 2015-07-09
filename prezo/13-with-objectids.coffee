@@ -8,3 +8,5 @@ eventFactory = unionized.factory
     userId: ObjectId().toString()
 
 console.log eventFactory.create()
+console.log eventFactory.create()
+console.log eventFactory.create()
