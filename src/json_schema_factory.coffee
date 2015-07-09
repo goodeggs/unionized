@@ -49,8 +49,7 @@ buildDefinitionFromJSONSchema = (config, propertyIsRequired) ->
           -> faker.date.between(new Date('2013-01-01'), new Date('2014-01-01')).toISOString()
 
         when 'date'
-          ->
-            faker.date.between(new Date('2013-01-01'), new Date('2014-01-01')).toISOString().slice(0,10)
+          -> faker.date.between(new Date('2013-01-01'), new Date('2014-01-01')).toISOString().slice(0,10)
 
         when 'email'
           -> faker.internet.email()
