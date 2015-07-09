@@ -1,7 +1,7 @@
 {
   "name": "unionized",
   "main": "./lib/index.js",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "scripts": {
     "build": "coffee --bare --output lib/ --compile src/*.coffee",
     "pretest": "npm run build",
