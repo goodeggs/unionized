@@ -1,6 +1,7 @@
 _ = require 'lodash'
 faker = require 'faker'
 definitionFactory = require './definition_factory'
+validator = require 'goodeggs-json-schema-validator'
 objectId = require 'objectid'
 Factory = require './factory'
 DotNotationObjectDefinition = require './dot_notation_object_definition'
@@ -13,14 +14,23 @@ module.exports = class JSONSchemaFactory extends Factory
     definitionObject = buildDefinitionFromJSONSchema(JSONSchema, true)
     definition = new DotNotationObjectDefinition(definitionObject)
     factory = new JSONSchemaFactory([definition])
+    factory.onCreate (doc) ->
+      cleanedDoc = JSON.parse JSON.stringify doc # remove undefined, convert dates to ISO strings, etc
+      # Ban unkown properties. We always want to be explicit about data setup in tests
+      if not validator.validate(cleanedDoc, JSONSchema, null, true)
+        message = "Factory creation failed: #{validator.error.message}"
+        message += " at #{validator.error.dataPath}" if validator.error.dataPath?.length
+        throw new Error message
+      cleanedDoc
 
 buildDefinitionFromJSONSchema = (config, propertyIsRequired) ->
+  type = if Array.isArray config.type then config.type[0] else config.type
 
   switch
-    when config.type is 'object'
+    when type is 'object'
       buildDefinitionObjectFromJSONSchemaObject(config)
 
-    when config.type is 'array'
+    when type is 'array'
       arrayInstanceDefinition = buildDefinitionFromJSONSchema(config.items, false)
       -> new EmbeddedArrayDefinition arrayInstanceDefinition
 
@@ -33,10 +43,10 @@ buildDefinitionFromJSONSchema = (config, propertyIsRequired) ->
     when config.enum?.length > 0
       -> faker.random.array_element config.enum
 
-    when config.type is 'boolean'
+    when type is 'boolean'
       -> faker.random.array_element [true, false]
 
-    when config.type is 'string'
+    when type is 'string'
       switch config.format
         when undefined
           -> faker.lorem.words().join ' '
@@ -57,17 +67,10 @@ buildDefinitionFromJSONSchema = (config, propertyIsRequired) ->
         when 'uri'
           -> faker.internet.url()
 
-        when 'url'
-          -> faker.internet.url()
-
-        when 'credit-card-number'
-          -> faker.internet.url()
-
-
-    when config.type is 'integer'
+    when type is 'integer'
       -> faker.random.number 100
 
-    when config.type is 'number'
+    when type is 'number'
       -> faker.random.number 100
 
 buildDefinitionObjectFromJSONSchemaObject = (JSONSchema) ->
