@@ -57,13 +57,6 @@ buildDefinitionFromJSONSchema = (config, propertyIsRequired) ->
         when 'uri'
           -> faker.internet.url()
 
-        when 'url'
-          -> faker.internet.url()
-
-        when 'credit-card-number'
-          -> faker.internet.url()
-
-
     when config.type is 'integer'
       -> faker.random.number 100
 
