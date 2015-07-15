@@ -19,15 +19,14 @@ describe 'JSONSchema kitten tests', ->
           "bornAt": { "type": "string", "format": "date-time" },
           "bornDay": { "type": "string", "format": "date" },
           "contact": { "type": "string", "format": "email" },
-          "website": { "type": "string", "format": "url" },
-          "website2": { "type": "string", "format": "uri" },
+          "website": { "type": "string", "format": "uri" },
           "cutenessPercentile": { "type": "integer" },
           "personality": { "type": "string", "enum": ["friendly", "fierce", "antisocial", "changeable"] },
           "eyeColor": { "type": "string", "default": "yellow" },
           "isHunter": { "type": "boolean" },
           "description": "string"
         },
-        "required": ["_id", "name", "bornAt", "bornDay", "contact", "website", "website2", "cutenessPercentile", "personality", "eyeColor", "isHunter"]
+        "required": ["_id", "name", "bornAt", "bornDay", "contact", "website", "cutenessPercentile", "personality", "eyeColor", "isHunter"]
       }
 
       @factory = unionized.JSONSchemaFactory @kittenSchema
@@ -52,7 +51,6 @@ describe 'JSONSchema kitten tests', ->
 
     it 'can generate a string with format date (default in 2013)', ->
       born = moment(@instance.bornDay)
-      console.log @instance.bornDay
       expect(born.isAfter  '2012-12-31').to.be.ok
       expect(born.isBefore '2014-01-01').to.be.ok
       expect(@instance.bornDay).to.have.length 10
@@ -62,9 +60,6 @@ describe 'JSONSchema kitten tests', ->
 
     it 'can generate string with format url', ->
       expect(@instance.website).to.contain 'http'
-
-    it 'can generate string with format uri', ->
-      expect(@instance.website2).to.contain 'http'
 
     it 'can generate a number', ->
       expect(@instance.cutenessPercentile).to.be.a 'number'
@@ -80,6 +75,21 @@ describe 'JSONSchema kitten tests', ->
 
     it 'will ignore non-required attributes', ->
       expect(@instance.description).to.be.undefined
+
+  describe 'instantiating with unknown field', ->
+    before 'create kitten', ->
+      @kittenSchema = {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" }
+        },
+        "required": ["name"]
+      }
+
+      @factory = unionized.JSONSchemaFactory @kittenSchema
+
+    it 'validates', ->
+      expect(=> @factory.create({age: 15})).to.throw 'Factory creation failed: Unknown property (not in schema) at /age'
 
   describe 'arrays', ->
     before 'create kitten', ->
@@ -153,6 +163,18 @@ describe 'JSONSchema kitten tests', ->
         "properties": {
           "name": {"type": "string"}
           "age": {"type": "number"}
+          "meta": {
+            type: "object",
+            "properties": {
+              "owner": {
+                type: "object",
+                "properties": {
+                  "name": {"type": "string"}
+                  "age": {"type": "integer"}
+                }
+              }
+            }
+          }
         },
         "required": ["name"]
       }

@@ -1,6 +1,7 @@
 _ = require 'lodash'
 faker = require 'faker'
 definitionFactory = require './definition_factory'
+validator = require 'goodeggs-json-schema-validator'
 objectId = require 'objectid'
 Factory = require './factory'
 DotNotationObjectDefinition = require './dot_notation_object_definition'
@@ -13,6 +14,13 @@ module.exports = class JSONSchemaFactory extends Factory
     definitionObject = buildDefinitionFromJSONSchema(JSONSchema, true)
     definition = new DotNotationObjectDefinition(definitionObject)
     factory = new JSONSchemaFactory([definition])
+    factory.onCreate (doc) ->
+      # Ban unkown properties. We always want to be explicit about data setup in tests
+      if not validator.validate(doc, JSONSchema, null, true)
+        message = "Factory creation failed: #{validator.error.message}"
+        message += " at #{validator.error.dataPath}" if validator.error.dataPath?.length
+        throw new Error message
+      doc
 
 buildDefinitionFromJSONSchema = (config, propertyIsRequired) ->
 
