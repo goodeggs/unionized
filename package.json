@@ -28,7 +28,6 @@
     "chai": "~1.9.0",
     "coffee-script": "^1.9.2",
     "fibrous": "~0.3.1",
-    "goodeggs-json-schema-validator": "^1.0.0",
     "lodash": "^2.4.1",
     "mocha": "^2.2.5",
     "moment": "^2.10.3",
