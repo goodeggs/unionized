@@ -5,6 +5,7 @@
   "scripts": {
     "build": "coffee --bare --output lib/ --compile src/*.coffee",
     "pretest": "npm run build",
+    "prepublish": "npm run build",
     "test": "mocha test/*.spec.coffee",
     "ci": "npm run test"
   },
