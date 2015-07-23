@@ -68,10 +68,18 @@ buildDefinitionFromJSONSchema = (config, propertyIsRequired) ->
           -> faker.internet.url()
 
     when type is 'integer'
-      -> faker.random.number 100
+      ->
+        faker.random.number({
+          min: config.minimum or 0
+          max: config.maximum or 100
+        })
 
     when type is 'number'
-      -> faker.random.number 100
+      ->
+        faker.random.number({
+          min: config.minimum or 0
+          max: config.maximum or 100
+        })
 
 buildDefinitionObjectFromJSONSchemaObject = (JSONSchema) ->
   definitionObject = {}
