@@ -20,7 +20,7 @@ buildDefinitionFromSchemaType = (schemaType, mongoose, {ignoreRequired} = {}) ->
       schemaType.defaultValue
 
     when schemaType.enumValues?.length > 0
-      -> faker.random.array_element schemaType.enumValues
+      -> faker.random.arrayElement schemaType.enumValues
 
     when schemaType instanceof mongoose.SchemaTypes.Array
       arrayInstanceDefinition = buildDefinitionFromSchemaType(schemaType.caster, mongoose, ignoreRequired: false)
@@ -30,7 +30,7 @@ buildDefinitionFromSchemaType = (schemaType, mongoose, {ignoreRequired} = {}) ->
       -> new mongoose.Types.ObjectId()
 
     when schemaType instanceof mongoose.SchemaTypes.Boolean
-      -> faker.random.array_element [true, false]
+      -> faker.random.arrayElement [true, false]
 
     when schemaType instanceof mongoose.SchemaTypes.Date
       -> faker.date.between(new Date('2013-01-01'), new Date('2014-01-01'))

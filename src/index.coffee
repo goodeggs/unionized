@@ -10,7 +10,7 @@ JSONSchemaFactory = require './json_schema_factory'
 Factory::array = (args...) -> new EmbeddedArrayDefinition(args...)
 Factory::async = (resolver) ->
   (args...) -> Promise.fromNode(resolver.bind @, args...)
-Factory::enum = (array) -> -> faker.random.array_element array
+Factory::enum = (array) -> -> faker.random.arrayElement array
 Factory::mongooseFactory = MongooseFactory.fromModel
 Factory::JSONSchemaFactory = JSONSchemaFactory.fromJSONSchema
 

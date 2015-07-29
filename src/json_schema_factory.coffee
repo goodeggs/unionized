@@ -41,10 +41,10 @@ buildDefinitionFromJSONSchema = (config, propertyIsRequired) ->
       config.default
 
     when config.enum?.length > 0
-      -> faker.random.array_element config.enum
+      -> faker.random.arrayElement config.enum
 
     when type is 'boolean'
-      -> faker.random.array_element [true, false]
+      -> faker.random.arrayElement [true, false]
 
     when type is 'string'
       switch config.format
