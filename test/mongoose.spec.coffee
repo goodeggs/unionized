@@ -203,3 +203,15 @@ describe 'mongoose kitten tests', ->
 
     it 'is not a model', ->
       expect(@instance).to.not.be.an.instanceof @Model
+
+  describe 'failing validation', ->
+    before ->
+      @Model = mongoose.model 'Kitten9', mongoose.Schema
+        age: { type: Number, required: true }
+      @factory = unionized.mongooseFactory(@Model)
+
+    it 'fails with a validation error when calling createAndSave()', (done) ->
+      @factory.createAndSave age: 'Three', (err, instance) ->
+        expect(err.name).to.equal 'ValidationError'
+        expect(err.message).to.equal 'Kitten9 validation failed'
+        done()
