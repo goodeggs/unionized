@@ -27,15 +27,20 @@ buildDefinitionFromJSONSchema = (config, propertyIsRequired) ->
   type = if Array.isArray config.type then config.type[0] else config.type
 
   switch
+    when not propertyIsRequired
+      undefined
+
     when type is 'object'
-      buildDefinitionObjectFromJSONSchemaObject(config)
+      definitionObject = {}
+      for propertyName, propertyConfig of config.properties
+        isRequired = config.required && propertyName in config.required
+        definition = buildDefinitionFromJSONSchema(propertyConfig, isRequired)
+        definitionObject[propertyName] = definition if definition?
+      definitionObject
 
     when type is 'array'
-      arrayInstanceDefinition = buildDefinitionFromJSONSchema(config.items, false)
+      arrayInstanceDefinition = buildDefinitionFromJSONSchema(config.items, true)
       -> new EmbeddedArrayDefinition arrayInstanceDefinition
-
-    when not propertyIsRequired
-      null
 
     when config.default
       config.default
@@ -80,11 +85,3 @@ buildDefinitionFromJSONSchema = (config, propertyIsRequired) ->
           min: config.minimum or 0
           max: config.maximum or 100
         })
-
-buildDefinitionObjectFromJSONSchemaObject = (JSONSchema) ->
-  definitionObject = {}
-  for propertyName, config of JSONSchema.properties
-    isRequired = JSONSchema.required && propertyName in JSONSchema.required
-    definition = buildDefinitionFromJSONSchema(config, isRequired)
-    definitionObject[propertyName] = definition if definition?
-  definitionObject
