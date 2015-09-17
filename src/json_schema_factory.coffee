@@ -1,5 +1,6 @@
 _ = require 'lodash'
 faker = require 'faker'
+randomstring = require 'randomstring'
 definitionFactory = require './definition_factory'
 validator = require 'goodeggs-json-schema-validator'
 objectId = require 'objectid'
@@ -54,7 +55,18 @@ buildDefinitionFromJSONSchema = (config, propertyIsRequired) ->
     when type is 'string'
       switch config.format
         when undefined
-          -> faker.lorem.words().join ' '
+          ->
+            stringLength = do ->
+              return unless config.minLength or config.maxLength
+              minLength = config.minLength or 0
+              maxLength = config.maxLength or minLength
+              lengthDifference = maxLength - minLength
+              Math.floor(Math.random() * lengthDifference) + minLength
+            if stringLength
+              # because faker can't generate random strings!
+              return randomstring.generate(stringLength)
+            else
+              return faker.lorem.words().join ' '
 
         # see https://github.com/goodeggs/goodeggs-json-schema-validator for supported formats
         when 'objectid'

@@ -13,9 +13,10 @@ describe 'JSONSchema kitten tests', ->
       @kittenSchema = {
         title: "Example Test Schema"
         type: "object"
-        required: ["_id", "name", "bornAt", "bornDay", "contact", "website", "cutenessPercentile", "personality", "eyeColor", "isHunter"]
+        required: ["_id", "name", "tag", "bornAt", "bornDay", "contact", "website", "cutenessPercentile", "personality", "eyeColor", "isHunter"]
         properties: {
           _id: { type: "string", format: "objectid" }
+          tag: { type: "string", minLength: 5, maxLength: 5 },
           name: { type: "string" },
           bornAt: { type: "string", format: "date-time" },
           bornDay: { type: "string", format: "date" },
@@ -39,6 +40,10 @@ describe 'JSONSchema kitten tests', ->
 
     it 'can generate a string', ->
       expect(@instance.name).to.be.a 'string'
+
+    it 'can generate a string with a specific length', ->
+      expect(@instance.tag).to.be.a 'string'
+      expect(@instance.tag).to.have.length 5
 
     it 'can generate a string with format objectId', ->
       expect(@instance._id).to.match /^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i

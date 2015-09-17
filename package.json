@@ -22,7 +22,8 @@
     "faker": "^3.0.0",
     "goodeggs-json-schema-validator": "^2.0.1-0",
     "lodash": "^3.8.0",
-    "objectid": "^1.1.0"
+    "objectid": "^1.1.0",
+    "randomstring": "^1.1.0"
   },
   "devDependencies": {
     "blanket": "~1.1.6",
