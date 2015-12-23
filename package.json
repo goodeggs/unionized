@@ -20,7 +20,7 @@
   "dependencies": {
     "bluebird": "^3.0.5",
     "faker": "^3.0.0",
-    "goodeggs-json-schema-validator": "^2.0.1-0",
+    "goodeggs-json-schema-validator": "^3.1.0",
     "lodash": "^3.8.0",
     "objectid": "^1.1.0",
     "randomstring": "^1.1.0"
