@@ -84,16 +84,9 @@ buildDefinitionFromJSONSchema = (config, propertyIsRequired) ->
         when 'uri'
           -> faker.internet.url()
 
-    when type is 'integer'
+    when type in ['integer', 'number']
       ->
-        faker.random.number({
-          min: config.minimum or 0
-          max: config.maximum or 100
-        })
-
-    when type is 'number'
-      ->
-        faker.random.number({
-          min: config.minimum or 0
-          max: config.maximum or 100
-        })
+        min = config.minimum ? 0
+        if config.exclusiveMinimum
+          min += if type is 'number' then 0.1 else 1
+        faker.random.number({min, max: config.maximum ? 100})
