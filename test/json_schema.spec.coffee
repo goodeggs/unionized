@@ -123,7 +123,6 @@ describe 'JSONSchema kitten tests', ->
     it 'respects exclusiveMinimum', ->
       for time in [0...100]
         @instance = @factory.create()
-        console.log @instance.frequency
         expect(@instance.frequency).not.to.equal 0
 
   describe 'instantiating with unknown field', ->
