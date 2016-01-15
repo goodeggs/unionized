@@ -81,6 +81,51 @@ describe 'JSONSchema kitten tests', ->
     it 'will ignore non-required attributes', ->
       expect(@instance.description).to.be.undefined
 
+  describe 'integers', ->
+    before 'create factory', ->
+      @schema = {
+        title: "Example Test Schema"
+        type: "object"
+        required: ["frequency"]
+        properties: {
+          frequency: {
+            type: "integer"
+            minimum: 0
+            exclusiveMinimum: true
+            maximum: 1
+          }
+        }
+      }
+      @factory = unionized.JSONSchemaFactory @schema
+
+    it 'respects exclusiveMinimum', ->
+      for time in [0...100]
+        @instance = @factory.create()
+        expect(@instance.frequency).to.equal 1
+
+  describe 'numbers', ->
+    before 'create factory', ->
+      @schema = {
+        title: "Example Test Schema"
+        type: "object"
+        required: ["frequency"]
+        properties: {
+          frequency: {
+            type: "number"
+            minimum: 0
+            exclusiveMinimum: true
+            maximum: 1
+          }
+        }
+      }
+      @factory = unionized.JSONSchemaFactory @schema
+
+    it 'respects exclusiveMinimum', ->
+      for time in [0...100]
+        @instance = @factory.create()
+        console.log @instance.frequency
+        expect(@instance.frequency).not.to.equal 0
+
   describe 'instantiating with unknown field', ->
     before 'create kitten', ->
       @kittenSchema = {
