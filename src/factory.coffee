@@ -31,4 +31,10 @@ module.exports = class Factory extends MultiDefinition
   onCreate: (hook) -> @factory(new HookDefinition(hook))
 
   # Private:
-  initialize: -> [@definitions] = @args
+  initialize: ->
+    [@definitions] = @args
+    # the following allows for code like _.times(3, factory.create) to work. It even works for
+    # subclass methods since we're enumerating over all the properties, including inherited
+    # ones, to find the methods
+    methods = _(@).keysIn().filter((key) => _.isFunction(@[key])).value()
+    _.bindAll @, methods

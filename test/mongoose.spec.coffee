@@ -1,5 +1,8 @@
+Promise = require 'bluebird'
+_ = require 'lodash'
 expect = require('chai').expect
 moment = require 'moment'
+
 mongoose = require './mongoose'
 unionized = require '../src'
 
@@ -184,6 +187,10 @@ describe 'mongoose kitten tests', ->
       @Model.find (err, kittens) ->
         expect(kittens[0]).to.have.property 'description', 'Big ball of fluff'
         done(err)
+
+    it 'binds createAndSave to the model', ->
+      Promise.all(_.times(3, @factory.createAndSave))
+      .then (kittens) -> expect(kittens).to.have.length 3
 
   describe 'lean creation', ->
     before ->
