@@ -4,7 +4,6 @@ unionized = require '../src'
 validator = require 'goodeggs-json-schema-validator'
 
 describe 'JSONSchema kitten tests', ->
-
   beforeEach 'clear instance', ->
     @instance = null
 
@@ -139,6 +138,21 @@ describe 'JSONSchema kitten tests', ->
 
     it 'validates', ->
       expect(=> @factory.create({age: 15})).to.throw 'Factory creation failed: Unknown property (not in schema) at /age'
+
+  describe 'allowing unknown properties', ->
+    before 'create kitten', ->
+      @kittenSchema = {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" }
+        },
+        "required": ["name"]
+      }
+
+      @factory = unionized.JSONSchemaFactory(@kittenSchema, {banUnknownProperties: false})
+
+    it 'does not error when using unkown property', ->
+      expect(=> @factory.create({age: 15})).not.to.throw()
 
   describe 'arrays', ->
     before 'create kitten', ->
