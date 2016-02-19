@@ -11,16 +11,19 @@ EmbeddedArrayDefinition = require './embedded_array_definition'
 module.exports = class JSONSchemaFactory extends Factory
   class: JSONSchemaFactory
 
-  @fromJSONSchema: (JSONSchema) ->
+  @fromJSONSchema: (JSONSchema, {banUnknownProperties} = {}) ->
+    # Ban unknown properties by default.
+    # We always want to be explicit about data setup in tests
+    banUnknownProperties ?= true
     definitionObject = buildDefinitionFromJSONSchema(JSONSchema, true)
     definition = new DotNotationObjectDefinition(definitionObject)
     factory = new JSONSchemaFactory([definition])
     factory.onCreate (doc) ->
       cleanedDoc = JSON.parse JSON.stringify doc # remove undefined, convert dates to ISO strings, etc
-      # Ban unkown properties. We always want to be explicit about data setup in tests
-      if not validator.validate(cleanedDoc, JSONSchema, null, true)
-        message = "Factory creation failed: #{validator.error.message}"
-        message += " at #{validator.error.dataPath}" if validator.error.dataPath?.length
+      result = validator.validateResult(cleanedDoc, JSONSchema, null, banUnknownProperties)
+      if not result.valid
+        message = "Factory creation failed: #{result.error.message}"
+        message += " at #{result.error.dataPath}" if result.error.dataPath?.length
         throw new Error message
       cleanedDoc
 
