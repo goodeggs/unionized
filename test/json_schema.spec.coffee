@@ -151,7 +151,7 @@ describe 'JSONSchema kitten tests', ->
 
       @factory = unionized.JSONSchemaFactory(@kittenSchema, {banUnknownProperties: false})
 
-    it 'does not error when using unkown property', ->
+    it 'does not error when using unknown property', ->
       expect(=> @factory.create({age: 15})).not.to.throw()
 
   describe 'arrays', ->
