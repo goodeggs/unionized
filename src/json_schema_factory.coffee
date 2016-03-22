@@ -69,7 +69,7 @@ buildDefinitionFromJSONSchema = (config, propertyIsRequired) ->
               # because faker can't generate random strings!
               return randomstring.generate(stringLength)
             else
-              return faker.lorem.words().join ' '
+              return faker.lorem.words()
 
         # see https://github.com/goodeggs/goodeggs-json-schema-validator for supported formats
         when 'objectid'

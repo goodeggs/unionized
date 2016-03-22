@@ -36,7 +36,7 @@ buildDefinitionFromSchemaType = (schemaType, mongoose, {ignoreRequired} = {}) ->
       -> faker.date.between(new Date('2013-01-01'), new Date('2014-01-01'))
 
     when schemaType instanceof mongoose.SchemaTypes.String
-      -> faker.lorem.words().join ' '
+      -> faker.lorem.words()
 
     when schemaType instanceof mongoose.SchemaTypes.Number
       -> faker.random.number 100
