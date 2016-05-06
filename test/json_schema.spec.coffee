@@ -80,6 +80,31 @@ describe 'JSONSchema kitten tests', ->
     it 'will ignore non-required attributes', ->
       expect(@instance.description).to.be.undefined
 
+  describe 'default values', ->
+    before 'create factory', ->
+      @schema = {
+        title: "Example Test Schema"
+        type: "object"
+        required: ["shelfLife"]
+        properties: {
+          shelfLife: {
+            type: "number"
+            default: 0
+          }
+        }
+      }
+      @factory = unionized.JSONSchemaFactory @schema
+
+    beforeEach 'create instance', ->
+      @instance = @factory.create()
+
+    it 'validates', ->
+      expect(validator.validate(@instance, @schema)).to.be.ok
+
+    it 'defaults to 0', ->
+      expect(@instance.shelfLife).to.equal 0
+
+
   describe 'integers', ->
     before 'create factory', ->
       @schema = {
