@@ -46,7 +46,7 @@ buildDefinitionFromJSONSchema = (config, propertyIsRequired) ->
       arrayInstanceDefinition = buildDefinitionFromJSONSchema(config.items, true)
       -> new EmbeddedArrayDefinition arrayInstanceDefinition
 
-    when config.default
+    when config.default?
       config.default
 
     when config.enum?.length > 0
