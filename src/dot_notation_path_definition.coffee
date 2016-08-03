@@ -25,6 +25,7 @@ module.exports = class DotNotationPathDefinition extends Definition
     valueInstance = @childDefinition.buildInstance
       instance: childInstance
       overridingDefinition: options.overridingDefinition?.objectDefinitionForParam?(@param())
+      factoryArguments: options.factoryArguments
     instance.setInstance @param(), valueInstance
     instance
 
@@ -35,6 +36,7 @@ module.exports = class DotNotationPathDefinition extends Definition
         @childDefinition.buildInstanceAsync
           instance: childInstance
           overridingDefinition: options.overridingDefinition?.objectDefinitionForParam?(@param())
+          factoryArguments: options.factoryArguments
       .then (valueInstance) =>
         instance.setInstance(@param(), valueInstance)
         instance

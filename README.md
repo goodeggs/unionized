@@ -71,6 +71,20 @@ organizationFactory.create()
 */
 ```
 
+You might want to **pass arguments into your factory definitions**:
+
+```javascript
+var humanFactoryWithAge = humanFactory.factory (age) => {
+  birthDate: moment().subtract(age, 'years').toDate()
+};
+
+var legalDriver = humanFactoryWithAge(16);
+/*
+   { name: { first: 'Azrael', last: 'Smithy' }
+     birthdate: Sun May 17 2000 15:00:02 GMT-0700 (PDT) }
+*/
+```
+
 More features you may be interested in:
 
 - [Factory inheritance](https://github.com/goodeggs/unionized/blob/master/docs/api.md#example)

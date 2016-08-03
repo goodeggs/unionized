@@ -1,6 +1,11 @@
-expect = require('chai').expect
 Promise = require 'bluebird'
+chai = require 'chai'
+chaiAsPromised = require 'chai-as-promised'
+
 unionized = require '..'
+
+chai.use chaiAsPromised
+{expect} = chai
 
 describe 'readme tests', ->
   it 'can create an object using dot notation', ->
@@ -196,3 +201,36 @@ describe 'readme tests', ->
         testDone()
       .catch (error) ->
         testDone(error)
+
+  it 'allows passing arbitrary non-property arguments into factory', ->
+    factory = unionized.factory (meta) ->
+      result: meta
+    expect(factory.create({}, 'test')).to.have.property 'result', 'test'
+
+  it 'allows passing arbitrary non-property arguments into child factory', ->
+    factory = unionized.factory (meta) ->
+      result: meta
+    childFactory = factory.factory (meta) ->
+      otherResult: "still #{meta}"
+    expect(childFactory.create({}, 'test')).to.deep.equal result: 'test', otherResult: 'still test'
+
+  it 'allows passing arbitrary non-property arguments into async factory', ->
+    factory = unionized.factory (meta) ->
+      result: meta
+    expect(factory.createAsync({}, 'test')).to.eventually.have.property 'result', 'test'
+
+  it 'allows passing arbitrary non-property arguments into async child factory', ->
+    factory = unionized.factory (meta) ->
+      result: meta
+    childFactory = factory.factory (meta) ->
+      otherResult: "still #{meta}"
+    expect(childFactory.createAsync({}, 'test')).to.eventually.deep.equal result: 'test', otherResult: 'still test'
+
+  it 'allows passing arbitrary non-property arguments into nested factory', ->
+
+    nestedFactory = unionized.factory (meta) ->
+      nestedResult: "still #{meta}"
+    factory = unionized.factory (meta) ->
+      result: meta
+      nested: nestedFactory
+    expect(factory.create({}, 'test')).to.deep.equal result: 'test', nested: nestedResult: 'still test'
