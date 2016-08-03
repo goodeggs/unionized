@@ -7,11 +7,11 @@ module.exports = class FunctionDefinition extends Definition
 
   buildInstance: (options = {}) ->
     instance = options.instance ? new Instance()
-    @_buildDefinitionFromFunction(instance).buildInstance({instance})
+    @_buildDefinitionFromFunction(instance, options.factoryArguments).buildInstance({instance, factoryArguments: options.factoryArguments})
 
   buildInstanceAsync: (options = {}) ->
     instance = options.instance ? new Instance()
-    @_buildDefinitionFromFunction(instance).buildInstanceAsync({instance})
+    @_buildDefinitionFromFunction(instance, options.factoryArguments).buildInstanceAsync({instance, factoryArguments: options.factoryArguments})
 
-  _buildDefinitionFromFunction: (instance) ->
-    definitionFactory @function.apply(instance)
+  _buildDefinitionFromFunction: (instance, factoryArguments) ->
+    definitionFactory @function.apply(instance, factoryArguments)

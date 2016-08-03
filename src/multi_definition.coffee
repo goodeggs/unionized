@@ -9,6 +9,7 @@ module.exports = class MultiDefinition extends Definition
       definition.buildInstance
         instance: memo
         overridingDefinition: options.overridingDefinition
+        factoryArguments: options.factoryArguments
     @definitions.reduce reducer, instance
     instance
 
@@ -18,4 +19,5 @@ module.exports = class MultiDefinition extends Definition
       definition.buildInstanceAsync
         instance: memo
         overridingDefinition: options.overridingDefinition
+        factoryArguments: options.factoryArguments
     Promise.reduce(@definitions, reducer, instance)
