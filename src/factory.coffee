@@ -21,8 +21,9 @@ module.exports = class Factory extends MultiDefinition
   createAsync: (args...) ->
     if _.isFunction(args[args.length - 1])
       [args..., callback] = args
-    [overridingDefinition, factoryArguments...] = args
-    overridingDefinition = definitionFactory overridingDefinition if overridingDefinition?
+    [overridingDefinitionObject, factoryArguments...] = args
+    if _.isObject(overridingDefinitionObject)
+      overridingDefinition = definitionFactory(overridingDefinitionObject)
     factory = if overridingDefinition? then @factory(overridingDefinition) else @
     factory.buildInstanceAsync({overridingDefinition, factoryArguments})
       .then((instance) -> instance.toObjectAsync())

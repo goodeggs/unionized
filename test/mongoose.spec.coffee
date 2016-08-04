@@ -180,17 +180,19 @@ describe 'mongoose kitten tests', ->
     beforeEach (done) ->
       @Model.remove (error) -> done error
 
-    beforeEach (done) ->
-      @factory.createAndSave({description: 'Big ball of fluff'}, (error) => done error)
-
-    it 'saves the kitten to the database', (done) ->
-      @Model.find (err, kittens) ->
+    it 'saves the kitten to the database', ->
+      return @factory.createAndSave({description: 'Big ball of fluff'})
+      .then =>
+        @Model.find()
+      .then (kittens) ->
         expect(kittens[0]).to.have.property 'description', 'Big ball of fluff'
-        done(err)
 
     it 'binds createAndSave to the model', ->
       Promise.all(_.times(3, @factory.createAndSave))
-      .then (kittens) -> expect(kittens).to.have.length 3
+      .then =>
+        @Model.find()
+      .then (kittens) ->
+        expect(kittens).to.have.length 3
 
   describe 'lean creation', ->
     before ->
