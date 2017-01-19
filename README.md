@@ -78,7 +78,7 @@ var humanFactoryWithAge = humanFactory.factory (age) => {
   birthDate: moment().subtract(age, 'years').toDate()
 };
 
-var legalDriver = humanFactoryWithAge(16);
+var legalDriver = humanFactoryWithAge.create({}, 16);
 /*
    { name: { first: 'Azrael', last: 'Smithy' }
      birthdate: Sun May 17 2000 15:00:02 GMT-0700 (PDT) }
