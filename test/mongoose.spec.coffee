@@ -77,9 +77,22 @@ describe 'mongoose kitten tests', ->
       expect(@instance.paws[0]).to.have.property 'nickname'
       expect(@instance.paws[0].clawCount).not.to.be.ok
 
+  describe 'numbers', ->
+    before ->
+      Model = mongoose.model 'Kitten3', mongoose.Schema
+        frequency: {type: Number, required: true, min: 2, max: 4}
+
+      @factory = unionized.mongooseFactory Model
+
+    it 'respects min and max', ->
+      return Promise.all(_.times(100, =>
+        return @factory.createAndSave()
+        .then (instance) -> expect(instance.frequency).to.be.within(2, 4)
+      ))
+
   describe 'deeply-nested attributes', ->
     before ->
-      @Model = mongoose.model 'Kitten3', mongoose.Schema
+      @Model = mongoose.model 'Kitten4', mongoose.Schema
         meta:
           owner:
             name: { type: String, required: true }
@@ -96,7 +109,7 @@ describe 'mongoose kitten tests', ->
 
   describe 'an instance generated with inputs', ->
     before ->
-      @Model = mongoose.model 'Kitten4', mongoose.Schema
+      @Model = mongoose.model 'Kitten5', mongoose.Schema
         name: { type: String, required: true }
         meta:
           owner:
@@ -128,7 +141,7 @@ describe 'mongoose kitten tests', ->
 
   describe 'extending factories', ->
     before ->
-      @Model = mongoose.model 'Kitten5', mongoose.Schema
+      @Model = mongoose.model 'Kitten6', mongoose.Schema
         name: { type: String, required: true }
         age: { type: Number, required: true }
         description: String
@@ -152,7 +165,7 @@ describe 'mongoose kitten tests', ->
 
   describe 'onCreate hooks', ->
     before ->
-      @Model = mongoose.model 'Kitten6', mongoose.Schema
+      @Model = mongoose.model 'Kitten7', mongoose.Schema
         age: { type: Number, required: true }
         humanEquivalentAge: Number
 
@@ -170,7 +183,7 @@ describe 'mongoose kitten tests', ->
 
   describe 'saving', ->
     before ->
-      @Model = mongoose.model 'Kitten7', mongoose.Schema
+      @Model = mongoose.model 'Kitten8', mongoose.Schema
         name: { type: String, required: true }
         age: { type: Number, required: true }
         description: String
@@ -196,7 +209,7 @@ describe 'mongoose kitten tests', ->
 
   describe 'lean creation', ->
     before ->
-      @Model = mongoose.model 'Kitten8', mongoose.Schema
+      @Model = mongoose.model 'Kitten9', mongoose.Schema
         name: { type: String, required: true }
         age: { type: Number, required: true }
         description: String
@@ -215,12 +228,12 @@ describe 'mongoose kitten tests', ->
 
   describe 'failing validation', ->
     before ->
-      @Model = mongoose.model 'Kitten9', mongoose.Schema
+      @Model = mongoose.model 'Kitten10', mongoose.Schema
         age: { type: Number, required: true }
       @factory = unionized.mongooseFactory(@Model)
 
     it 'fails with a validation error when calling createAndSave()', (done) ->
       @factory.createAndSave age: 'Three', (err, instance) ->
         expect(err.name).to.equal 'ValidationError'
-        expect(err.message).to.equal 'Kitten9 validation failed'
+        expect(err.message).to.equal 'Kitten10 validation failed'
         done()
