@@ -39,7 +39,14 @@ buildDefinitionFromSchemaType = (schemaType, mongoose, {ignoreRequired} = {}) ->
       -> faker.lorem.words()
 
     when schemaType instanceof mongoose.SchemaTypes.Number
-      -> faker.random.number 100
+      ->
+        min = schemaType.options.min ? 0
+        max = schemaType.options.max ? 100.0
+        SIG_DIGITS = 2
+        magnitude = Math.pow(10, SIG_DIGITS)
+        min *= magnitude
+        max *= magnitude
+        return Math.floor(Math.random() * (max - min) + min) / magnitude
 
 buildDefinitionObjectFromSchema = (schema, mongoose) ->
   definitionObject = {}
