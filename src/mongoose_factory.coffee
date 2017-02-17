@@ -1,5 +1,4 @@
 _ = require 'lodash'
-faker = require 'faker'
 definitionFactory = require './definition_factory'
 Factory = require './factory'
 DotNotationObjectDefinition = require './dot_notation_object_definition'
@@ -20,7 +19,7 @@ buildDefinitionFromSchemaType = (schemaType, mongoose, {ignoreRequired} = {}) ->
       schemaType.defaultValue
 
     when schemaType.enumValues?.length > 0
-      -> faker.random.arrayElement schemaType.enumValues
+      -> fake.randomArrayElement(schemaType.enumValues)
 
     when schemaType instanceof mongoose.SchemaTypes.Array
       arrayInstanceDefinition = buildDefinitionFromSchemaType(schemaType.caster, mongoose, ignoreRequired: false)
@@ -30,23 +29,19 @@ buildDefinitionFromSchemaType = (schemaType, mongoose, {ignoreRequired} = {}) ->
       -> new mongoose.Types.ObjectId()
 
     when schemaType instanceof mongoose.SchemaTypes.Boolean
-      -> faker.random.arrayElement [true, false]
+      -> fake.randomArrayElement([true, false])
 
     when schemaType instanceof mongoose.SchemaTypes.Date
-      -> faker.date.between(new Date('2013-01-01'), new Date('2014-01-01'))
+      fake.date
 
     when schemaType instanceof mongoose.SchemaTypes.String
-      -> faker.lorem.words()
+      fake.randomString
 
     when schemaType instanceof mongoose.SchemaTypes.Number
       ->
         min = schemaType.options.min ? 0
         max = schemaType.options.max ? 100.0
-        SIG_DIGITS = 2
-        magnitude = Math.pow(10, SIG_DIGITS)
-        min *= magnitude
-        max *= magnitude
-        return Math.floor(Math.random() * (max - min) + min) / magnitude
+        return fake.integerInRange(min, max)
 
 buildDefinitionObjectFromSchema = (schema, mongoose) ->
   definitionObject = {}

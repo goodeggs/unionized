@@ -1,9 +1,7 @@
 _ = require 'lodash'
-faker = require 'faker'
-randomstring = require 'randomstring'
+fake = require 'fake-eggs'
 definitionFactory = require './definition_factory'
 validator = require 'goodeggs-json-schema-validator'
-objectId = require 'objectid'
 Factory = require './factory'
 DotNotationObjectDefinition = require './dot_notation_object_definition'
 EmbeddedArrayDefinition = require './embedded_array_definition'
@@ -50,10 +48,10 @@ buildDefinitionFromJSONSchema = (config, propertyIsRequired) ->
       config.default
 
     when config.enum?.length > 0
-      -> faker.random.arrayElement config.enum
+      -> _.sample(config.enum)
 
     when type is 'boolean'
-      -> faker.random.arrayElement [true, false]
+      -> _.sample([true, false])
 
     when type is 'string'
       switch config.format
@@ -66,33 +64,32 @@ buildDefinitionFromJSONSchema = (config, propertyIsRequired) ->
               lengthDifference = maxLength - minLength
               Math.floor(Math.random() * lengthDifference) + minLength
             if stringLength
-              # because faker can't generate random strings!
-              return randomstring.generate(stringLength)
+              return fake.randomString(stringLength)
             else
-              return faker.lorem.words()
+              return fake.randomString()
 
         # see https://github.com/goodeggs/goodeggs-json-schema-validator for supported formats
         when 'objectid'
-          -> objectId() # works in both server and client
+          fake.objectId
 
         when 'date-time'
-          -> faker.date.between(new Date('2013-01-01'), new Date('2014-01-01')).toISOString()
+          fake.date
 
         when 'date'
-          -> faker.date.between(new Date('2013-01-01'), new Date('2014-01-01')).toISOString().slice(0,10)
+          -> fake.date().toISOString().slice(0,10)
 
         when 'email'
-          -> faker.internet.email()
+          fake.email
 
         when 'uri'
-          -> faker.internet.url()
+          fake.uri
 
     when type is 'integer'
       ->
         min = config.minimum ? 0
         min += 1 if config.exclusiveMinimum
         max = config.maximum ? 100
-        Math.floor(Math.random() * (max - min) + min)
+        fake.integerInRange(min, max)
 
     when type is 'number'
       ->
@@ -103,4 +100,4 @@ buildDefinitionFromJSONSchema = (config, propertyIsRequired) ->
         magnitude = Math.pow 10, SIG_DIGITS
         min *= magnitude
         max *= magnitude
-        Math.floor(Math.random() * (max - min) + min) / magnitude
+        fake.integerInRange(min, max)
