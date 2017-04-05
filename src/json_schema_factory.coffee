@@ -94,10 +94,10 @@ buildDefinitionFromJSONSchema = (config, propertyIsRequired) ->
     when type is 'number'
       ->
         min = config.minimum ? 0
-        min += 0.1 if config.exclusiveMinimum
         max = config.maximum ? 100.0
         SIG_DIGITS = 2
         magnitude = Math.pow 10, SIG_DIGITS
-        min *= magnitude
-        max *= magnitude
-        fake.integerInRange(min, max)
+        min = Math.ceil(min * magnitude)
+        min = min + 1 if config.exclusiveMinimum
+        max = Math.floor(max * magnitude)
+        fake.integerInRange(min, max) / magnitude

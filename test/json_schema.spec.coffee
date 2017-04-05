@@ -47,16 +47,15 @@ describe 'JSONSchema kitten tests', ->
     it 'can generate a string with format objectId', ->
       expect(@instance._id).to.match /^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i
 
-    it 'can generate a string with format date-time (default in 2013)', ->
+    it 'can generate a string with format date-time', ->
+      console.log(@instance.bornAt)
       born = moment(@instance.bornAt)
-      expect(born.isAfter  '2012-12-31').to.be.ok
-      expect(born.isBefore '2014-01-01').to.be.ok
+      expect(born.isAfter  '2010-01-01').to.be.ok
       expect(@instance.bornAt).to.have.length 24
 
-    it 'can generate a string with format date (default in 2013)', ->
+    it 'can generate a string with format date', ->
       born = moment(@instance.bornDay)
-      expect(born.isAfter  '2012-12-31').to.be.ok
-      expect(born.isBefore '2014-01-01').to.be.ok
+      expect(born.isAfter  '2010-01-01').to.be.ok
       expect(@instance.bornDay).to.have.length 10
 
     it 'can generate string with format email', ->
