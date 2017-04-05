@@ -4,11 +4,11 @@
   "version": "4.11.0",
   "scripts": {
     "build": "coffee --bare --output lib/ --compile src/*.coffee",
-    "pretest": "npm run build",
-    "prepublish": "npm run build",
+    "pretest": "yarn run build",
+    "prepublish": "yarn run build",
     "test": "mocha test/*.spec.coffee",
-    "test:watch": "npm run test -- --watch",
-    "ci": "npm run test"
+    "test:watch": "yarn run test -- --watch",
+    "ci": "yarn run test"
   },
   "repository": {
     "type": "git",
@@ -20,11 +20,9 @@
   ],
   "dependencies": {
     "bluebird": "^3.0.5",
-    "faker": "^3.0.0",
+    "fake-eggs": "^1.5.0",
     "goodeggs-json-schema-validator": "^3.1.0",
-    "lodash": "^3.8.0",
-    "objectid": "^1.1.0",
-    "randomstring": "^1.1.0"
+    "lodash": "^3.8.0"
   },
   "devDependencies": {
     "blanket": "~1.1.6",

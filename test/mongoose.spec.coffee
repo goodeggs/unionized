@@ -42,10 +42,9 @@ describe 'mongoose kitten tests', ->
     it 'can generate a boolean', ->
       expect(@instance.isHunter).to.be.a 'boolean'
 
-    it 'can generate a date (default in 2013)', ->
+    it 'can generate a date', ->
       born = moment(@instance.bornAt)
-      expect(born.isAfter  '2012-12-31').to.be.ok
-      expect(born.isBefore '2014-01-01').to.be.ok
+      expect(born.isAfter  '2010-01-01').to.be.ok
 
     it 'will use provided defaults', ->
       expect(@instance.eyeColor).to.equal 'yellow'
