@@ -1,6 +1,7 @@
 language: node_js
+cache: yarn
 node_js:
   - "0.10"
 services:
   - mongodb
-script: npm run ci
+script: yarn run ci
