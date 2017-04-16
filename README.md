@@ -1,5 +1,7 @@
 # Unionized
 
+[![Join the chat at https://gitter.im/goodeggs/unionized](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/goodeggs/unionized?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Unionized is a factory library for setting up JavaScript objects as test data. Compare to the [factory_girl](https://github.com/thoughtbot/factory_girl) Ruby gem by [thoughtbot](https://thoughtbot.com/open-source).
 
 [![NPM
