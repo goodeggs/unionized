@@ -18,12 +18,8 @@ module.exports = class JSONSchemaFactory extends Factory
     factory = new JSONSchemaFactory([definition])
     factory.onCreate (doc) ->
       cleanedDoc = JSON.parse JSON.stringify doc # remove undefined, convert dates to ISO strings, etc
-      result = validator.validateResult(cleanedDoc, JSONSchema, null, banUnknownProperties)
-      if not result.valid
-        message = "Factory creation failed: #{result.error.message}"
-        message += " at #{result.error.dataPath}" if result.error.dataPath?.length
-        throw new Error message
-      cleanedDoc
+      validator.assertValid(cleanedDoc, JSONSchema, 'Factory creation failed', {banUnknownProperties})
+      return cleanedDoc
 
 buildDefinitionFromJSONSchema = (config, propertyIsRequired) ->
   type = if Array.isArray config.type then config.type[0] else config.type
