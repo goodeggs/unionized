@@ -35,12 +35,6 @@ bluebird@^3.0.5:
   version "3.5.0"
   resolved "https://registry.npmjs.org/bluebird/-/bluebird-3.5.0.tgz#791420d7f551eea2897453a8a77653f96606d67c"
 
-boom@^2.8.0:
-  version "2.10.1"
-  resolved "https://registry.npmjs.org/boom/-/boom-2.10.1.tgz#39c8918ceff5799f83f9492a848f625add0c766f"
-  dependencies:
-    hoek "2.x.x"
-
 bson@~1.0.4:
   version "1.0.4"
   resolved "https://registry.npmjs.org/bson/-/bson-1.0.4.tgz#93c10d39eaa5b58415cbc4052f3e53e562b0b72c"
@@ -136,20 +130,15 @@ glob@3.2.11:
     inherits "2"
     minimatch "0.3"
 
-goodeggs-json-schema-validator@^3.1.0:
-  version "3.3.0"
-  resolved "https://registry.npmjs.org/goodeggs-json-schema-validator/-/goodeggs-json-schema-validator-3.3.0.tgz#ceada347596c41156809716408882ffafba459a7"
+goodeggs-json-schema-validator@^4.5.2:
+  version "4.5.2"
+  resolved "https://registry.npmjs.org/goodeggs-json-schema-validator/-/goodeggs-json-schema-validator-4.5.2.tgz#4ab5bb87ecb98acb48ccd9b09211cb9be3f3bac4"
   dependencies:
-    boom "^2.8.0"
-    tv4 "^1.1.12"
+    tv4 "^1.2.7"
 
 growl@1.9.2:
   version "1.9.2"
   resolved "https://registry.npmjs.org/growl/-/growl-1.9.2.tgz#0ea7743715db8d8de2c5ede1775e1b45ac85c02f"
-
-hoek@2.x.x:
-  version "2.16.3"
-  resolved "https://registry.npmjs.org/hoek/-/hoek-2.16.3.tgz#20bb7403d3cea398e91dc4710a8ff1b8274a25ed"
 
 hooks-fixed@2.0.0:
   version "2.0.0"
@@ -354,7 +343,7 @@ to-iso-string@0.0.2:
   version "0.0.2"
   resolved "https://registry.npmjs.org/to-iso-string/-/to-iso-string-0.0.2.tgz#4dc19e664dfccbe25bd8db508b00c6da158255d1"
 
-tv4@^1.1.12:
+tv4@^1.2.7:
   version "1.3.0"
   resolved "https://registry.npmjs.org/tv4/-/tv4-1.3.0.tgz#d020c846fadd50c855abb25ebaecc68fc10f7963"
 

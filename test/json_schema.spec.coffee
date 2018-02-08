@@ -161,7 +161,7 @@ describe 'JSONSchema kitten tests', ->
       @factory = unionized.JSONSchemaFactory @kittenSchema
 
     it 'validates', ->
-      expect(=> @factory.create({age: 15})).to.throw 'Factory creation failed: Unknown property (not in schema) at /age'
+      expect(=> @factory.create({age: 15})).to.throw 'Factory creation failed; failed schema validation for data path /age; unknown property (not in schema)'
 
   describe 'allowing unknown properties', ->
     before 'create kitten', ->
