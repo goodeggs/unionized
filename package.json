@@ -5,7 +5,7 @@
   "scripts": {
     "build": "coffee --bare --output lib/ --compile src/*.coffee",
     "pretest": "yarn run build",
-    "prepublish": "yarn run build",
+    "prepublishOnly": "yarn run build",
     "test": "mocha test/*.spec.coffee",
     "test:watch": "yarn run test -- --watch",
     "ci": "yarn run test"
