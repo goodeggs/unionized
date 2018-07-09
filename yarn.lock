@@ -113,9 +113,9 @@ fibers@>=0.6.7:
   version "1.0.15"
   resolved "https://registry.npmjs.org/fibers/-/fibers-1.0.15.tgz#22f039c8f18b856190fbbe4decf056154c1eae9c"
 
-fibrous@~0.3.1:
-  version "0.3.3"
-  resolved "https://registry.npmjs.org/fibrous/-/fibrous-0.3.3.tgz#8abbf6c8047969b3422e42f2a511a8ed8ebe79f2"
+fibrous@~0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/fibrous/-/fibrous-0.4.0.tgz#09e1d8239beacaa6ec41991e752bf610fe7a1bb6"
   dependencies:
     fibers ">=0.6.7"
 
