@@ -20,7 +20,7 @@
   ],
   "dependencies": {
     "bluebird": "^3.0.5",
-    "fake-eggs": "^1.5.0",
+    "fake-eggs": "^4.3.1",
     "goodeggs-json-schema-validator": "^4.5.2",
     "lodash": "^4.17.10"
   },
@@ -29,7 +29,6 @@
     "chai": "^2.1.2",
     "chai-as-promised": "^5.3.0",
     "coffee-script": "^1.9.2",
-    "fibrous": "~0.3.1",
     "mocha": "^2.2.5",
     "moment": "^2.10.3",
     "mongoose": "^4.0.3"

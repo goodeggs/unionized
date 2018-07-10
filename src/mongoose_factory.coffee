@@ -20,7 +20,7 @@ buildDefinitionFromSchemaType = (schemaType, mongoose, {ignoreRequired} = {}) ->
       schemaType.defaultValue
 
     when schemaType.enumValues?.length > 0
-      -> fake.randomArrayElement(schemaType.enumValues)
+      -> fake.sample(schemaType.enumValues)
 
     when schemaType instanceof mongoose.SchemaTypes.Array
       arrayInstanceDefinition = buildDefinitionFromSchemaType(schemaType.caster, mongoose, ignoreRequired: false)
@@ -30,19 +30,19 @@ buildDefinitionFromSchemaType = (schemaType, mongoose, {ignoreRequired} = {}) ->
       -> new mongoose.Types.ObjectId()
 
     when schemaType instanceof mongoose.SchemaTypes.Boolean
-      -> fake.randomArrayElement([true, false])
+      -> fake.sample([true, false])
 
     when schemaType instanceof mongoose.SchemaTypes.Date
       fake.date
 
     when schemaType instanceof mongoose.SchemaTypes.String
-      fake.randomString
+      fake.string
 
     when schemaType instanceof mongoose.SchemaTypes.Number
       ->
-        min = schemaType.options.min ? 0
-        max = schemaType.options.max ? 100.0
-        return fake.integerInRange(min, max)
+        min = schemaType.options.min ? -100
+        max = schemaType.options.max ? 100
+        return fake.number(min, max)
 
 buildDefinitionObjectFromSchema = (schema, mongoose) ->
   definitionObject = {}
