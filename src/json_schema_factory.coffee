@@ -60,9 +60,9 @@ buildDefinitionFromJSONSchema = (config, propertyIsRequired) ->
               lengthDifference = maxLength - minLength
               Math.floor(Math.random() * lengthDifference) + minLength
             if stringLength
-              return fake.randomString(stringLength)
+              return fake.string(stringLength)
             else
-              return fake.randomString()
+              return fake.string()
 
         # see https://github.com/goodeggs/goodeggs-json-schema-validator for supported formats
         when 'objectid'
@@ -85,7 +85,7 @@ buildDefinitionFromJSONSchema = (config, propertyIsRequired) ->
         min = config.minimum ? 0
         min += 1 if config.exclusiveMinimum
         max = config.maximum ? 100
-        fake.integerInRange(min, max)
+        fake.integer(min, max)
 
     when type is 'number'
       ->
@@ -96,4 +96,4 @@ buildDefinitionFromJSONSchema = (config, propertyIsRequired) ->
         min = Math.ceil(min * magnitude)
         min = min + 1 if config.exclusiveMinimum
         max = Math.floor(max * magnitude)
-        fake.integerInRange(min, max) / magnitude
+        fake.integer(min, max) / magnitude
