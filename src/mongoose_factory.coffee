@@ -40,9 +40,9 @@ buildDefinitionFromSchemaType = (schemaType, mongoose, {ignoreRequired} = {}) ->
 
     when schemaType instanceof mongoose.SchemaTypes.Number
       ->
-        min = schemaType.options.min ? 0
-        max = schemaType.options.max ? 100.0
-        return fake.integer(min, max)
+        min = schemaType.options.min ? -100
+        max = schemaType.options.max ? 100
+        return fake.number(min, max)
 
 buildDefinitionObjectFromSchema = (schema, mongoose) ->
   definitionObject = {}

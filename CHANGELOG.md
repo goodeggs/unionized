@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file.
 This project follows [SemVer 2.0.0](http://www.semver.org).
 
+## 5.0.0
+
+### Breaking
+- factories now generate negative numbers and integers
+
+### Added
+- Added support for JSON schema exclusive maximum
+
 ## 2.7.0
 
 ### Added
