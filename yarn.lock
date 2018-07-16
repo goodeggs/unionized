@@ -16,9 +16,9 @@ async@2.1.4:
   dependencies:
     lodash "^4.14.0"
 
-blanket@~1.1.6:
-  version "1.1.10"
-  resolved "https://registry.npmjs.org/blanket/-/blanket-1.1.10.tgz#9beafc59b666bd47ad94ec64082bf197ef8cb342"
+blanket@~1.2.3:
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/blanket/-/blanket-1.2.3.tgz#151b4987c3bd84552bb5f03b90ef5f7e5931e473"
   dependencies:
     acorn "^1.0.3"
     falafel "~1.2.0"
