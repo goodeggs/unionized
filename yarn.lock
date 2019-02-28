@@ -101,8 +101,8 @@ escape-string-regexp@1.0.2:
   resolved "https://registry.npmjs.org/escape-string-regexp/-/escape-string-regexp-1.0.2.tgz#4dbc2fe674e71949caf3fb2695ce7f2dc1d9a8d1"
 
 fake-eggs@^4.3.1:
-  version "4.5.0"
-  resolved "https://registry.yarnpkg.com/fake-eggs/-/fake-eggs-4.5.0.tgz#6911ebe6d370b8dce5e7ec28a3c1e53c6687e064"
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/fake-eggs/-/fake-eggs-4.6.0.tgz#0023d8194af6b2c1b2861c010f5c7e5bebad3b5d"
   dependencies:
     lodash "4.17.5"
 
