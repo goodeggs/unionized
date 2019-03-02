@@ -101,10 +101,10 @@ escape-string-regexp@1.0.2:
   resolved "https://registry.npmjs.org/escape-string-regexp/-/escape-string-regexp-1.0.2.tgz#4dbc2fe674e71949caf3fb2695ce7f2dc1d9a8d1"
 
 fake-eggs@^4.3.1:
-  version "4.6.0"
-  resolved "https://registry.yarnpkg.com/fake-eggs/-/fake-eggs-4.6.0.tgz#0023d8194af6b2c1b2861c010f5c7e5bebad3b5d"
+  version "4.6.1"
+  resolved "https://registry.yarnpkg.com/fake-eggs/-/fake-eggs-4.6.1.tgz#99479b97eba1d731ac7139e9da6bc7d809c8e260"
   dependencies:
-    lodash "4.17.5"
+    lodash "^4.17.11"
 
 falafel@~1.2.0:
   version "1.2.0"
@@ -163,11 +163,7 @@ kareem@1.2.1:
   version "1.2.1"
   resolved "https://registry.npmjs.org/kareem/-/kareem-1.2.1.tgz#acdb8c8119845834abbfa58ade1cf9dea63dc752"
 
-lodash@4.17.5:
-  version "4.17.5"
-  resolved "https://registry.npmjs.org/lodash/-/lodash-4.17.5.tgz#99a92d65c0272debe8c96b6057bc8fbfa3bed511"
-
-lodash@^4.14.0, lodash@^4.17.10:
+lodash@^4.14.0, lodash@^4.17.10, lodash@^4.17.11:
   version "4.17.11"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.11.tgz#b39ea6229ef607ecd89e2c8df12536891cac9b8d"
 
