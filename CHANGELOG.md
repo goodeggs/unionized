@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file.
 This project follows [SemVer 2.0.0](http://www.semver.org).
 
+
+## 6.0.0
+
+### Breaking
+- dropped support for Node 4 and Node 6
+
 ## 5.0.0
 
 ### Breaking
