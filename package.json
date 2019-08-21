@@ -21,7 +21,7 @@
   "dependencies": {
     "bluebird": "^3.0.5",
     "fake-eggs": "^4.3.1",
-    "goodeggs-json-schema-validator": "^4.5.2",
+    "goodeggs-json-schema-validator": "^5.0.0",
     "lodash": "^4.17.10"
   },
   "devDependencies": {
