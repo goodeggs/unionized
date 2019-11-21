@@ -126,9 +126,9 @@ glob@3.2.11:
     inherits "2"
     minimatch "0.3"
 
-goodeggs-json-schema-validator@^4.5.2:
-  version "4.5.2"
-  resolved "https://registry.npmjs.org/goodeggs-json-schema-validator/-/goodeggs-json-schema-validator-4.5.2.tgz#4ab5bb87ecb98acb48ccd9b09211cb9be3f3bac4"
+goodeggs-json-schema-validator@^5.2.0:
+  version "5.2.0"
+  resolved "https://registry.npmjs.org/goodeggs-json-schema-validator/-/goodeggs-json-schema-validator-5.2.0.tgz#fb5814ad8ca41707784fe333ee351c7abea89b10"
   dependencies:
     tv4 "^1.2.7"
 
