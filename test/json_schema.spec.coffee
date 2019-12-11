@@ -1,7 +1,9 @@
 expect = require('chai').expect
+fake = require('fake-eggs')
 moment = require 'moment'
-unionized = require '../src'
 validator = require 'goodeggs-json-schema-validator'
+
+unionized = require '../src'
 
 describe 'JSONSchema kitten tests', ->
   beforeEach 'clear instance', ->
@@ -102,7 +104,6 @@ describe 'JSONSchema kitten tests', ->
 
     it 'defaults to 0', ->
       expect(@instance.shelfLife).to.equal 0
-
 
   describe 'integers', ->
     before 'create factory', ->
@@ -213,6 +214,68 @@ describe 'JSONSchema kitten tests', ->
       expect(@instance.paws[0]).to.be.a 'object'
       expect(@instance.paws[0]).to.have.property 'nickname'
       expect(@instance.paws[0].clawCount).not.to.be.ok
+
+    it 'generates a number of array elements greater than or equal to given `minItems` if provided', ->
+      minItems = fake.integer(0)
+      schema = {
+        # TODO(serhalp) unionized does not support top-level arrays - simplify this when it does
+        type: 'object',
+        required: ['arr'],
+        properties: {
+          arr: {
+            type: 'array'
+            items: {
+              type: 'integer'
+            }
+            minItems
+          }
+        }
+      }
+      factory = unionized.JSONSchemaFactory(schema)
+
+      expect(factory.create().arr).to.have.length.of.at.least(minItems)
+
+    it 'generates a number of array elements less than or equal to given `maxItems` if provided', ->
+      maxItems = fake.integer(0)
+      schema = {
+        # TODO(serhalp) unionized does not support top-level arrays - simplify this when it does
+        type: 'object',
+        required: ['arr'],
+        properties: {
+          arr: {
+            type: 'array'
+            items: {
+              type: 'integer'
+            }
+            maxItems
+          }
+        }
+      }
+      factory = unionized.JSONSchemaFactory(schema)
+
+      expect(factory.create().arr).to.have.length.at.most(maxItems)
+
+    it 'generates a number of array elements between `minItems` and `maxItems` inclusively if provided', ->
+      minItems = fake.integer(0)
+      maxItems = fake.integer(minItems)
+      schema = {
+        # TODO(serhalp) unionized does not support top-level arrays - simplify this when it does
+        type: 'object',
+        required: ['arr'],
+        properties: {
+          arr: {
+            type: 'array'
+            items: {
+              type: 'integer'
+            }
+            minItems
+            maxItems
+          }
+        }
+      }
+      factory = unionized.JSONSchemaFactory(schema)
+
+      expect(factory.create().arr).to.have.length.within(minItems, maxItems)
 
   describe 'deeply-nested attributes', ->
     before 'create kitten', ->

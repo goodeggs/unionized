@@ -38,7 +38,7 @@ buildDefinitionFromJSONSchema = (config, propertyIsRequired) ->
 
     when type is 'array'
       arrayInstanceDefinition = buildDefinitionFromJSONSchema(config.items, true)
-      -> new EmbeddedArrayDefinition arrayInstanceDefinition
+      -> new EmbeddedArrayDefinition arrayInstanceDefinition, generateArrayLength(config)
 
     when config.default?
       config.default
@@ -95,3 +95,13 @@ buildDefinitionFromJSONSchema = (config, propertyIsRequired) ->
         max = config.maximum ? 100
         max -= 0.001 if config.exclusiveMaximum
         fake.number(min, max)
+
+generateArrayLength = (config) ->
+  # Ensure we generate valid defaults in all cases:
+  # - no minItems, no maxItems: 0 to 100
+  # - minItems only: minItems to (minItems+100)
+  # - maxItems only: 0 to maxItems
+  # - minItems, maxItems: use them
+  minItems = config.minItems ? 0
+  maxItems = config.maxItems ? minItems + 100
+  return Math.floor(Math.random() * (maxItems - minItems)) + minItems
