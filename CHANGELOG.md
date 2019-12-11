@@ -2,16 +2,22 @@
 All notable changes to this project will be documented in this file.
 This project follows [SemVer 2.0.0](http://www.semver.org).
 
+## 6.1.0
+
+- Added support for `minItems` and `maxItems` on array properties in `JSONSchemaFactory`
+  - This is not a breaking change; however, previously array properties by default were always
+    generated with exactly two elements. This was not documented, so it is not considered a breaking
+    change. However, you may have tests that were accidentally relying on this behavior.
 
 ## 6.0.0
 
 ### Breaking
-- dropped support for Node 4 and Node 6
+- Dropped support for Node 4 and Node 6
 
 ## 5.0.0
 
 ### Breaking
-- factories now generate negative numbers and integers
+- Factories now generate negative numbers and integers
 
 ### Added
 - Added support for JSON schema exclusive maximum
