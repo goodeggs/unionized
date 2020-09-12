@@ -1,5 +1,5 @@
 expect = require('chai').expect
-fake = require('fake-eggs')
+fake = require('fake-eggs').default
 moment = require 'moment'
 validator = require 'goodeggs-json-schema-validator'
 

@@ -1,5 +1,6 @@
 _ = require 'lodash'
-fake = require 'fake-eggs'
+fake = require('fake-eggs').default
+
 definitionFactory = require './definition_factory'
 Factory = require './factory'
 DotNotationObjectDefinition = require './dot_notation_object_definition'
