@@ -1,7 +1,8 @@
 _ = require 'lodash'
-fake = require 'fake-eggs'
-definitionFactory = require './definition_factory'
+fake = require('fake-eggs').default
 validator = require 'goodeggs-json-schema-validator'
+
+definitionFactory = require './definition_factory'
 Factory = require './factory'
 DotNotationObjectDefinition = require './dot_notation_object_definition'
 EmbeddedArrayDefinition = require './embedded_array_definition'
