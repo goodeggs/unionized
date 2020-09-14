@@ -83,19 +83,19 @@ buildDefinitionFromJSONSchema = (config, propertyIsRequired) ->
 
     when type is 'integer'
       ->
-        min = config.minimum ? -100
-        min += 1 if config.exclusiveMinimum
-        max = config.maximum ? 100
-        max -= 1 if config.exclusiveMaximum
-        fake.integer(min, max)
+        minInclusive = config.minimum ? -100
+        minInclusive += 1 if (config.exclusiveMinimum ? false)
+        maxExclusive = config.maximum ? 100
+        maxExclusive += 1 if not (config.exclusiveMaximum ? false)
+        return fake.integer(minInclusive, maxExclusive)
 
     when type is 'number'
       ->
-        min = config.minimum ? -100
-        min += 0.001 if config.exclusiveMinimum
-        max = config.maximum ? 100
-        max -= 0.001 if config.exclusiveMaximum
-        fake.number(min, max)
+        minInclusive = config.minimum ? -100
+        minInclusive += 0.001 if (config.exclusiveMinimum ? false)
+        maxExclusive = config.maximum ? 100
+        maxExclusive += 0.001 if not (config.exclusiveMaximum ? false)
+        return fake.number(minInclusive, maxExclusive)
 
 generateArrayLength = (config) ->
   # Ensure we generate valid defaults in all cases:
