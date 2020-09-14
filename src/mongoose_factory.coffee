@@ -43,6 +43,8 @@ buildDefinitionFromSchemaType = (schemaType, mongoose, {ignoreRequired} = {}) ->
       ->
         min = schemaType.options.min ? -100
         max = schemaType.options.max ? 100
+        # TODO(serhalp) Isn't mongoose `max` inclusive and `fake.number` max exclusive...? I guess
+        # this will never generate invalid data, but it's not covering the full domain.
         return fake.number(min, max)
 
 buildDefinitionObjectFromSchema = (schema, mongoose) ->
