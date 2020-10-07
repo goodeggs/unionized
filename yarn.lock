@@ -208,8 +208,8 @@ mocha@^2.2.5:
     to-iso-string "0.0.2"
 
 moment@^2.10.3:
-  version "2.29.0"
-  resolved "https://registry.npmjs.org/moment/-/moment-2.29.0.tgz#fcbef955844d91deb55438613ddcec56e86a3425"
+  version "2.29.1"
+  resolved "https://registry.npmjs.org/moment/-/moment-2.29.1.tgz#b2be769fa31940be9eeea6469c075e35006fa3d3"
 
 mongodb-core@2.1.9:
   version "2.1.9"
