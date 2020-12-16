@@ -50,15 +50,10 @@ describe 'JSONSchema kitten tests', ->
       expect(@instance._id).to.match /^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i
 
     it 'can generate a string with format date-time', ->
-      console.log(@instance.bornAt)
-      born = moment(@instance.bornAt)
-      expect(born.isAfter  '2010-01-01').to.be.ok
-      expect(@instance.bornAt).to.have.length 24
+      expect(moment(@instance.bornAt, moment.ISO_8601).isValid()).to.be.true
 
     it 'can generate a string with format date', ->
-      born = moment(@instance.bornDay)
-      expect(born.isAfter  '2010-01-01').to.be.ok
-      expect(@instance.bornDay).to.have.length 10
+      expect(moment(@instance.bornDay, ['YYYY-MM-DD', 'YYYYYY-MM-DD']).isValid()).to.be.true
 
     it 'can generate string with format email', ->
       expect(@instance.contact).to.contain '@'
@@ -290,7 +285,7 @@ describe 'JSONSchema kitten tests', ->
       expect(@instance.paws[0].clawCount).not.to.be.ok
 
     it 'generates a number of array elements greater than or equal to given `minItems` if provided', ->
-      minItems = fake.integer(0)
+      minItems = fake.integer(0, 100)
       schema = {
         # TODO(serhalp) unionized does not support top-level arrays - simplify this when it does
         type: 'object',
@@ -310,7 +305,7 @@ describe 'JSONSchema kitten tests', ->
       expect(factory.create().arr).to.have.length.of.at.least(minItems)
 
     it 'generates a number of array elements less than or equal to given `maxItems` if provided', ->
-      maxItems = fake.integer(0)
+      maxItems = fake.integer(0, 100)
       schema = {
         # TODO(serhalp) unionized does not support top-level arrays - simplify this when it does
         type: 'object',
@@ -330,8 +325,8 @@ describe 'JSONSchema kitten tests', ->
       expect(factory.create().arr).to.have.length.at.most(maxItems)
 
     it 'generates a number of array elements between `minItems` and `maxItems` inclusively if provided', ->
-      minItems = fake.integer(0)
-      maxItems = fake.integer(minItems)
+      minItems = fake.integer(0, 100)
+      maxItems = fake.integer(minItems, 200)
       schema = {
         # TODO(serhalp) unionized does not support top-level arrays - simplify this when it does
         type: 'object',

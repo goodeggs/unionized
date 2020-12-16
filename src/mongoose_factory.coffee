@@ -31,7 +31,7 @@ buildDefinitionFromSchemaType = (schemaType, mongoose, {ignoreRequired} = {}) ->
       -> new mongoose.Types.ObjectId()
 
     when schemaType instanceof mongoose.SchemaTypes.Boolean
-      -> fake.sample([true, false])
+      -> fake.boolean()
 
     when schemaType instanceof mongoose.SchemaTypes.Date
       fake.date

@@ -73,7 +73,7 @@ buildDefinitionFromJSONSchema = (config, propertyIsRequired) ->
           fake.date
 
         when 'date'
-          -> fake.date().toISOString().slice(0,10)
+          -> fake.day()
 
         when 'email'
           fake.email
