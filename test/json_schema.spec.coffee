@@ -106,8 +106,8 @@ describe 'JSONSchema kitten tests', ->
       expect(@instance.shelfLife).to.equal 0
 
   describe 'integers', ->
-    before 'create factory', ->
-      @schema = {
+    it 'respects exclusiveMinimum', ->
+      schema = {
         title: "Example Test Schema"
         type: "object"
         required: ["frequency"]
@@ -116,20 +116,77 @@ describe 'JSONSchema kitten tests', ->
             type: "integer"
             minimum: 0
             exclusiveMinimum: true
-            maximum: 1
+            maximum: 5
           }
         }
       }
-      @factory = unionized.JSONSchemaFactory @schema
-
-    it 'respects exclusiveMinimum', ->
+      factory = unionized.JSONSchemaFactory(schema)
       for time in [0...100]
-        @instance = @factory.create()
-        expect(@instance.frequency).to.equal 1
+        instance = factory.create()
+        expect(instance.frequency).not.to.equal(0)
+
+    it 'handles special case of single possible integer due to exclusiveMinimum', ->
+      schema = {
+        title: "Example Test Schema"
+        type: "object"
+        required: ["frequency"]
+        properties: {
+          frequency: {
+            type: "integer"
+            minimum: 4
+            exclusiveMinimum: true
+            maximum: 5
+          }
+        }
+      }
+      factory = unionized.JSONSchemaFactory(schema)
+      for time in [0...100]
+        instance = factory.create()
+        # can only ever be 5
+        expect(instance.frequency).to.equal(5)
+
+    it 'respects exclusiveMaximum', ->
+      schema = {
+        title: "Example Test Schema"
+        type: "object"
+        required: ["frequency"]
+        properties: {
+          frequency: {
+            type: "integer"
+            minimum: 0
+            maximum: 5
+            exclusiveMaximum: true
+          }
+        }
+      }
+      factory = unionized.JSONSchemaFactory(schema)
+      for time in [0...100]
+        instance = factory.create()
+        expect(instance.frequency).not.to.equal(5)
+
+    it 'handles special case of single possible integer due to exclusiveMaximum', ->
+      schema = {
+        title: "Example Test Schema"
+        type: "object"
+        required: ["frequency"]
+        properties: {
+          frequency: {
+            type: "integer"
+            minimum: 4
+            maximum: 5
+            exclusiveMaximum: true
+          }
+        }
+      }
+      factory = unionized.JSONSchemaFactory(schema)
+      for time in [0...100]
+        instance = factory.create()
+        # can only ever be 4
+        expect(instance.frequency).to.equal(4)
 
   describe 'numbers', ->
-    before 'create factory', ->
-      @schema = {
+    it 'respects exclusiveMinimum', ->
+      schema = {
         title: "Example Test Schema"
         type: "object"
         required: ["frequency"]
@@ -142,12 +199,29 @@ describe 'JSONSchema kitten tests', ->
           }
         }
       }
-      @factory = unionized.JSONSchemaFactory @schema
-
-    it 'respects exclusiveMinimum', ->
+      factory = unionized.JSONSchemaFactory(schema)
       for time in [0...100]
-        @instance = @factory.create()
-        expect(@instance.frequency).not.to.equal 0
+        instance = factory.create()
+        expect(instance.frequency).not.to.equal(0)
+
+    it 'respects exclusiveMaximum', ->
+      schema = {
+        title: "Example Test Schema"
+        type: "object"
+        required: ["frequency"]
+        properties: {
+          frequency: {
+            type: "number"
+            minimum: 0
+            maximum: 1
+            exclusiveMaximum: true
+          }
+        }
+      }
+      factory = unionized.JSONSchemaFactory(schema)
+      for time in [0...100]
+        instance = factory.create()
+        expect(instance.frequency).not.to.equal(1)
 
   describe 'instantiating with unknown field', ->
     before 'create kitten', ->
