@@ -92,9 +92,16 @@ buildDefinitionFromJSONSchema = (config, propertyIsRequired) ->
     when type is 'number'
       ->
         minInclusive = config.minimum ? -100
-        minInclusive += 0.001 if (config.exclusiveMinimum ? false)
+        # This is a bit brittle, but the number of decimal places here must be the same as in
+        # fake-eggs here:
+        # https://github.com/goodeggs/fake-eggs/blob/2d4f6098be8fd104cfe10451ab805f886e02e5a4/src/generators/number/index.ts#L12-L13.
+        # This is because we're taking a possibly inclusive or exclusive float, passing it to a
+        # function that takes an always exclusive float, which then passes it to a function
+        # internally that takes an inclusive float. The delta applied to toggle exclusive/inclusive
+        # must be the same at every level.
+        minInclusive += 0.0001 if (config.exclusiveMinimum ? false)
         maxExclusive = config.maximum ? 100
-        maxExclusive += 0.001 if not (config.exclusiveMaximum ? false)
+        maxExclusive += 0.0001 if not (config.exclusiveMaximum ? false)
         return fake.number(minInclusive, maxExclusive)
 
 generateArrayLength = (config) ->
