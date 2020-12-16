@@ -73,7 +73,10 @@ buildDefinitionFromJSONSchema = (config, propertyIsRequired) ->
           fake.date
 
         when 'date'
-          -> fake.day()
+          # Don't bother generating Expanded Years (https://tc39.es/ecma262/#sec-expanded-years)
+          # even though it's part of the ISO 8601 spec. It just isn't worth it. Sorry for
+          # contributing to Y10K.
+          -> fake.day('1001-01-01', '9999-01-01')
 
         when 'email'
           fake.email
