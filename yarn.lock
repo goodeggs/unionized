@@ -115,8 +115,8 @@ escape-string-regexp@1.0.2:
   resolved "https://registry.npmjs.org/escape-string-regexp/-/escape-string-regexp-1.0.2.tgz#4dbc2fe674e71949caf3fb2695ce7f2dc1d9a8d1"
 
 fake-eggs@^6.1.0:
-  version "6.1.0"
-  resolved "https://registry.npmjs.org/fake-eggs/-/fake-eggs-6.1.0.tgz#ba9379bd626cf875b7a7c15688c9d4b812202698"
+  version "6.2.0"
+  resolved "https://registry.npmjs.org/fake-eggs/-/fake-eggs-6.2.0.tgz#259716e2761eb25c1122204bb2ffc2a869e363f9"
   dependencies:
     "@types/chance" "^1.1.0"
     chance "^1.1.7"
