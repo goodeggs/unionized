@@ -84,6 +84,9 @@ buildDefinitionFromJSONSchema = (config, propertyIsRequired) ->
         when 'uri'
           fake.uri
 
+        when 'decimal'
+          -> fake.number().toString()
+
     when type is 'integer'
       ->
         minInclusive = config.minimum ? -100
