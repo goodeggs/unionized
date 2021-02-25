@@ -1,6 +1,18 @@
 # Changelog
+
 All notable changes to this project will be documented in this file.
 This project follows [SemVer 2.0.0](http://www.semver.org).
+
+## 6.3.0
+
+- Added support for `format: 'decimal'` in `JSONSchemaFactory`
+
+## 6.2.1
+
+- Fix rare edge case that would generate out-of-range number
+- Restrict default range of `format: 'date'` and `format: 'date-time'` in `JSONSchemaFactory` to a
+  smaller, more reasonable range (approx. 1001-01-01 to 9999-01-01).
+- Upgrade internal dependencies
 
 ## 6.1.0
 

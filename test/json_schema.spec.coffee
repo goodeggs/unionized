@@ -14,7 +14,7 @@ describe 'JSONSchema kitten tests', ->
       @kittenSchema = {
         title: "Example Test Schema"
         type: "object"
-        required: ["_id", "name", "tag", "bornAt", "bornDay", "contact", "website", "cutenessPercentile", "personality", "eyeColor", "isHunter"]
+        required: ["_id", "name", "tag", "bornAt", "bornDay", "contact", "website", "formattedPrice", "cutenessPercentile", "personality", "eyeColor", "isHunter"]
         properties: {
           _id: { type: "string", format: "objectid" }
           tag: { type: "string", minLength: 5, maxLength: 5 },
@@ -23,6 +23,7 @@ describe 'JSONSchema kitten tests', ->
           bornDay: { type: "string", format: "date" },
           contact: { type: "string", format: "email" },
           website: { type: "string", format: "uri" },
+          formattedPrice: { type: "string", format: "decimal" },
           cutenessPercentile: { type: "integer" },
           personality: { type: "string", enum: ["friendly", "fierce", "antisocial", "changeable"] },
           eyeColor: { type: "string", default: "yellow" },
@@ -60,6 +61,12 @@ describe 'JSONSchema kitten tests', ->
 
     it 'can generate string with format url', ->
       expect(@instance.website).to.contain 'http'
+
+    it 'can generate string with format "decimal"', ->
+      expect(@instance.formattedPrice).to.be.a('string')
+      expect(
+        Number.isNaN(Number(@instance.formattedPrice))
+      ).to.be.false
 
     it 'can generate a number', ->
       expect(@instance.cutenessPercentile).to.be.a 'number'
