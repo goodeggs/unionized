@@ -85,7 +85,12 @@ buildDefinitionFromJSONSchema = (config, propertyIsRequired) ->
           fake.uri
 
         when 'decimal'
-          -> fake.number().toString()
+          # Reuse existing `number` generation logic (respecting min/max, etc.) and then just
+          # convert it to a string.
+          -> buildDefinitionFromJSONSchema(
+            Object.assign({}, config, {type: 'number'}),
+            propertyIsRequired,
+          )().toString()
 
     when type is 'integer'
       ->

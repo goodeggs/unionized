@@ -1,7 +1,7 @@
 {
   "name": "unionized",
   "main": "./lib/index.js",
-  "version": "6.3.0",
+  "version": "6.3.1",
   "scripts": {
     "build": "coffee --bare --output lib/ --compile src/*.coffee",
     "pretest": "yarn run build",

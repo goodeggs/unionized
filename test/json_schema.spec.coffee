@@ -225,6 +225,28 @@ describe 'JSONSchema kitten tests', ->
         instance = factory.create()
         expect(instance.frequency).not.to.equal(1)
 
+  describe 'string format "decimal"', ->
+    # Just test `minimum` to verify that we are correctly deferring to underlying `number` logic.
+    it 'respects `maximum`', ->
+      schema = {
+        type: "object"
+        required: ["formattedPrice"]
+        properties: {
+          formattedPrice: {
+            type: "string"
+            format: "decimal"
+            maximum: 5
+          }
+        }
+      }
+      factory = unionized.JSONSchemaFactory(schema)
+      for time in [0...100]
+        instance = factory.create()
+        expect(instance.formattedPrice).to.be.a('string')
+        price = Number(instance.formattedPrice)
+        expect(Number.isNaN(price)).to.be.false
+        expect(price).to.be.lessThan(5)
+
   describe 'instantiating with unknown field', ->
     before 'create kitten', ->
       @kittenSchema = {
