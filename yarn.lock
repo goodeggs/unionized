@@ -14,12 +14,6 @@ assertion-error@1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/assertion-error/-/assertion-error-1.0.0.tgz#c7f85438fdd466bc7ca16ab90c81513797a5d23b"
 
-async@2.1.4:
-  version "2.1.4"
-  resolved "https://registry.npmjs.org/async/-/async-2.1.4.tgz#2d2160c7788032e4dd6cbe2502f1f9a2c8f6cde4"
-  dependencies:
-    lodash "^4.14.0"
-
 blanket@~1.2.3:
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/blanket/-/blanket-1.2.3.tgz#151b4987c3bd84552bb5f03b90ef5f7e5931e473"
@@ -31,21 +25,17 @@ blanket@~1.2.3:
     object-keys "^1.0.6"
     xtend "~4.0.0"
 
-bluebird@2.10.2:
-  version "2.10.2"
-  resolved "https://registry.npmjs.org/bluebird/-/bluebird-2.10.2.tgz#024a5517295308857f14f91f1106fc3b555f446b"
+bluebird@3.5.1:
+  version "3.5.1"
+  resolved "https://registry.npmjs.org/bluebird/-/bluebird-3.5.1.tgz#d9551f9de98f1fcda1e683d17ee91a0602ee2eb9"
 
 bluebird@^3.0.5:
   version "3.7.2"
   resolved "https://registry.npmjs.org/bluebird/-/bluebird-3.7.2.tgz#9f229c15be272454ffa973ace0dbee79a1b0c36f"
 
-bson@~1.0.4:
-  version "1.0.9"
-  resolved "https://registry.yarnpkg.com/bson/-/bson-1.0.9.tgz#12319f8323b1254739b7c6bef8d3e89ae05a2f57"
-
-buffer-shims@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.npmjs.org/buffer-shims/-/buffer-shims-1.0.0.tgz#9978ce317388c649ad8793028c3477ef044a8b51"
+bson@^1.1.1, bson@~1.1.1:
+  version "1.1.6"
+  resolved "https://registry.npmjs.org/bson/-/bson-1.1.6.tgz#fb819be9a60cd677e0853aee4ca712a785d6618a"
 
 chai-as-promised@^7.1.1:
   version "7.1.1"
@@ -80,15 +70,17 @@ commander@2.3.0:
   version "2.3.0"
   resolved "https://registry.npmjs.org/commander/-/commander-2.3.0.tgz#fd430e889832ec353b9acd1de217c11cb3eef873"
 
-core-util-is@~1.0.0:
-  version "1.0.2"
-  resolved "https://registry.npmjs.org/core-util-is/-/core-util-is-1.0.2.tgz#b5fd54220aa2bc5ab57aab7140c940754503c1a7"
-
 debug@2.2.0:
   version "2.2.0"
   resolved "https://registry.npmjs.org/debug/-/debug-2.2.0.tgz#f87057e995b1a1f6ae6a4960664137bc56f039da"
   dependencies:
     ms "0.7.1"
+
+debug@3.1.0:
+  version "3.1.0"
+  resolved "https://registry.npmjs.org/debug/-/debug-3.1.0.tgz#5bb5a0672628b64149566ba16819e61518c67261"
+  dependencies:
+    ms "2.0.0"
 
 debug@^4.3.1:
   version "4.3.1"
@@ -105,10 +97,6 @@ deep-eql@0.1.3:
 diff@1.4.0:
   version "1.4.0"
   resolved "https://registry.npmjs.org/diff/-/diff-1.4.0.tgz#7f28d2eb9ee7b15a97efd89ce63dcfdaa3ccbabf"
-
-es6-promise@3.2.1:
-  version "3.2.1"
-  resolved "https://registry.npmjs.org/es6-promise/-/es6-promise-3.2.1.tgz#ec56233868032909207170c39448e24449dd1fc4"
 
 escape-string-regexp@1.0.2:
   version "1.0.2"
@@ -152,21 +140,13 @@ growl@1.9.2:
   version "1.9.2"
   resolved "https://registry.npmjs.org/growl/-/growl-1.9.2.tgz#0ea7743715db8d8de2c5ede1775e1b45ac85c02f"
 
-hooks-fixed@2.0.0:
-  version "2.0.0"
-  resolved "https://registry.npmjs.org/hooks-fixed/-/hooks-fixed-2.0.0.tgz#a01d894d52ac7f6599bbb1f63dfc9c411df70cba"
-
-inherits@2, inherits@~2.0.1:
+inherits@2:
   version "2.0.3"
   resolved "https://registry.npmjs.org/inherits/-/inherits-2.0.3.tgz#633c2c83e3da42a502f52466022480f4208261de"
 
 isarray@0.0.1:
   version "0.0.1"
   resolved "https://registry.npmjs.org/isarray/-/isarray-0.0.1.tgz#8a18acfca9a8f4177e09abfc6038939b05d1eedf"
-
-isarray@~1.0.0:
-  version "1.0.0"
-  resolved "https://registry.npmjs.org/isarray/-/isarray-1.0.0.tgz#bb935d48582cba168c06834957a54a3e07124f11"
 
 jade@0.26.3:
   version "0.26.3"
@@ -175,11 +155,11 @@ jade@0.26.3:
     commander "0.6.1"
     mkdirp "0.3.0"
 
-kareem@1.2.1:
-  version "1.2.1"
-  resolved "https://registry.npmjs.org/kareem/-/kareem-1.2.1.tgz#acdb8c8119845834abbfa58ade1cf9dea63dc752"
+kareem@2.3.1:
+  version "2.3.1"
+  resolved "https://registry.npmjs.org/kareem/-/kareem-2.3.1.tgz#def12d9c941017fabfb00f873af95e9c99e1be87"
 
-lodash@^4.14.0, lodash@^4.17.10:
+lodash@^4.17.10:
   version "4.17.21"
   resolved "https://registry.npmjs.org/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
 
@@ -227,98 +207,71 @@ moment@^2.10.3:
   version "2.29.0"
   resolved "https://registry.npmjs.org/moment/-/moment-2.29.0.tgz#fcbef955844d91deb55438613ddcec56e86a3425"
 
-mongodb-core@2.1.9:
-  version "2.1.9"
-  resolved "https://registry.npmjs.org/mongodb-core/-/mongodb-core-2.1.9.tgz#85aa71ee4fb716196e06b787557bf139f801daf5"
+mongodb@3.3.2:
+  version "3.3.2"
+  resolved "https://registry.npmjs.org/mongodb/-/mongodb-3.3.2.tgz#ff086b5f552cf07e24ce098694210f3d42d668b2"
   dependencies:
-    bson "~1.0.4"
-    require_optional "~1.0.0"
+    bson "^1.1.1"
+    require_optional "^1.0.1"
+    safe-buffer "^5.1.2"
 
-mongodb@2.2.25:
-  version "2.2.25"
-  resolved "https://registry.npmjs.org/mongodb/-/mongodb-2.2.25.tgz#d3b25dad00eda2bdfcbc996210ba082ac686a6b6"
-  dependencies:
-    es6-promise "3.2.1"
-    mongodb-core "2.1.9"
-    readable-stream "2.1.5"
+mongoose-legacy-pluralize@1.0.2:
+  version "1.0.2"
+  resolved "https://registry.npmjs.org/mongoose-legacy-pluralize/-/mongoose-legacy-pluralize-1.0.2.tgz#3ba9f91fa507b5186d399fb40854bff18fb563e4"
 
-mongoose@^4.0.3:
-  version "4.9.3"
-  resolved "https://registry.npmjs.org/mongoose/-/mongoose-4.9.3.tgz#7e3ea176ed7d3d23940368704834890595aea040"
+mongoose@^5.7.5:
+  version "5.7.5"
+  resolved "https://registry.npmjs.org/mongoose/-/mongoose-5.7.5.tgz#b787b47216edf62036aa358c3ef0f1869c46cdc2"
   dependencies:
-    async "2.1.4"
-    bson "~1.0.4"
-    hooks-fixed "2.0.0"
-    kareem "1.2.1"
-    mongodb "2.2.25"
-    mpath "0.2.1"
-    mpromise "0.5.5"
-    mquery "2.3.0"
-    ms "0.7.2"
-    muri "1.2.1"
-    regexp-clone "0.0.1"
+    bson "~1.1.1"
+    kareem "2.3.1"
+    mongodb "3.3.2"
+    mongoose-legacy-pluralize "1.0.2"
+    mpath "0.6.0"
+    mquery "3.2.2"
+    ms "2.1.2"
+    regexp-clone "1.0.0"
+    safe-buffer "5.1.2"
+    sift "7.0.1"
     sliced "1.0.1"
 
-mpath@0.2.1:
-  version "0.2.1"
-  resolved "https://registry.npmjs.org/mpath/-/mpath-0.2.1.tgz#3a4e829359801de96309c27a6b2e102e89f9e96e"
+mpath@0.6.0:
+  version "0.6.0"
+  resolved "https://registry.npmjs.org/mpath/-/mpath-0.6.0.tgz#aa922029fca4f0f641f360e74c5c1b6a4c47078e"
 
-mpromise@0.5.5:
-  version "0.5.5"
-  resolved "https://registry.npmjs.org/mpromise/-/mpromise-0.5.5.tgz#f5b24259d763acc2257b0a0c8c6d866fd51732e6"
-
-mquery@2.3.0:
-  version "2.3.0"
-  resolved "https://registry.npmjs.org/mquery/-/mquery-2.3.0.tgz#3d1717ad8958d0c99e42ea2461a109f3e5f3e458"
+mquery@3.2.2:
+  version "3.2.2"
+  resolved "https://registry.npmjs.org/mquery/-/mquery-3.2.2.tgz#e1383a3951852ce23e37f619a9b350f1fb3664e7"
   dependencies:
-    bluebird "2.10.2"
-    debug "2.2.0"
-    regexp-clone "0.0.1"
-    sliced "0.0.5"
+    bluebird "3.5.1"
+    debug "3.1.0"
+    regexp-clone "^1.0.0"
+    safe-buffer "5.1.2"
+    sliced "1.0.1"
 
 ms@0.7.1:
   version "0.7.1"
   resolved "https://registry.npmjs.org/ms/-/ms-0.7.1.tgz#9cd13c03adbff25b65effde7ce864ee952017098"
 
-ms@0.7.2:
-  version "0.7.2"
-  resolved "https://registry.npmjs.org/ms/-/ms-0.7.2.tgz#ae25cf2512b3885a1d95d7f037868d8431124765"
+ms@2.0.0:
+  version "2.0.0"
+  resolved "https://registry.npmjs.org/ms/-/ms-2.0.0.tgz#5608aeadfc00be6c2901df5f9861788de0d597c8"
 
 ms@2.1.2:
   version "2.1.2"
   resolved "https://registry.npmjs.org/ms/-/ms-2.1.2.tgz#d09d1f357b443f493382a8eb3ccd183872ae6009"
 
-muri@1.2.1:
-  version "1.2.1"
-  resolved "https://registry.npmjs.org/muri/-/muri-1.2.1.tgz#ec7ea5ce6ca6a523eb1ab35bacda5fa816c9aa3c"
-
 object-keys@^1.0.6:
   version "1.0.11"
   resolved "https://registry.npmjs.org/object-keys/-/object-keys-1.0.11.tgz#c54601778ad560f1142ce0e01bcca8b56d13426d"
 
-process-nextick-args@~1.0.6:
-  version "1.0.7"
-  resolved "https://registry.npmjs.org/process-nextick-args/-/process-nextick-args-1.0.7.tgz#150e20b756590ad3f91093f25a4f2ad8bff30ba3"
-
-readable-stream@2.1.5:
-  version "2.1.5"
-  resolved "https://registry.npmjs.org/readable-stream/-/readable-stream-2.1.5.tgz#66fa8b720e1438b364681f2ad1a63c618448c9d0"
-  dependencies:
-    buffer-shims "^1.0.0"
-    core-util-is "~1.0.0"
-    inherits "~2.0.1"
-    isarray "~1.0.0"
-    process-nextick-args "~1.0.6"
-    string_decoder "~0.10.x"
-    util-deprecate "~1.0.1"
-
-regexp-clone@0.0.1:
-  version "0.0.1"
-  resolved "https://registry.npmjs.org/regexp-clone/-/regexp-clone-0.0.1.tgz#a7c2e09891fdbf38fbb10d376fb73003e68ac589"
-
-require_optional@~1.0.0:
+regexp-clone@1.0.0, regexp-clone@^1.0.0:
   version "1.0.0"
-  resolved "https://registry.npmjs.org/require_optional/-/require_optional-1.0.0.tgz#52a86137a849728eb60a55533617f8f914f59abf"
+  resolved "https://registry.npmjs.org/regexp-clone/-/regexp-clone-1.0.0.tgz#222db967623277056260b992626354a04ce9bf63"
+
+require_optional@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.npmjs.org/require_optional/-/require_optional-1.0.1.tgz#4cf35a4247f64ca3df8c2ef208cc494b1ca8fc2e"
   dependencies:
     resolve-from "^2.0.0"
     semver "^5.1.0"
@@ -327,25 +280,29 @@ resolve-from@^2.0.0:
   version "2.0.0"
   resolved "https://registry.npmjs.org/resolve-from/-/resolve-from-2.0.0.tgz#9480ab20e94ffa1d9e80a804c7ea147611966b57"
 
+safe-buffer@5.1.2:
+  version "5.1.2"
+  resolved "https://registry.npmjs.org/safe-buffer/-/safe-buffer-5.1.2.tgz#991ec69d296e0313747d59bdfd2b745c35f8828d"
+
+safe-buffer@^5.1.2:
+  version "5.2.1"
+  resolved "https://registry.npmjs.org/safe-buffer/-/safe-buffer-5.2.1.tgz#1eaf9fa9bdb1fdd4ec75f58f9cdb4e6b7827eec6"
+
 semver@^5.1.0:
   version "5.3.0"
   resolved "https://registry.npmjs.org/semver/-/semver-5.3.0.tgz#9b2ce5d3de02d17c6012ad326aa6b4d0cf54f94f"
+
+sift@7.0.1:
+  version "7.0.1"
+  resolved "https://registry.npmjs.org/sift/-/sift-7.0.1.tgz#47d62c50b159d316f1372f8b53f9c10cd21a4b08"
 
 sigmund@~1.0.0:
   version "1.0.1"
   resolved "https://registry.npmjs.org/sigmund/-/sigmund-1.0.1.tgz#3ff21f198cad2175f9f3b781853fd94d0d19b590"
 
-sliced@0.0.5:
-  version "0.0.5"
-  resolved "https://registry.npmjs.org/sliced/-/sliced-0.0.5.tgz#5edc044ca4eb6f7816d50ba2fc63e25d8fe4707f"
-
 sliced@1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/sliced/-/sliced-1.0.1.tgz#0b3a662b5d04c3177b1926bea82b03f837a2ef41"
-
-string_decoder@~0.10.x:
-  version "0.10.31"
-  resolved "https://registry.npmjs.org/string_decoder/-/string_decoder-0.10.31.tgz#62e203bc41766c6c28c9fc84301dab1c5310fa94"
 
 supports-color@1.2.0:
   version "1.2.0"
@@ -362,10 +319,6 @@ tv4@^1.2.7:
 type-detect@0.1.1:
   version "0.1.1"
   resolved "https://registry.npmjs.org/type-detect/-/type-detect-0.1.1.tgz#0ba5ec2a885640e470ea4e8505971900dac58822"
-
-util-deprecate@~1.0.1:
-  version "1.0.2"
-  resolved "https://registry.npmjs.org/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
 
 xtend@~4.0.0:
   version "4.0.1"
