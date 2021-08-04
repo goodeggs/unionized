@@ -53,9 +53,10 @@ chai-as-promised@^7.1.1:
   dependencies:
     check-error "^1.0.2"
 
-chai@^2.1.2:
+chai@^2.3.0:
   version "2.3.0"
   resolved "https://registry.npmjs.org/chai/-/chai-2.3.0.tgz#8a2f6a34748da801090fd73287b2aa739a4e909a"
+  integrity sha1-ii9qNHSNqAEJD9cyh7Kqc5pOkJo=
   dependencies:
     assertion-error "1.0.0"
     deep-eql "0.1.3"
