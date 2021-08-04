@@ -117,9 +117,10 @@ escape-string-regexp@1.0.2:
   version "1.0.2"
   resolved "https://registry.npmjs.org/escape-string-regexp/-/escape-string-regexp-1.0.2.tgz#4dbc2fe674e71949caf3fb2695ce7f2dc1d9a8d1"
 
-fake-eggs@^6.1.0:
+fake-eggs@^6.3.1:
   version "6.3.1"
   resolved "https://registry.npmjs.org/fake-eggs/-/fake-eggs-6.3.1.tgz#80c0135ed40118498789ac0a6687828bb712fbbd"
+  integrity sha512-hrm8JDBebT+toWLDXqLRhZ5OXz9b9Ly3naubEhqYXe1OU/8NJN0cNEaslFnAiWVKIGXITpGPOlSF+oUjtpfWaA==
   dependencies:
     "@types/chance" "^1.1.0"
     chance "^1.1.7"
