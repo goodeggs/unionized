@@ -1,6 +1,13 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:base", ":automergeMinor", ":renovatePrefix", ":prHourlyLimitNone"],
+  "extends": [
+    "config:base",
+    ":automergeMinor",
+    ":renovatePrefix",
+    ":prHourlyLimit4",
+    ":prConcurrentLimitNone",
+    ":semanticCommits"
+  ],
   "dependencyDashboard": true,
   "labels": ["dependencies", "renovate"],
   "timezone": "America/Los_Angeles",
@@ -13,8 +20,8 @@
   ],
 
   "rangeStrategy": "bump",
-  "recreateClosed": true,
-  "schedule": ["after 9am", "before 5pm", "on Monday through Thursday"],
+  "recreateClosed": false,
+  "automergeSchedule": ["after 09:00 and before 17:00 on Monday through Thursday"],
   "stabilityDays": 3,
   "transitiveRemediation": true
 }
