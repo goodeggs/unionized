@@ -30,7 +30,7 @@
     "chai-as-promised": "^7.1.1",
     "coffee-script": "^1.12.7",
     "mocha": "^2.5.3",
-    "moment": "^2.29.4",
+    "moment": "^2.30.0",
     "mongoose": "^4.0.3"
   },
   "description": "A factory framework for mock test objects in JavaScript. Will generate objects, models, and scenarios for tests.",
