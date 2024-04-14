@@ -3,7 +3,7 @@ cache: yarn
 node_js:
   - "12"
   - "10.24.1"
-  - "8"
+  - "8.17.0"
 services:
   - mongodb
 script: yarn run ci
