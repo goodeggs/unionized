@@ -11,9 +11,10 @@ acorn@^1.0.3:
   version "1.2.2"
   resolved "https://registry.npmjs.org/acorn/-/acorn-1.2.2.tgz#c8ce27de0acc76d896d2b1fad3df588d9e82f014"
 
-assertion-error@1.0.0:
-  version "1.0.0"
-  resolved "https://registry.npmjs.org/assertion-error/-/assertion-error-1.0.0.tgz#c7f85438fdd466bc7ca16ab90c81513797a5d23b"
+assertion-error@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.npmjs.org/assertion-error/-/assertion-error-2.0.1.tgz#f641a196b335690b1070bf00b6e7593fec190bf7"
+  integrity sha512-Izi8RQcffqCeNVgFigKli1ssklIbpHnCYc6AknXGYoB6grJqyeby7jv12JUQgmTAnIDnbck1uxksT4dzN3PWBA==
 
 async@2.1.4:
   version "2.1.4"
@@ -56,13 +57,16 @@ chai-as-promised@^7.1.2:
   dependencies:
     check-error "^1.0.2"
 
-chai@^2.3.0:
-  version "2.3.0"
-  resolved "https://registry.npmjs.org/chai/-/chai-2.3.0.tgz#8a2f6a34748da801090fd73287b2aa739a4e909a"
-  integrity sha1-ii9qNHSNqAEJD9cyh7Kqc5pOkJo=
+chai@^5.1.1:
+  version "5.1.1"
+  resolved "https://registry.npmjs.org/chai/-/chai-5.1.1.tgz#f035d9792a22b481ead1c65908d14bb62ec1c82c"
+  integrity sha512-pT1ZgP8rPNqUgieVaEY+ryQr6Q4HXNg8Ei9UnLUrjN4IA7dvQC5JB+/kxVcPNDHyBcc/26CXPkbNzq3qwrOEKA==
   dependencies:
-    assertion-error "1.0.0"
-    deep-eql "0.1.3"
+    assertion-error "^2.0.1"
+    check-error "^2.1.1"
+    deep-eql "^5.0.1"
+    loupe "^3.1.0"
+    pathval "^2.0.0"
 
 chance@^1.1.8:
   version "1.1.8"
@@ -72,6 +76,11 @@ chance@^1.1.8:
 check-error@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/check-error/-/check-error-1.0.2.tgz#574d312edd88bb5dd8912e9286dd6c0aed4aac82"
+
+check-error@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.npmjs.org/check-error/-/check-error-2.1.1.tgz#87eb876ae71ee388fa0471fe423f494be1d96ccc"
+  integrity sha512-OAlb+T7V4Op9OwdkjmguYRqncdlx5JiofwOAUkmTF+jNdHwzTaTs4sRAGpzLF3oOz5xAyDGrPgeIDFQmDOTiJw==
 
 coffee-script@^1.12.7:
   version "1.12.7"
@@ -103,11 +112,10 @@ debug@^4.3.3:
   dependencies:
     ms "2.1.2"
 
-deep-eql@0.1.3:
-  version "0.1.3"
-  resolved "https://registry.npmjs.org/deep-eql/-/deep-eql-0.1.3.tgz#ef558acab8de25206cd713906d74e56930eb69f2"
-  dependencies:
-    type-detect "0.1.1"
+deep-eql@^5.0.1:
+  version "5.0.1"
+  resolved "https://registry.npmjs.org/deep-eql/-/deep-eql-5.0.1.tgz#21ea2c0d561a4d08cdd99c417ac584e0fb121385"
+  integrity sha512-nwQCf6ne2gez3o1MxWifqkciwt0zhl0LO1/UwVu4uMBuPmflWM4oQ70XMqHqnBJA+nhzncaqL9HVL6KkHJ28lw==
 
 diff@1.4.0:
   version "1.4.0"
@@ -142,6 +150,11 @@ falafel@~1.2.0:
 foreach@^2.0.5:
   version "2.0.5"
   resolved "https://registry.npmjs.org/foreach/-/foreach-2.0.5.tgz#0bee005018aeb260d0a3af3ae658dd0136ec1b99"
+
+get-func-name@^2.0.1:
+  version "2.0.2"
+  resolved "https://registry.npmjs.org/get-func-name/-/get-func-name-2.0.2.tgz#0d7cf20cd13fda808669ffa88f4ffc7a3943fc41"
+  integrity sha512-8vXOvuE167CtIc3OyItco7N/dpRtBbYOsPsXCz7X/PMnlGjYjSGuZJgM1Y7mmew7BKf9BqvLX2tnOVy1BBUsxQ==
 
 glob@3.2.11:
   version "3.2.11"
@@ -191,6 +204,13 @@ lodash@^4.14.0, lodash@^4.17.21:
   version "4.17.21"
   resolved "https://registry.npmjs.org/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
+
+loupe@^3.1.0:
+  version "3.1.1"
+  resolved "https://registry.npmjs.org/loupe/-/loupe-3.1.1.tgz#71d038d59007d890e3247c5db97c1ec5a92edc54"
+  integrity sha512-edNu/8D5MKVfGVFRhFf8aAxiTM6Wumfz5XsaatSxlD3w4R1d/WEKUTydCdPGbl9K7QG/Ca3GnDV2sIKIpXRQcw==
+  dependencies:
+    get-func-name "^2.0.1"
 
 lru-cache@2:
   version "2.7.3"
@@ -307,6 +327,11 @@ object-keys@^1.0.6:
   version "1.0.11"
   resolved "https://registry.npmjs.org/object-keys/-/object-keys-1.0.11.tgz#c54601778ad560f1142ce0e01bcca8b56d13426d"
 
+pathval@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.npmjs.org/pathval/-/pathval-2.0.0.tgz#7e2550b422601d4f6b8e26f1301bc8f15a741a25"
+  integrity sha512-vE7JKRyES09KiunauX7nd2Q9/L7lhok4smP9RZTDeD4MVs72Dp2qNFVz39Nz5a0FVEW0BJR6C0DYrq6unoziZA==
+
 process-nextick-args@~1.0.6:
   version "1.0.7"
   resolved "https://registry.npmjs.org/process-nextick-args/-/process-nextick-args-1.0.7.tgz#150e20b756590ad3f91093f25a4f2ad8bff30ba3"
@@ -369,10 +394,6 @@ to-iso-string@0.0.2:
 tv4@^1.2.7:
   version "1.3.0"
   resolved "https://registry.npmjs.org/tv4/-/tv4-1.3.0.tgz#d020c846fadd50c855abb25ebaecc68fc10f7963"
-
-type-detect@0.1.1:
-  version "0.1.1"
-  resolved "https://registry.npmjs.org/type-detect/-/type-detect-0.1.1.tgz#0ba5ec2a885640e470ea4e8505971900dac58822"
 
 util-deprecate@~1.0.1:
   version "1.0.2"
