@@ -27,7 +27,7 @@
   "devDependencies": {
     "blanket": "~1.2.3",
     "chai": "^2.3.0",
-    "chai-as-promised": "^7.1.2",
+    "chai-as-promised": "^8.0.0",
     "coffee-script": "^1.12.7",
     "mocha": "^2.5.3",
     "moment": "^2.30.1",
