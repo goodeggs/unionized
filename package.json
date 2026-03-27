@@ -22,7 +22,7 @@
     "bluebird": "^3.7.2",
     "fake-eggs": "^6.5.3",
     "goodeggs-json-schema-validator": "^5.3.0",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.23"
   },
   "devDependencies": {
     "blanket": "~1.2.3",
